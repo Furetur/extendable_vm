@@ -20,6 +20,6 @@ pub enum Instruction {
 }
 #[derive(Debug)]
 pub struct Chunk {
-    pub constants: Vec<u8>,
+    pub constants: Vec<i8>,
     pub code: Vec<Instruction>,
 }

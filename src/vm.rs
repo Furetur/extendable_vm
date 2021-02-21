@@ -1,6 +1,6 @@
 use crate::chunk::{Chunk, Instruction};
 
-type Value = u8;
+type Value = i8;
 
 pub struct VM {
     stack: Vec<Value>
@@ -12,7 +12,7 @@ impl VM {
             stack: Vec::new()
         }
     }
-    pub fn run(&mut self, chunk: &Chunk) -> u8 {
+    pub fn run(&mut self, chunk: &Chunk) -> i8 {
         for instruction in &chunk.code {
             println!("Running {:?}", instruction);
             self.run_instruction(chunk, instruction)

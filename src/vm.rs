@@ -77,7 +77,7 @@ impl VM {
                     }
                     (x, y) => panic!("ADD not supported for {:?} and {:?}", x, y)
                 }
-            },
+            }
             Instruction::SUBTRACT => {
                 let (left, right) = self.get_two_operands();
                 match (left, right) {
@@ -86,7 +86,7 @@ impl VM {
                     }
                     (x, y) => panic!("SUBTRACT not supported for {:?} and {:?}", x, y)
                 }
-            },
+            }
             Instruction::MULTIPLY => {
                 let (left, right) = self.get_two_operands();
                 match (left, right) {
@@ -95,7 +95,7 @@ impl VM {
                     }
                     (x, y) => panic!("MULTIPLY not supported for {:?} and {:?}", x, y)
                 }
-            },
+            }
             Instruction::DIVIDE => {
                 let (left, right) = self.get_two_operands();
                 match (left, right) {

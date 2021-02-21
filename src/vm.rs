@@ -34,20 +34,18 @@ impl VM {
             Instruction::TRUE => self.stack.push(JexValue::BOOLEAN(true)),
             Instruction::FALSE => self.stack.push(JexValue::BOOLEAN(false)),
             Instruction::NOT => {
-                let value = self.stack.pop().unwrap();
+                let value = self.get_operand();
                 match value {
                     JexValue::BOOLEAN(value) => self.stack.push(JexValue::BOOLEAN(!value)),
                     value => panic!("NOT not supported for {:?}", value)
                 }
             }
             Instruction::EQUAL => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 self.stack.push(JexValue::BOOLEAN(are_values_equal(&left, &right)))
             }
             Instruction::GREATER => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::BOOLEAN(a > b))
@@ -56,8 +54,7 @@ impl VM {
                 }
             }
             Instruction::LESS => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::BOOLEAN(a < b))
@@ -66,15 +63,14 @@ impl VM {
                 }
             }
             Instruction::NEGATE => {
-                let value = self.stack.pop().unwrap();
+                let value = self.get_operand();
                 match value {
                     JexValue::INT(value) => self.stack.push(JexValue::INT(-value)),
                     value => panic!("NEGATE not supported for {:?}", value)
                 }
             }
             Instruction::ADD => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::INT(a + b))
@@ -83,8 +79,7 @@ impl VM {
                 }
             },
             Instruction::SUBTRACT => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::INT(a - b))
@@ -93,8 +88,7 @@ impl VM {
                 }
             },
             Instruction::MULTIPLY => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::INT(a * b))
@@ -103,8 +97,7 @@ impl VM {
                 }
             },
             Instruction::DIVIDE => {
-                let right = self.stack.pop().unwrap();
-                let left = self.stack.pop().unwrap();
+                let (left, right) = self.get_two_operands();
                 match (left, right) {
                     (JexValue::INT(a), JexValue::INT(b)) => {
                         self.stack.push(JexValue::INT(a / b))
@@ -114,5 +107,13 @@ impl VM {
             }
             _ => (),
         }
+    }
+    fn get_two_operands(&mut self) -> (JexValue, JexValue) {
+        let right = self.stack.pop().unwrap();
+        let left = self.stack.pop().unwrap();
+        (left, right)
+    }
+    fn get_operand(&mut self) -> JexValue {
+        self.stack.pop().unwrap()
     }
 }

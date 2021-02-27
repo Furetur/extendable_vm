@@ -1,9 +1,11 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum JexValue {
     NULL,
     INT(i8),
     BOOLEAN(bool),
+    STRING(String),
 }
+
 
 pub fn are_values_equal(x: &JexValue, y: &JexValue) -> bool {
     match (x, y) {
@@ -13,3 +15,4 @@ pub fn are_values_equal(x: &JexValue, y: &JexValue) -> bool {
         _ => false
     }
 }
+

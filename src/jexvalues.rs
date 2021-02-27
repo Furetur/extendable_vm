@@ -16,3 +16,13 @@ pub fn are_values_equal(x: &JexValue, y: &JexValue) -> bool {
     }
 }
 
+impl JexValue {
+    pub fn to_output_string(&self) -> String {
+        match self {
+            JexValue::NULL => String::from("null"),
+            JexValue::INT(i) => format!("{}", i),
+            JexValue::BOOLEAN(bool) => format!("{}", bool),
+            JexValue::STRING(str) => str.clone(),
+        }
+    }
+}

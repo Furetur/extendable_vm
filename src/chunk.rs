@@ -2,6 +2,8 @@ use crate::jexvalues::{JexValue};
 
 #[derive(Debug)]
 pub enum Instruction {
+    // builtin
+    PRINT,
     // constant instructions and literal instructions
     CONSTANT(usize),
     NULL,

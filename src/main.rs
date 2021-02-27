@@ -12,9 +12,9 @@ fn main() {
             Instruction::CONSTANT(1),
             Instruction::CONSTANT(1),
             Instruction::ADD,
+            Instruction::PRINT,
         ],
     };
     let mut vm = VM::new();
-    let result = vm.run(&chunk);
-    println!("Result {:?}", result.unwrap());
+    vm.run(&chunk);
 }

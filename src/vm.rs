@@ -34,6 +34,7 @@ impl VM {
             Instruction::SUBTRACT => self.run_subtract_instruction(),
             Instruction::MULTIPLY => self.run_multiply_instruction(),
             Instruction::DIVIDE => self.run_divide_instruction(),
+            Instruction::PRINT => self.run_print_instruction(),
         }
     }
 
@@ -138,6 +139,11 @@ impl VM {
             }
             (x, y) => panic!("DIVIDE not supported for {:?} and {:?}", x, y)
         }
+    }
+
+    fn run_print_instruction(&mut self) {
+        let value = self.get_operand();
+        print!("PRINTING: {}", value.to_output_string())
     }
 
     fn push_into_stack(&mut self, value: JexValue) {

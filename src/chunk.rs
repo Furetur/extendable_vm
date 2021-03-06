@@ -3,24 +3,24 @@ use crate::jexvalues::{JexValue};
 #[derive(Debug)]
 pub enum Instruction {
     // builtin
-    PRINT,
+    Print,
     // constant instructions and literal instructions
-    CONSTANT(usize),
-    NULL,
-    TRUE,
-    FALSE,
+    Constant(usize),
+    Null,
+    True,
+    False,
     // logic operators
-    NOT,
+    Not,
     // comparison operators
-    EQUAL,
-    GREATER,
-    LESS,
+    Equal,
+    Greater,
+    Less,
     // arithmetic operators
-    NEGATE,
-    ADD,
-    SUBTRACT,
-    MULTIPLY,
-    DIVIDE,
+    Negate,
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
 }
 
 #[derive(Debug)]

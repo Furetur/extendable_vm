@@ -6,7 +6,6 @@ pub enum JexValue {
     NULL,
     INT(i8),
     BOOLEAN(bool),
-    // STRING(String),
     OBJECT(JexObject),
 }
 
@@ -27,7 +26,6 @@ impl JexValue {
             JexValue::NULL => String::from("null"),
             JexValue::INT(i) => format!("{}", i),
             JexValue::BOOLEAN(bool) => format!("{}", bool),
-            // JexValue::STRING(str) => str.clone(),
             JexValue::OBJECT(obj) => object_to_string(obj),
         }
     }

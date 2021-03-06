@@ -25,20 +25,20 @@ impl VM {
 
     fn run_instruction(&mut self, chunk: &Chunk, instruction: &Instruction) {
         match instruction {
-            Instruction::CONSTANT(index) => self.run_constant_instruction(chunk, *index),
-            Instruction::NULL => self.run_null_instruction(),
-            Instruction::TRUE => self.run_boolean_instruction(true),
-            Instruction::FALSE => self.run_boolean_instruction(false),
-            Instruction::NOT => self.run_not_instruction(),
-            Instruction::EQUAL => self.run_equal_instruction(),
-            Instruction::GREATER => self.run_greater_instruction(),
-            Instruction::LESS => self.run_less_instruction(),
-            Instruction::NEGATE => self.run_negate_instruction(),
-            Instruction::ADD => self.run_add_instruction(),
-            Instruction::SUBTRACT => self.run_subtract_instruction(),
-            Instruction::MULTIPLY => self.run_multiply_instruction(),
-            Instruction::DIVIDE => self.run_divide_instruction(),
-            Instruction::PRINT => self.run_print_instruction(),
+            Instruction::Constant(index) => self.run_constant_instruction(chunk, *index),
+            Instruction::Null => self.run_null_instruction(),
+            Instruction::True => self.run_boolean_instruction(true),
+            Instruction::False => self.run_boolean_instruction(false),
+            Instruction::Not => self.run_not_instruction(),
+            Instruction::Equal => self.run_equal_instruction(),
+            Instruction::Greater => self.run_greater_instruction(),
+            Instruction::Less => self.run_less_instruction(),
+            Instruction::Negate => self.run_negate_instruction(),
+            Instruction::Add => self.run_add_instruction(),
+            Instruction::Subtract => self.run_subtract_instruction(),
+            Instruction::Multiply => self.run_multiply_instruction(),
+            Instruction::Divide => self.run_divide_instruction(),
+            Instruction::Print => self.run_print_instruction(),
         }
     }
 

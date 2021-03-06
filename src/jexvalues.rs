@@ -16,6 +16,7 @@ pub fn are_values_equal(x: &JexValue, y: &JexValue) -> bool {
         (JexValue::NULL, JexValue::NULL) => true,
         (JexValue::INT(x), JexValue::INT(y)) => x == y,
         (JexValue::BOOLEAN(x), JexValue::BOOLEAN(y)) => x == y,
+        (JexValue::OBJECT(o1), JexValue::OBJECT(o2)) => o1 == o2,
         _ => false
     }
 }

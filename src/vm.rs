@@ -152,7 +152,7 @@ impl VM {
 
     fn run_print_instruction(&mut self) {
         let value = self.get_operand();
-        print!("PRINTING: {}", value.to_output_string())
+        println!("PRINTING: {}", value.to_output_string())
     }
 
     fn push_into_stack(&mut self, value: JexValue) {

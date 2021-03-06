@@ -43,7 +43,7 @@ impl ChunkConstant {
     pub fn to_jex_value(&self) -> JexValue {
         match self {
             ChunkConstant::INT(n) => JexValue::INT(*n),
-            ChunkConstant::STRING(str) => JexValue::STRING(str.clone())
+            ChunkConstant::STRING(str) => JexValue::from_string(str.clone())
         }
     }
 }

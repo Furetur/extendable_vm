@@ -4,6 +4,9 @@ use crate::vm::VM;
 mod chunk;
 mod vm;
 mod jexvalues;
+mod jexobject;
+mod string_interner;
+mod operators;
 
 fn main() {
     let chunk = Chunk {

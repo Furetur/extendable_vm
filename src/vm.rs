@@ -1,14 +1,18 @@
 use crate::chunk::{Chunk, Instruction};
 use crate::jexvalues::{JexValue, are_values_equal};
+use crate::jexobject::RawObject;
+use crate::string_interner::StringInterner;
 
 pub struct VM {
     stack: Vec<JexValue>,
+    string_interner: StringInterner,
 }
 
 impl VM {
     pub fn new() -> VM {
         VM {
             stack: Vec::new(),
+            string_interner: StringInterner::new()
         }
     }
     pub fn run(&mut self, chunk: &Chunk) -> Option<JexValue> {
@@ -101,11 +105,16 @@ impl VM {
             (JexValue::INT(a), JexValue::INT(b)) => {
                 self.push_into_stack(JexValue::INT(a + b))
             }
-            (JexValue::STRING(s1), JexValue::STRING(s2)) => {
-                let mut result_str = s1.clone();
-                result_str.push_str(&s2);
-                let value = JexValue::STRING(result_str);
-                self.push_into_stack(value);
+            (JexValue::OBJECT(o1), JexValue::OBJECT(o2)) => {
+                match (&*o1, &*o2) {
+                    (RawObject::STRING(s1), RawObject::STRING(s2)) => {
+                        let mut result_str = s1.clone();
+                        result_str.push_str(&s2);
+                        let value = self.string_interner.get_string_value(result_str);
+                        self.push_into_stack(value);
+                    }
+                    _ => panic!("ADD not supported")
+                }
             }
             (x, y) => panic!("ADD not supported for {:?} and {:?}", x, y)
         }

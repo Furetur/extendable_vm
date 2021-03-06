@@ -1,9 +1,13 @@
+use crate::jexobject::{JexObject, object_to_string, RawObject};
+use std::rc::Rc;
+
 #[derive(Debug, Clone)]
 pub enum JexValue {
     NULL,
     INT(i8),
     BOOLEAN(bool),
-    STRING(String),
+    // STRING(String),
+    OBJECT(JexObject),
 }
 
 
@@ -22,7 +26,13 @@ impl JexValue {
             JexValue::NULL => String::from("null"),
             JexValue::INT(i) => format!("{}", i),
             JexValue::BOOLEAN(bool) => format!("{}", bool),
-            JexValue::STRING(str) => str.clone(),
+            // JexValue::STRING(str) => str.clone(),
+            JexValue::OBJECT(obj) => object_to_string(obj),
         }
+    }
+
+    pub fn from_string(str: String) -> JexValue {
+        let jex_obj = Rc::new(RawObject::STRING(str));
+        JexValue::OBJECT(jex_obj)
     }
 }

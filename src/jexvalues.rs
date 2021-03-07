@@ -34,4 +34,32 @@ impl JexValue {
         let jex_obj = Rc::new(RawObject::STRING(str));
         JexValue::OBJECT(jex_obj)
     }
+
+    pub fn as_int(&self) -> i8 {
+        if let JexValue::INT(n) = self {
+            *n
+        } else {
+            panic!("Expected {:?} to be an INT", self);
+        }
+    }
+
+    pub fn as_bool(&self) -> bool {
+        if let JexValue::BOOLEAN(b) = self {
+            *b
+        } else {
+            panic!("Expected {:?} to be a BOOL", self);
+        }
+    }
+
+    pub fn as_str(&self) -> &str {
+        if let JexValue::OBJECT(o) = self {
+            if let RawObject::STRING(s) = &**o {
+                s.as_str()
+            } else {
+                panic!("Expected {:?} to be JexObject<String>", self);
+            }
+        } else {
+            panic!("Expected {:?} to be JexObject<String>", self);
+        }
+    }
 }

@@ -1,18 +1,21 @@
-use crate::chunk::{Chunk, Instruction};
+use crate::chunk::{Chunk, Instruction, ChunkConstant};
 use crate::jexvalues::{JexValue, are_values_equal};
 use crate::jexobject::RawObject;
 use crate::string_interner::StringInterner;
+use std::collections::HashMap;
 
 pub struct VM {
     stack: Vec<JexValue>,
     string_interner: StringInterner,
+    globals: HashMap<String, JexValue>,
 }
 
 impl VM {
     pub fn new() -> VM {
         VM {
             stack: Vec::new(),
-            string_interner: StringInterner::new()
+            string_interner: StringInterner::new(),
+            globals: HashMap::new(),
         }
     }
     pub fn run(&mut self, chunk: &Chunk) -> Option<JexValue> {
@@ -26,6 +29,8 @@ impl VM {
     fn run_instruction(&mut self, chunk: &Chunk, instruction: &Instruction) {
         match instruction {
             Instruction::Constant(index) => self.run_constant_instruction(chunk, *index),
+            Instruction::DefineGlobal(index) => self.run_define_global_instruction(chunk, *index),
+            Instruction::GetGlobal(index) => self.run_get_global(chunk, *index),
             Instruction::Null => self.run_null_instruction(),
             Instruction::True => self.run_boolean_instruction(true),
             Instruction::False => self.run_boolean_instruction(false),
@@ -47,6 +52,30 @@ impl VM {
         let jex_value: JexValue = constant_value.to_jex_value();
         println!("Putting {:?} into stack", &jex_value);
         self.push_into_stack(jex_value);
+    }
+
+    fn read_string_constant(&self, chunk: &Chunk, constant_index: usize) -> String {
+        let constant = chunk.constants.get(constant_index).unwrap();
+        match constant {
+            ChunkConstant::STRING(s) => s.clone(),
+            _ => panic!("Constant {:?} was not String", constant)
+        }
+    }
+
+    fn run_define_global_instruction(&mut self, chunk: &Chunk, name_index: usize) {
+        let name = self.read_string_constant(chunk, name_index);
+        let value = self.get_operand();
+        self.globals.insert(name, value);
+    }
+
+    fn run_get_global(&mut self, chunk: &Chunk, constant_index: usize) {
+        let name = self.read_string_constant(chunk, constant_index);
+        let value = self.globals.get(&name);
+        if let Some(value) = value {
+            self.push_into_stack(value.clone());
+        } else {
+            panic!("Global not found");
+        }
     }
 
     fn run_null_instruction(&mut self) {

@@ -4,6 +4,9 @@ use crate::jexvalues::{JexValue};
 pub enum Instruction {
     // builtin
     Print,
+    // Variables
+    DefineGlobal(usize),
+    GetGlobal(usize),
     // constant instructions and literal instructions
     Constant(usize),
     Null,

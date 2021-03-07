@@ -31,6 +31,9 @@ impl VM {
             Instruction::Constant(index) => self.run_constant_instruction(chunk, *index),
             Instruction::DefineGlobal(index) => self.run_define_global_instruction(chunk, *index),
             Instruction::GetGlobal(index) => self.run_get_global(chunk, *index),
+            Instruction::GetLocal(slot) => self.run_get_local(*slot),
+            Instruction::SetLocal(slot) => self.run_set_local(*slot),
+            Instruction::Pop() => self.run_pop(),
             Instruction::Null => self.run_null_instruction(),
             Instruction::True => self.run_boolean_instruction(true),
             Instruction::False => self.run_boolean_instruction(false),
@@ -76,6 +79,26 @@ impl VM {
         } else {
             panic!("Global not found");
         }
+    }
+
+    fn run_set_local(&mut self, slot: usize) {
+        if self.stack.len() <= slot {
+            panic!("Cannot SET local variable with slot {} because stack length is {}", slot, self.stack.len());
+        } else {
+            self.stack[slot] = self.get_operand();
+        }
+    }
+
+    fn run_get_local(&mut self, slot: usize) {
+        if self.stack.len() <= slot {
+            panic!("Cannot GET local variable with slot {} because stack length is {}", slot, self.stack.len());
+        } else {
+            self.push_into_stack(self.stack[slot].clone());
+        }
+    }
+
+    fn run_pop(&mut self) {
+        self.get_operand();
     }
 
     fn run_null_instruction(&mut self) {

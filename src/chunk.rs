@@ -7,6 +7,9 @@ pub enum Instruction {
     // Variables
     DefineGlobal(usize),
     GetGlobal(usize),
+    SetLocal(usize),
+    GetLocal(usize),
+    Pop(),
     // constant instructions and literal instructions
     Constant(usize),
     Null,

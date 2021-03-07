@@ -31,9 +31,11 @@ impl VM {
             Instruction::Constant(index) => self.run_constant_instruction(chunk, *index),
             Instruction::DefineGlobal(index) => self.run_define_global_instruction(chunk, *index),
             Instruction::GetGlobal(index) => self.run_get_global(chunk, *index),
+            // TODO: actually make a distinction between define and set
+            Instruction::SetGlobal(index) => self.run_define_global_instruction(chunk, *index),
             Instruction::GetLocal(slot) => self.run_get_local(*slot),
             Instruction::SetLocal(slot) => self.run_set_local(*slot),
-            Instruction::Pop() => self.run_pop(),
+            Instruction::Pop => self.run_pop(),
             Instruction::Null => self.run_null_instruction(),
             Instruction::True => self.run_boolean_instruction(true),
             Instruction::False => self.run_boolean_instruction(false),

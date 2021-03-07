@@ -1,41 +1,44 @@
 use crate::jexvalues::{JexValue};
+use std::convert::TryFrom;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Instruction {
-    // builtin
-    Print,
-    // Variables
-    DefineGlobal(usize),
-    GetGlobal(usize),
-    SetLocal(usize),
-    GetLocal(usize),
-    Pop(),
     // constant instructions and literal instructions
-    Constant(usize),
-    Null,
-    True,
-    False,
+    Constant(usize), // 0
+    Null, // 1
+    True, // 2
+    False, // 3
+    // pop from stack
+    Pop, // 4
+    // variables
+    GetLocal(usize), // 5
+    SetLocal(usize), // 6
+    GetGlobal(usize), // 7
+    DefineGlobal(usize), // 8
+    SetGlobal(usize), // 9
+    // builtin
+    Print, // 10
     // logic operators
-    Not,
+    Not, // 11
     // comparison operators
-    Equal,
-    Greater,
-    Less,
+    Equal, // 12
+    Greater, // 13
+    Less, // 14
     // arithmetic operators
-    Negate,
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
+    Negate, // 15
+    Add, // 16
+    Subtract, // 17
+    Multiply, // 18
+    Divide, // 19
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Chunk {
     pub constants: Vec<ChunkConstant>,
     pub code: Vec<Instruction>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum ChunkConstant {
     INT(i8),
     STRING(String),

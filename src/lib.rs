@@ -7,3 +7,4 @@ mod jexvalues;
 mod jexobject;
 mod string_interner;
 mod operators;
+mod chunk_parser;

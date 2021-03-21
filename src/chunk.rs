@@ -38,6 +38,11 @@ pub struct Chunk {
     pub code: Vec<Instruction>,
 }
 
+pub enum ChunkConstantOrdinal {
+    Int = 0,
+    String = 1,
+}
+
 #[derive(Debug, PartialEq)]
 pub enum ChunkConstant {
     INT(i8),

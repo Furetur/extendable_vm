@@ -1,16 +1,16 @@
-use std::collections::HashMap;
 use crate::jexobject::{JexObject, RawObject};
-use std::rc::Rc;
 use crate::jexvalues::JexValue;
+use std::collections::HashMap;
+use std::rc::Rc;
 
 pub struct StringInterner {
-    table: HashMap<String, JexObject>
+    table: HashMap<String, JexObject>,
 }
 
 impl StringInterner {
     pub fn new() -> StringInterner {
         StringInterner {
-            table: HashMap::new()
+            table: HashMap::new(),
         }
     }
 

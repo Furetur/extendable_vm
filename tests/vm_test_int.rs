@@ -1,4 +1,4 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
@@ -155,10 +155,7 @@ fn it_should_consider_3_not_equal_to_4() {
 fn it_should_negate_10() {
     let chunk = Chunk {
         constants: vec![ChunkConstant::INT(10)],
-        code: vec![
-            Instruction::Constant(0),
-            Instruction::Negate,
-        ],
+        code: vec![Instruction::Constant(0), Instruction::Negate],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -172,10 +169,7 @@ fn it_should_negate_10() {
 fn it_should_panic_if_ints_are_logically_negated() {
     let chunk = Chunk {
         constants: vec![ChunkConstant::INT(8)],
-        code: vec![
-            Instruction::Constant(0),
-            Instruction::Not,
-        ],
+        code: vec![Instruction::Constant(0), Instruction::Not],
     };
     let mut vm = VM::new();
     vm.run(&chunk);

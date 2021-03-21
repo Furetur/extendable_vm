@@ -1,15 +1,11 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
 fn true_and_true_should_be_equal() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::True,
-            Instruction::True,
-            Instruction::Equal,
-        ],
+        code: vec![Instruction::True, Instruction::True, Instruction::Equal],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -20,11 +16,7 @@ fn true_and_true_should_be_equal() {
 fn false_and_false_should_be_equal() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::False,
-            Instruction::Equal,
-        ],
+        code: vec![Instruction::False, Instruction::False, Instruction::Equal],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -35,11 +27,7 @@ fn false_and_false_should_be_equal() {
 fn true_and_false_should_be_equal() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::True,
-            Instruction::False,
-            Instruction::Equal,
-        ],
+        code: vec![Instruction::True, Instruction::False, Instruction::Equal],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -50,10 +38,7 @@ fn true_and_false_should_be_equal() {
 fn not_true_should_be_false() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::True,
-            Instruction::Not,
-        ],
+        code: vec![Instruction::True, Instruction::Not],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -64,10 +49,7 @@ fn not_true_should_be_false() {
 fn not_false_should_be_false() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::Not,
-        ],
+        code: vec![Instruction::False, Instruction::Not],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -81,11 +63,7 @@ fn not_false_should_be_false() {
 fn it_should_panic_if_bools_are_added() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Add
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Add],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -96,11 +74,7 @@ fn it_should_panic_if_bools_are_added() {
 fn it_should_panic_if_bools_are_subtracted() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Subtract
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Subtract],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -111,11 +85,7 @@ fn it_should_panic_if_bools_are_subtracted() {
 fn it_should_panic_if_bools_are_multiplied() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Multiply
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Multiply],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -126,11 +96,7 @@ fn it_should_panic_if_bools_are_multiplied() {
 fn it_should_panic_if_bools_are_divided() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Divide
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Divide],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -141,11 +107,7 @@ fn it_should_panic_if_bools_are_divided() {
 fn it_should_panic_if_bools_are_compared_with_greater() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Greater
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Greater],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -156,11 +118,7 @@ fn it_should_panic_if_bools_are_compared_with_greater() {
 fn it_should_panic_if_bools_are_compared_with_less() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::True,
-            Instruction::Less
-        ],
+        code: vec![Instruction::False, Instruction::True, Instruction::Less],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -171,10 +129,7 @@ fn it_should_panic_if_bools_are_compared_with_less() {
 fn it_should_panic_if_bool_is_negated() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::Negate
-        ],
+        code: vec![Instruction::False, Instruction::Negate],
     };
     let mut vm = VM::new();
     vm.run(&chunk);

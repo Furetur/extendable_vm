@@ -1,4 +1,4 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
@@ -20,7 +20,10 @@ fn it_should_get_local_variables_from_stack() {
 #[test]
 fn it_should_set_local_variables_new_values_from_stack() {
     let chunk = Chunk {
-        constants: vec![ChunkConstant::INT(100), ChunkConstant::from_str("new value")],
+        constants: vec![
+            ChunkConstant::INT(100),
+            ChunkConstant::from_str("new value"),
+        ],
         code: vec![
             // A local variable with value 0 is at slot: 0
             Instruction::Constant(0),
@@ -36,14 +39,18 @@ fn it_should_set_local_variables_new_values_from_stack() {
 #[test]
 fn it_should_set_and_get_local_variables_new_values_from_stack() {
     let chunk = Chunk {
-        constants: vec![ChunkConstant::INT(100), ChunkConstant::from_str("new value"), ChunkConstant::INT(-1)],
+        constants: vec![
+            ChunkConstant::INT(100),
+            ChunkConstant::from_str("new value"),
+            ChunkConstant::INT(-1),
+        ],
         code: vec![
             // A local variable with value 0 is at slot: 0
             Instruction::Constant(0),
             Instruction::Constant(2), // pollutes the stack with -1
             Instruction::Constant(1),
             Instruction::SetLocal(0), // eats the previous value on stack leaving -1 at top
-            Instruction::GetLocal(0) // should get "new value" from the variable
+            Instruction::GetLocal(0), // should get "new value" from the variable
         ],
     };
     let mut vm = VM::new();
@@ -62,7 +69,7 @@ fn it_should_panic_if_trying_to_get_non_existing_local() {
             Instruction::Constant(0),
             Instruction::Constant(0),
             Instruction::Constant(1),
-            Instruction::GetLocal(100)
+            Instruction::GetLocal(100),
         ],
     };
     let mut vm = VM::new();
@@ -78,7 +85,7 @@ fn it_should_panic_if_trying_to_set_non_existing_local() {
             Instruction::Constant(0),
             Instruction::Constant(0),
             Instruction::Constant(1),
-            Instruction::SetLocal(100)
+            Instruction::SetLocal(100),
         ],
     };
     let mut vm = VM::new();

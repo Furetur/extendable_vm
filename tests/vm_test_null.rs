@@ -1,4 +1,4 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
@@ -20,11 +20,7 @@ fn null_should_not_be_equal_to_int() {
 fn null_should_not_be_equal_to_bool() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::False,
-            Instruction::Null,
-            Instruction::Equal,
-        ],
+        code: vec![Instruction::False, Instruction::Null, Instruction::Equal],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);
@@ -35,11 +31,7 @@ fn null_should_not_be_equal_to_bool() {
 fn null_should_be_equal_to_null() {
     let chunk = Chunk {
         constants: vec![],
-        code: vec![
-            Instruction::Null,
-            Instruction::Null,
-            Instruction::Equal,
-        ],
+        code: vec![Instruction::Null, Instruction::Null, Instruction::Equal],
     };
     let mut vm = VM::new();
     let result = vm.run(&chunk);

@@ -1,6 +1,6 @@
-use crate::chunk::{Chunk, Instruction, ChunkConstant};
-use crate::jexvalues::{JexValue, are_values_equal};
+use crate::chunk::{Chunk, ChunkConstant, Instruction};
 use crate::jexobject::RawObject;
+use crate::jexvalues::{are_values_equal, JexValue};
 use crate::string_interner::StringInterner;
 use std::collections::HashMap;
 
@@ -63,7 +63,7 @@ impl VM {
         let constant = chunk.constants.get(constant_index).unwrap();
         match constant {
             ChunkConstant::STRING(s) => s.clone(),
-            _ => panic!("Constant {:?} was not String", constant)
+            _ => panic!("Constant {:?} was not String", constant),
         }
     }
 
@@ -85,7 +85,11 @@ impl VM {
 
     fn run_set_local(&mut self, slot: usize) {
         if self.stack.len() <= slot {
-            panic!("Cannot SET local variable with slot {} because stack length is {}", slot, self.stack.len());
+            panic!(
+                "Cannot SET local variable with slot {} because stack length is {}",
+                slot,
+                self.stack.len()
+            );
         } else {
             self.stack[slot] = self.get_operand();
         }
@@ -93,7 +97,11 @@ impl VM {
 
     fn run_get_local(&mut self, slot: usize) {
         if self.stack.len() <= slot {
-            panic!("Cannot GET local variable with slot {} because stack length is {}", slot, self.stack.len());
+            panic!(
+                "Cannot GET local variable with slot {} because stack length is {}",
+                slot,
+                self.stack.len()
+            );
         } else {
             self.push_into_stack(self.stack[slot].clone());
         }
@@ -115,7 +123,7 @@ impl VM {
         let value = self.get_operand();
         let new_value = match value {
             JexValue::BOOLEAN(value) => JexValue::BOOLEAN(!value),
-            value => panic!("NOT not supported for {:?}", value)
+            value => panic!("NOT not supported for {:?}", value),
         };
         self.push_into_stack(new_value);
     }
@@ -128,20 +136,16 @@ impl VM {
     fn run_greater_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::BOOLEAN(a > b))
-            }
-            (x, y) => panic!("GREATER not supported for {:?} and {:?}", x, y)
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::BOOLEAN(a > b)),
+            (x, y) => panic!("GREATER not supported for {:?} and {:?}", x, y),
         }
     }
 
     fn run_less_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::BOOLEAN(a < b))
-            }
-            (x, y) => panic!("LESS not supported for {:?} and {:?}", x, y)
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::BOOLEAN(a < b)),
+            (x, y) => panic!("LESS not supported for {:?} and {:?}", x, y),
         }
     }
 
@@ -149,58 +153,48 @@ impl VM {
         let value = self.get_operand();
         match value {
             JexValue::INT(value) => self.push_into_stack(JexValue::INT(-value)),
-            value => panic!("NEGATE not supported for {:?}", value)
+            value => panic!("NEGATE not supported for {:?}", value),
         }
     }
 
     fn run_add_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::INT(a + b))
-            }
-            (JexValue::OBJECT(o1), JexValue::OBJECT(o2)) => {
-                match (&*o1, &*o2) {
-                    (RawObject::STRING(s1), RawObject::STRING(s2)) => {
-                        let mut result_str = s1.clone();
-                        result_str.push_str(&s2);
-                        let value = self.string_interner.get_string_value(result_str);
-                        self.push_into_stack(value);
-                    }
-                    _ => panic!("ADD not supported")
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::INT(a + b)),
+            (JexValue::OBJECT(o1), JexValue::OBJECT(o2)) => match (&*o1, &*o2) {
+                (RawObject::STRING(s1), RawObject::STRING(s2)) => {
+                    let mut result_str = s1.clone();
+                    result_str.push_str(&s2);
+                    let value = self.string_interner.get_string_value(result_str);
+                    self.push_into_stack(value);
                 }
-            }
-            (x, y) => panic!("ADD not supported for {:?} and {:?}", x, y)
+                _ => panic!("ADD not supported"),
+            },
+            (x, y) => panic!("ADD not supported for {:?} and {:?}", x, y),
         }
     }
 
     fn run_subtract_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::INT(a - b))
-            }
-            (x, y) => panic!("SUBTRACT not supported for {:?} and {:?}", x, y)
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::INT(a - b)),
+            (x, y) => panic!("SUBTRACT not supported for {:?} and {:?}", x, y),
         }
     }
 
     fn run_multiply_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::INT(a * b))
-            }
-            (x, y) => panic!("MULTIPLY not supported for {:?} and {:?}", x, y)
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::INT(a * b)),
+            (x, y) => panic!("MULTIPLY not supported for {:?} and {:?}", x, y),
         }
     }
 
     fn run_divide_instruction(&mut self) {
         let (left, right) = self.get_two_operands();
         match (left, right) {
-            (JexValue::INT(a), JexValue::INT(b)) => {
-                self.push_into_stack(JexValue::INT(a / b))
-            }
-            (x, y) => panic!("DIVIDE not supported for {:?} and {:?}", x, y)
+            (JexValue::INT(a), JexValue::INT(b)) => self.push_into_stack(JexValue::INT(a / b)),
+            (x, y) => panic!("DIVIDE not supported for {:?} and {:?}", x, y),
         }
     }
 

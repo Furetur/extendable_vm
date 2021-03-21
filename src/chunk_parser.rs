@@ -87,7 +87,7 @@ impl ChunkParser {
             17 => Instruction::Subtract,
             18 => Instruction::Multiply,
             19 => Instruction::Divide,
-            _ => panic!("Instruction not supported")
+            _ => panic!("Instruction not supported"),
         };
         self.instructions.push(instruction);
     }
@@ -121,10 +121,10 @@ fn integer_from_byte_constant(byte: u8) -> i8 {
 
 #[cfg(test)]
 mod tests {
-    use crate::chunk::{Chunk, ChunkConstant, ChunkConstantOrdinal};
-    use crate::chunk_parser::ChunkParser;
-    use crate::chunk_parser::integer_from_byte_constant;
     use crate::chunk::Instruction;
+    use crate::chunk::{Chunk, ChunkConstant, ChunkConstantOrdinal};
+    use crate::chunk_parser::integer_from_byte_constant;
+    use crate::chunk_parser::ChunkParser;
     use std::convert::TryFrom;
 
     fn make_bytes(n_constants: u8, constants: Vec<u8>, code: Vec<u8>) -> Vec<u8> {
@@ -138,6 +138,7 @@ mod tests {
         let mut raw_constants: Vec<u8> = vec![];
         let mut chunk_constants: Vec<ChunkConstant> = vec![];
         for i in 0..size {
+            raw_constants.push(ChunkConstantOrdinal::Int as u8);
             raw_constants.push(i);
             chunk_constants.push(ChunkConstant::INT(integer_from_byte_constant(i)));
         }
@@ -174,7 +175,7 @@ mod tests {
 
     #[test]
     fn should_parse_1_constant_and_0_code() {
-        let bytes: Vec<u8> = make_bytes(1, vec![50], vec![]);
+        let bytes: Vec<u8> = make_bytes(1, vec![ChunkConstantOrdinal::Int as u8, 50], vec![]);
         let chunk = ChunkParser::parse_bytes(bytes);
 
         let expected_chunk = Chunk {
@@ -261,7 +262,9 @@ mod tests {
 
     fn encode_chunk_constant(chunk_constant: ChunkConstant) -> Vec<u8> {
         match chunk_constant {
-            ChunkConstant::INT(i) => vec![ChunkConstantOrdinal::Int as u8, u8::try_from(i).unwrap()],
+            ChunkConstant::INT(i) => {
+                vec![ChunkConstantOrdinal::Int as u8, u8::try_from(i).unwrap()]
+            }
             ChunkConstant::STRING(str) => {
                 let raw = str.as_bytes();
                 let size = u8::try_from(raw.len()).unwrap();
@@ -279,7 +282,6 @@ mod tests {
         }
         result
     }
-
 
     #[test]
     fn should_parse_1_string_constant_and_no_instructions() {
@@ -300,12 +302,18 @@ mod tests {
     fn should_parse_2_string_constants_and_no_instructions() {
         let string = String::from("Hello world");
         let string2 = String::from("Another string");
-        let constants = vec![ChunkConstant::STRING(string.clone()), ChunkConstant::STRING(string2.clone())];
+        let constants = vec![
+            ChunkConstant::STRING(string.clone()),
+            ChunkConstant::STRING(string2.clone()),
+        ];
         let constant_bytes = encode_all_chunk_constants(constants);
         let bytes = make_bytes(2, constant_bytes, vec![]);
 
         let expected_chunk = Chunk {
-            constants: vec![ChunkConstant::STRING(string), ChunkConstant::STRING(string2)],
+            constants: vec![
+                ChunkConstant::STRING(string),
+                ChunkConstant::STRING(string2),
+            ],
             code: vec![],
         };
         let actual_chunk = ChunkParser::parse_bytes(bytes);
@@ -315,18 +323,25 @@ mod tests {
     #[test]
     fn should_parse_int_string_and_int_and_no_instructions() {
         let string = String::from("Hello world");
-        let constants = vec![ChunkConstant::INT(100), ChunkConstant::STRING(string.clone()), ChunkConstant::INT(70)];
+        let constants = vec![
+            ChunkConstant::INT(100),
+            ChunkConstant::STRING(string.clone()),
+            ChunkConstant::INT(70),
+        ];
         let constant_bytes = encode_all_chunk_constants(constants);
         let bytes = make_bytes(3, constant_bytes, vec![]);
 
         let expected_chunk = Chunk {
-            constants: vec![ChunkConstant::INT(100), ChunkConstant::STRING(string.clone()), ChunkConstant::INT(70)],
+            constants: vec![
+                ChunkConstant::INT(100),
+                ChunkConstant::STRING(string.clone()),
+                ChunkConstant::INT(70),
+            ],
             code: vec![],
         };
         let actual_chunk = ChunkParser::parse_bytes(bytes);
         assert_eq!(expected_chunk, actual_chunk);
     }
-
 
     #[test]
     fn should_parse_string_and_1_instruction() {

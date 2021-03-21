@@ -1,4 +1,4 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
@@ -34,7 +34,10 @@ fn lexically_equal_strings_should_be_equal() {
 #[test]
 fn lexically_different_strings_should_not_be_equal() {
     let chunk = Chunk {
-        constants: vec![ChunkConstant::from_str("ab"), ChunkConstant::from_str("abc")],
+        constants: vec![
+            ChunkConstant::from_str("ab"),
+            ChunkConstant::from_str("abc"),
+        ],
         code: vec![
             Instruction::Constant(0),
             Instruction::Constant(1),

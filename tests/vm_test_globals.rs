@@ -1,4 +1,4 @@
-use jex_vm::chunk::{Chunk, Instruction, ChunkConstant};
+use jex_vm::chunk::{Chunk, ChunkConstant, Instruction};
 use jex_vm::vm::VM;
 
 #[test]
@@ -74,10 +74,7 @@ fn it_declare_and_get_string_global_variable() {
 fn it_should_panic_if_global_variable_name_is_not_string() {
     let chunk = Chunk {
         constants: vec![ChunkConstant::INT(10)],
-        code: vec![
-            Instruction::True,
-            Instruction::DefineGlobal(0),
-        ],
+        code: vec![Instruction::True, Instruction::DefineGlobal(0)],
     };
     let mut vm = VM::new();
     vm.run(&chunk);
@@ -88,10 +85,7 @@ fn it_should_panic_if_global_variable_name_is_not_string() {
 fn it_should_panic_if_trying_to_get_undefined_global() {
     let chunk = Chunk {
         constants: vec![ChunkConstant::from_str("a")],
-        code: vec![
-            Instruction::True,
-            Instruction::GetGlobal(0),
-        ],
+        code: vec![Instruction::True, Instruction::GetGlobal(0)],
     };
     let mut vm = VM::new();
     vm.run(&chunk);

@@ -1,4 +1,4 @@
-use crate::jexobject::{JexObject, object_to_string, RawObject};
+use crate::jexobject::{object_to_string, JexObject, RawObject};
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]
@@ -9,14 +9,13 @@ pub enum JexValue {
     OBJECT(JexObject),
 }
 
-
 pub fn are_values_equal(x: &JexValue, y: &JexValue) -> bool {
     match (x, y) {
         (JexValue::NULL, JexValue::NULL) => true,
         (JexValue::INT(x), JexValue::INT(y)) => x == y,
         (JexValue::BOOLEAN(x), JexValue::BOOLEAN(y)) => x == y,
         (JexValue::OBJECT(o1), JexValue::OBJECT(o2)) => o1 == o2,
-        _ => false
+        _ => false,
     }
 }
 

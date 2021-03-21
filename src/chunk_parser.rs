@@ -2,7 +2,7 @@ use crate::chunk::{Chunk, ChunkConstant, Instruction};
 use std::borrow::Borrow;
 use std::fs;
 
-struct ChunkParser {
+pub struct ChunkParser {
     bytes: Vec<u8>,
     next_byte: usize,
     constants: Vec<ChunkConstant>,

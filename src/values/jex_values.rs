@@ -1,4 +1,4 @@
-use crate::jexobject::{object_to_string, JexObject, RawObject};
+use crate::values::jex_object::{object_to_string, JexObject, RawObject};
 use std::rc::Rc;
 
 #[derive(Debug, Clone)]

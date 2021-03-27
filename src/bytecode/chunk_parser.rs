@@ -1,32 +1,22 @@
-use crate::chunk::{Chunk, ChunkConstant, Instruction};
-use std::borrow::Borrow;
-use std::fs;
+use crate::bytecode::bytecode_reader::BytecodeReader;
+use crate::bytecode::chunk::{Chunk, ChunkConstant};
+use crate::bytecode::instructions::Instruction;
 
-pub struct ChunkParser {
-    bytes: Vec<u8>,
-    next_byte: usize,
+pub struct ChunkParser<'a> {
+    reader: &'a mut BytecodeReader,
     constants: Vec<ChunkConstant>,
     instructions: Vec<Instruction>,
 }
 
-impl ChunkParser {
-    pub fn parse_file(path: &String) -> Result<Chunk, std::io::Error> {
-        let bytes = fs::read(path)?;
-        Ok(ChunkParser::parse_bytes(bytes))
-    }
-    fn parse_bytes(bytes: Vec<u8>) -> Chunk {
-        let mut parser = ChunkParser::new(bytes);
-        parser.parse()
-    }
-    fn new(bytes: Vec<u8>) -> ChunkParser {
+impl<'a> ChunkParser<'a> {
+    pub fn new(reader: &'a mut BytecodeReader) -> ChunkParser<'a> {
         ChunkParser {
-            bytes,
-            next_byte: 0,
+            reader,
             constants: vec![],
             instructions: vec![],
         }
     }
-    fn parse(mut self) -> Chunk {
+    pub fn parse(mut self) -> Chunk {
         self.parse_constants();
         self.parse_instructions();
         Chunk {
@@ -35,48 +25,51 @@ impl ChunkParser {
         }
     }
     fn parse_constants(&mut self) {
-        let n_constants = self.read_byte();
+        let n_constants = self.read_byte("number of constants in constant pool");
         for _ in 0..n_constants {
             let constant = self.read_constant();
             self.constants.push(constant);
         }
     }
     fn read_constant(&mut self) -> ChunkConstant {
-        let constant_type = self.read_byte();
+        let constant_type = self.read_byte("constant type");
         match constant_type {
             0 => self.read_int_constant(),
             1 => self.read_string_constant(),
-            _ => panic!("Constant with type {} not supported", constant_type),
+            i => panic!(
+                "Unsupported constant type {} at position {}",
+                i,
+                self.reader.position()
+            ),
         }
     }
     fn read_int_constant(&mut self) -> ChunkConstant {
-        let int = integer_from_byte_constant(self.read_byte());
-        ChunkConstant::INT(int)
+        let byte = self.read_byte("int constant content");
+        ChunkConstant::INT(i8::from_le_bytes([byte]))
     }
     fn read_string_constant(&mut self) -> ChunkConstant {
-        let str_size = self.read_byte();
-        let bytes = self.read_bytes(str_size);
-        let string = String::from_utf8(bytes).unwrap();
-        ChunkConstant::STRING(string)
+        let str_size = self.read_usize("string constant size");
+        let bytes = self.read_bytes(str_size, "string constant content");
+        ChunkConstant::STRING(String::from_utf8(bytes).expect("Could not decode string from bytes"))
     }
     fn parse_instructions(&mut self) {
-        while !self.are_all_bytes_parsed() {
+        while !self.reader.is_finished() {
             self.parse_instruction();
         }
     }
     fn parse_instruction(&mut self) {
-        let op_code = self.read_byte();
+        let op_code = self.read_byte("OPCODE");
         let instruction = match op_code {
-            0 => Instruction::Constant(self.read_usize()),
+            0 => Instruction::Constant(self.read_usize("Instruction::Constant operand")),
             1 => Instruction::Null,
             2 => Instruction::True,
             3 => Instruction::False,
             4 => Instruction::Pop,
-            5 => Instruction::GetLocal(self.read_usize()),
-            6 => Instruction::SetLocal(self.read_usize()),
-            7 => Instruction::GetGlobal(self.read_usize()),
-            8 => Instruction::DefineGlobal(self.read_usize()),
-            9 => Instruction::SetGlobal(self.read_usize()),
+            5 => Instruction::GetLocal(self.read_usize("Instruction::GetLocal operand")),
+            6 => Instruction::SetLocal(self.read_usize("Instruction::SetLocal operand")),
+            7 => Instruction::GetGlobal(self.read_usize("Instruction::GetGlobal operand")),
+            8 => Instruction::DefineGlobal(self.read_usize("Instruction::DefineGlobal operand")),
+            9 => Instruction::SetGlobal(self.read_usize("Instruction::SetGlobal operand")),
             10 => Instruction::Print,
             11 => Instruction::Not,
             12 => Instruction::Equal,
@@ -91,27 +84,24 @@ impl ChunkParser {
         };
         self.instructions.push(instruction);
     }
-    fn read_bytes(&mut self, n_bytes: u8) -> Vec<u8> {
-        let mut bytes: Vec<u8> = Vec::new();
-        for i in 0..n_bytes {
-            bytes.push(self.read_byte())
-        }
-        bytes
+    fn read_usize(&mut self, for_what: &str) -> usize {
+        expect(for_what, self.reader.read_usize())
     }
-    fn read_byte(&mut self) -> u8 {
-        if self.bytes.len() <= self.next_byte {
-            panic!("Unexpected end of bytes");
-        } else {
-            let byte = self.bytes[self.next_byte];
-            self.next_byte += 1;
-            byte
-        }
+    fn read_byte(&mut self, for_what: &str) -> u8 {
+        expect(for_what, self.reader.read_byte())
     }
-    fn are_all_bytes_parsed(&self) -> bool {
-        usize::from(self.next_byte) == self.bytes.len()
+    fn read_bytes(&mut self, n_bytes: usize, for_what: &str) -> Vec<u8> {
+        expect(for_what, self.reader.read_bytes(n_bytes))
     }
-    fn read_usize(&mut self) -> usize {
-        usize::from(self.read_byte())
+}
+
+fn expect<T>(what: &str, result: Result<T, usize>) -> T {
+    match result {
+        Err(i) => panic!(
+            "Bytecode ended unexpectedly at position {} expected {}",
+            i, what
+        ),
+        Ok(t) => t,
     }
 }
 
@@ -121,10 +111,11 @@ fn integer_from_byte_constant(byte: u8) -> i8 {
 
 #[cfg(test)]
 mod tests {
-    use crate::chunk::Instruction;
-    use crate::chunk::{Chunk, ChunkConstant, ChunkConstantOrdinal};
-    use crate::chunk_parser::integer_from_byte_constant;
-    use crate::chunk_parser::ChunkParser;
+    use crate::bytecode::bytecode_reader::BytecodeReader;
+    use crate::bytecode::chunk::{Chunk, ChunkConstant, ChunkConstantOrdinal};
+    use crate::bytecode::chunk_parser::integer_from_byte_constant;
+    use crate::bytecode::chunk_parser::ChunkParser;
+    use crate::bytecode::instructions::Instruction;
     use std::convert::TryFrom;
 
     fn make_bytes(n_constants: u8, constants: Vec<u8>, code: Vec<u8>) -> Vec<u8> {
@@ -161,10 +152,15 @@ mod tests {
         (raw_instr, instr)
     }
 
+    fn parse_bytes(bytes: Vec<u8>) -> Chunk {
+        let mut reader = BytecodeReader::new(bytes);
+        ChunkParser::new(&mut reader).parse()
+    }
+
     #[test]
     fn should_parse_0_constants_and_0_code() {
         let bytes: Vec<u8> = make_bytes(0, vec![], vec![]);
-        let chunk = ChunkParser::parse_bytes(bytes);
+        let chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![],
@@ -176,7 +172,7 @@ mod tests {
     #[test]
     fn should_parse_1_constant_and_0_code() {
         let bytes: Vec<u8> = make_bytes(1, vec![ChunkConstantOrdinal::Int as u8, 50], vec![]);
-        let chunk = ChunkParser::parse_bytes(bytes);
+        let chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![ChunkConstant::INT(50)],
@@ -190,7 +186,7 @@ mod tests {
         let (raw, actual) = make_constants(50);
 
         let bytes: Vec<u8> = make_bytes(50, raw, vec![]);
-        let chunk = ChunkParser::parse_bytes(bytes);
+        let chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: actual,
@@ -205,7 +201,7 @@ mod tests {
         let raw = vec![16 as u8];
 
         let bytes: Vec<u8> = make_bytes(0, vec![], raw);
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![],
@@ -220,7 +216,7 @@ mod tests {
         let raw = vec![0 as u8, 0 as u8];
 
         let bytes: Vec<u8> = make_bytes(0, vec![], raw);
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![],
@@ -234,7 +230,7 @@ mod tests {
         let (raw_instr, actual_instr) = make_many_instructions(50);
 
         let bytes: Vec<u8> = make_bytes(0, vec![], raw_instr);
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![],
@@ -249,7 +245,7 @@ mod tests {
         let (raw_instr, actual_instr) = make_many_instructions(50);
 
         let bytes: Vec<u8> = make_bytes(40, raw_const, raw_instr);
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: actual_const,
@@ -294,7 +290,7 @@ mod tests {
             constants: vec![ChunkConstant::STRING(string)],
             code: vec![],
         };
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
         assert_eq!(expected_chunk, actual_chunk);
     }
 
@@ -316,7 +312,7 @@ mod tests {
             ],
             code: vec![],
         };
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
         assert_eq!(expected_chunk, actual_chunk);
     }
 
@@ -339,7 +335,7 @@ mod tests {
             ],
             code: vec![],
         };
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
         assert_eq!(expected_chunk, actual_chunk);
     }
 
@@ -352,7 +348,7 @@ mod tests {
         let instructions_raw = vec![0 as u8, 0 as u8];
 
         let bytes: Vec<u8> = make_bytes(1, encode_all_chunk_constants(constants), instructions_raw);
-        let actual_chunk = ChunkParser::parse_bytes(bytes);
+        let actual_chunk = parse_bytes(bytes);
 
         let expected_chunk = Chunk {
             constants: vec![ChunkConstant::STRING(string)],

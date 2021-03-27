@@ -1,7 +1,8 @@
-use crate::chunk::{Chunk, ChunkConstant, Instruction};
-use crate::jexobject::RawObject;
-use crate::jexvalues::{are_values_equal, JexValue};
+use crate::bytecode::chunk::{Chunk, ChunkConstant};
+use crate::bytecode::instructions::Instruction;
 use crate::string_interner::StringInterner;
+use crate::values::jex_object::RawObject;
+use crate::values::jex_values::{are_values_equal, JexValue};
 use std::collections::HashMap;
 
 pub struct VM {

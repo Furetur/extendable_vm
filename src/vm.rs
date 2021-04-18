@@ -22,7 +22,8 @@ impl VM {
     pub fn run(&mut self, chunk: &Chunk) -> Option<JexValue> {
         for instruction in &chunk.code {
             println!("Running {:?}", instruction);
-            self.run_instruction(chunk, instruction)
+            self.run_instruction(chunk, instruction);
+            println!("\tStack: {:?}", &self.stack);
         }
         self.stack.pop()
     }
@@ -201,7 +202,7 @@ impl VM {
 
     fn run_print_instruction(&mut self) {
         let value = self.get_operand();
-        println!("PRINTING: {}", value.to_output_string())
+        println!(">>>PRINTING: {}", value.to_output_string())
     }
 
     fn push_into_stack(&mut self, value: JexValue) {

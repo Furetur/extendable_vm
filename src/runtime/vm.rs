@@ -213,7 +213,7 @@ impl VM {
     }
 
     fn run_jump_forward_if_false(&mut self, offset: usize) {
-        let bool = self.get_operand().as_bool();
+        let bool = self.peek_operand().as_bool();
         if !bool {
             self.run_jump_forward(offset);
         }
@@ -240,5 +240,9 @@ impl VM {
     }
     fn get_operand(&mut self) -> JexValue {
         self.stack.pop().unwrap()
+    }
+
+    fn peek_operand(&self) -> &JexValue {
+        self.stack.last().unwrap()
     }
 }

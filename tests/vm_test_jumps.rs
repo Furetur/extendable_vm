@@ -64,6 +64,7 @@ fn should_skip_one_instruction_by_jumping_if_false() {
             Instruction::False,
             Instruction::JumpForwardIfFalse(1),
             Instruction::Constant(1),
+            Instruction::Pop
         ],
     };
     let mut vm = VM::new();

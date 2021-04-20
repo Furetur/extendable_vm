@@ -220,10 +220,12 @@ impl VM {
     }
 
     fn run_jump_forward(&mut self, offset: usize) {
+        println!("---> JUMPING FORWARD BY {}", offset);
         self.reader.jump_forward(offset);
     }
 
     fn run_jump_backward(&mut self, offset: usize) {
+        println!("---> JUMPING BACKWARD BY {}", offset);
         self.reader.jump_backward(offset);
     }
 

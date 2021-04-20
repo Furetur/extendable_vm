@@ -4,11 +4,13 @@ use crate::string_interner::StringInterner;
 use crate::values::jex_object::RawObject;
 use crate::values::jex_values::{are_values_equal, JexValue};
 use std::collections::HashMap;
+use crate::runtime::vm_reader::VmReader;
 
 pub struct VM {
     stack: Vec<JexValue>,
     string_interner: StringInterner,
     globals: HashMap<String, JexValue>,
+    reader: VmReader,
 }
 
 impl VM {
@@ -17,10 +19,12 @@ impl VM {
             stack: Vec::new(),
             string_interner: StringInterner::new(),
             globals: HashMap::new(),
+            reader: VmReader::new(),
         }
     }
     pub fn run(&mut self, chunk: &Chunk) -> Option<JexValue> {
-        for instruction in &chunk.code {
+        self.reader = VmReader::new();
+        while let Some(instruction) = self.reader.next(chunk) {
             println!("Running {:?}", instruction);
             self.run_instruction(chunk, instruction);
             println!("\tStack: {:?}", &self.stack);

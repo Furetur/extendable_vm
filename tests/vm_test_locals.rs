@@ -1,6 +1,6 @@
 use jex_vm::bytecode::chunk::{Chunk, ChunkConstant};
 use jex_vm::bytecode::instructions::Instruction;
-use jex_vm::vm::VM;
+use jex_vm::runtime::vm::VM;
 
 #[test]
 fn it_should_get_local_variables_from_stack() {

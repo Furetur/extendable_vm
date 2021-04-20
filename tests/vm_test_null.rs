@@ -1,6 +1,6 @@
 use jex_vm::bytecode::chunk::{Chunk, ChunkConstant};
 use jex_vm::bytecode::instructions::Instruction;
-use jex_vm::vm::VM;
+use jex_vm::runtime::vm::VM;
 
 #[test]
 fn null_should_not_be_equal_to_int() {

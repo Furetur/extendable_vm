@@ -1,12 +1,12 @@
 use crate::bytecode::bytecode_reader::BytecodeReader;
 use crate::bytecode::chunk_parser::ChunkParser;
-use crate::vm::VM;
+use crate::runtime::vm::VM;
 
 mod bytecode;
 mod operators;
 mod string_interner;
 mod values;
-mod vm;
+mod runtime;
 
 fn main() {
     let path = std::env::args().nth(1).expect("Filepath not given");

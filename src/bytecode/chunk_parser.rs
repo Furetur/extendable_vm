@@ -80,6 +80,11 @@ impl<'a> ChunkParser<'a> {
             17 => Instruction::Subtract,
             18 => Instruction::Multiply,
             19 => Instruction::Divide,
+            20 => Instruction::JumpForward(self.read_usize("Instruction::JumpForward operand")),
+            21 => Instruction::JumpForwardIfFalse(
+                self.read_usize("Instruction::JumpForwardIfFalse operand"),
+            ),
+            22 => Instruction::JumpBackward(self.read_usize("Instruction::JumpBackward operand")),
             _ => panic!("Instruction not supported"),
         };
         self.instructions.push(instruction);
@@ -354,6 +359,48 @@ mod tests {
             constants: vec![ChunkConstant::STRING(string)],
             code: actual_instructions,
         };
+        assert_eq!(expected_chunk, actual_chunk);
+    }
+
+    #[test]
+    fn should_parse_jump_forward() {
+        let actual_instructions = vec![Instruction::JumpForward(1)];
+        let instructions_raw = vec![20 as u8, 1 as u8];
+        let bytes: Vec<u8> = make_bytes(0, vec![], instructions_raw);
+
+        let expected_chunk = Chunk {
+            constants: vec![],
+            code: actual_instructions,
+        };
+        let actual_chunk = parse_bytes(bytes);
+        assert_eq!(expected_chunk, actual_chunk);
+    }
+
+    #[test]
+    fn should_parse_jump_forward_if_false() {
+        let actual_instructions = vec![Instruction::JumpForwardIfFalse(4)];
+        let instructions_raw = vec![21 as u8, 4 as u8];
+        let bytes: Vec<u8> = make_bytes(0, vec![], instructions_raw);
+
+        let expected_chunk = Chunk {
+            constants: vec![],
+            code: actual_instructions,
+        };
+        let actual_chunk = parse_bytes(bytes);
+        assert_eq!(expected_chunk, actual_chunk);
+    }
+
+    #[test]
+    fn should_parse_jump_backward() {
+        let actual_instructions = vec![Instruction::JumpBackward(10)];
+        let instructions_raw = vec![22 as u8, 10 as u8];
+        let bytes: Vec<u8> = make_bytes(0, vec![], instructions_raw);
+
+        let expected_chunk = Chunk {
+            constants: vec![],
+            code: actual_instructions,
+        };
+        let actual_chunk = parse_bytes(bytes);
         assert_eq!(expected_chunk, actual_chunk);
     }
 }

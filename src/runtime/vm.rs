@@ -209,7 +209,8 @@ impl VM {
 
     fn run_print_instruction(&mut self) {
         let value = self.get_operand();
-        println!(">>>PRINTING: {}", value.to_output_string())
+        println!(">>>PRINTING: {}", value.to_output_string());
+        self.stack.push(JexValue::NULL);
     }
 
     fn run_jump_forward_if_false(&mut self, offset: usize) {

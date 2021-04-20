@@ -4,9 +4,9 @@ use crate::runtime::vm::VM;
 
 mod bytecode;
 mod operators;
+mod runtime;
 mod string_interner;
 mod values;
-mod runtime;
 
 fn main() {
     let path = std::env::args().nth(1).expect("Filepath not given");

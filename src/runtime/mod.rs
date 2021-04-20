@@ -1,2 +1,2 @@
-mod vm_reader;
 pub mod vm;
+mod vm_reader;

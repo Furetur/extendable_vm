@@ -25,7 +25,10 @@ impl VmReader {
     }
 
     pub fn jump_backward(&mut self, offset: usize) {
-        self.ip -= offset
+        self.ip -= offset;
+        if self.ip < 0 {
+            panic!("Jumped too far backward: ip={}", self.ip);
+        }
     }
 }
 

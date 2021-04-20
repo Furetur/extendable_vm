@@ -22,9 +22,12 @@ pub enum Instruction {
     Greater, // 13
     Less,    // 14
     // arithmetic operators
-    Negate,   // 15
-    Add,      // 16
-    Subtract, // 17
-    Multiply, // 18
-    Divide,   // 19
+    Negate,                    // 15
+    Add,                       // 16
+    Subtract,                  // 17
+    Multiply,                  // 18
+    Divide,                    // 19
+    JumpForward(usize),        // 20
+    JumpForwardIfFalse(usize), // 21
+    JumpBackward(usize),       // 22
 }

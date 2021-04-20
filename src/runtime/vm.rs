@@ -1,10 +1,10 @@
 use crate::bytecode::chunk::{Chunk, ChunkConstant};
 use crate::bytecode::instructions::Instruction;
+use crate::runtime::vm_reader::VmReader;
 use crate::string_interner::StringInterner;
 use crate::values::jex_object::RawObject;
 use crate::values::jex_values::{are_values_equal, JexValue};
 use std::collections::HashMap;
-use crate::runtime::vm_reader::VmReader;
 
 pub struct VM {
     stack: Vec<JexValue>,
@@ -55,6 +55,9 @@ impl VM {
             Instruction::Multiply => self.run_multiply_instruction(),
             Instruction::Divide => self.run_divide_instruction(),
             Instruction::Print => self.run_print_instruction(),
+            Instruction::JumpForward(offset) => self.run_jump_forward(*offset),
+            Instruction::JumpForwardIfFalse(offset) => self.run_jump_forward_if_false(*offset),
+            Instruction::JumpBackward(offset) => self.run_jump_backward(*offset),
         }
     }
 
@@ -207,6 +210,21 @@ impl VM {
     fn run_print_instruction(&mut self) {
         let value = self.get_operand();
         println!(">>>PRINTING: {}", value.to_output_string())
+    }
+
+    fn run_jump_forward_if_false(&mut self, offset: usize) {
+        let bool = self.get_operand().as_bool();
+        if !bool {
+            self.run_jump_forward(offset);
+        }
+    }
+
+    fn run_jump_forward(&mut self, offset: usize) {
+        self.reader.jump_forward(offset);
+    }
+
+    fn run_jump_backward(&mut self, offset: usize) {
+        self.reader.jump_backward(offset);
     }
 
     fn push_into_stack(&mut self, value: JexValue) {

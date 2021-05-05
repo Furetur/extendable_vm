@@ -1,13 +1,11 @@
-use crate::bytecode::bytecode_reader::BytecodeReader;
-use crate::bytecode::chunk_parser::ChunkParser;
-use crate::runtime::vm::VM;
+use crate::jex::make_jex::make_jex_machine;
 
+mod jex;
 mod string_interner;
+mod machine;
 
 fn main() {
     let path = std::env::args().nth(1).expect("Filepath not given");
-    let mut reader = BytecodeReader::from_file(&path).expect("File not found");
-    let chunk = ChunkParser::new(&mut reader).parse();
-    let mut vm = VM::new();
-    vm.run(&chunk);
+    let mut machine = make_jex_machine(&path)?;
+    machine.run();
 }

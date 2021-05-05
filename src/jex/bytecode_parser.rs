@@ -4,7 +4,7 @@ use crate::jex::errors::BytecodeReadingError;
 use crate::machine::code::{Chunk, Code};
 use crate::machine::errors::CodeReadingError;
 
-struct BytecodeParser;
+pub struct BytecodeParser;
 
 struct ChunkParser {
     chunk_id: usize,
@@ -12,10 +12,10 @@ struct ChunkParser {
 }
 
 impl BytecodeParser {
-    fn new() -> BytecodeParser {
+    pub fn new() -> BytecodeParser {
         BytecodeParser
     }
-    fn parse(
+    pub fn parse(
         &mut self,
         reader: &mut BytecodeReader,
     ) -> Result<Code<JexConstant>, BytecodeReadingError> {

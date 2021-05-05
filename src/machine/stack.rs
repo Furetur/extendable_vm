@@ -24,7 +24,7 @@ impl CallFrame {
 }
 
 impl<Value: Debug> Stack<Value> {
-    pub fn new_in_initial_state() -> Stack<Value> {
+    pub fn empty() -> Stack<Value> {
         Stack {
             stack: vec![],
             frames: vec![],

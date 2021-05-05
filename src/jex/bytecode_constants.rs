@@ -1,7 +1,7 @@
 use crate::jex::bytecode_reader::BytecodeReader;
 use crate::machine::errors::TypeError;
 use crate::jex::values::JexValue;
-use crate::jex::instructions::JexMachine;
+use crate::jex::types::JexMachine;
 
 #[derive(Debug)]
 pub enum JexConstant {

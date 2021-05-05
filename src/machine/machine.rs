@@ -14,20 +14,19 @@ pub struct Machine<'a, Constant, Value: Debug> {
 }
 
 impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
-    fn new(
+    pub fn new(
         code: &'a Code<Constant>,
         instruction_table: &'a InstructionTable<Constant, Value>,
-        stack: Stack<Value>,
     ) -> Machine<Constant, Value> {
         Machine {
             code,
             instruction_table,
-            stack,
+            stack: Stack::empty(),
             globals: HashMap::new(),
         }
     }
 
-    fn run(&mut self) {
+    pub fn run(&mut self) {
         while let Some(op_code) = self.next_byte()? {
             let instruction = self.find_instruction(op_code)?;
             let arguments_ip = self.current_ip()?.clone();

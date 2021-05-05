@@ -1,5 +1,5 @@
-use jex_vm::bytecode::chunk::{Chunk, ChunkConstant};
-use jex_vm::bytecode::instructions::Instruction;
+use jex_vm::code::chunk::{Chunk, ChunkConstant};
+use jex_vm::jex::instructions::Instruction;
 use jex_vm::runtime::vm::VM;
 
 #[test]

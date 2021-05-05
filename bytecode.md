@@ -7,9 +7,16 @@ This file exists because I don't know how to structure my Rust code properly.
 ### Bytecode
 ```rust
 struct Bytecode {
+    n_chunks: u8,
+    chunks: [BytecodeChunk]
+}
+struct BytecodeChunk {
     // constant pool
     n_constants: u8,
     constants: [Constant],
+    function_name: u8, // if index is out of bounds, it is global scope
+    arity: u8, // should be 0 for global scope
+    n_instructions: u32,
     instructions: [Instruction]
 }
 ```
@@ -27,6 +34,10 @@ struct StringConstant {
     constant_type: 1,
     string_size: u8,
     utf8_raw_bytes: [u8],
+}
+struct FunctionConstant {
+    constant_type: 2,
+    chunk_id: u8, // function's chunk id in the Bytecode.chunks. Starts from 0, but the 0th chunk must be the global script.
 }
 ```
 ```

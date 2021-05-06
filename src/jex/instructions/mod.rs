@@ -1,46 +1,40 @@
 use crate::jex::bytecode_constants::JexConstant;
-use crate::jex::values::JexValue;
+use crate::jex::instructions::arithmetic::{arithmetic_instructions};
+use crate::jex::instructions::comparison::{comparison_instructions};
+use crate::jex::instructions::jumps::{jump_instructions};
+use crate::jex::instructions::literal::{literal_instructions};
+use crate::jex::instructions::logic::{logic_instructions};
+use crate::jex::instructions::side_effects::{side_effects_instructions};
 use crate::jex::instructions::types::JexInstruction;
-use crate::jex::instructions::arithmetic::ARITHMETIC_INSTRUCTIONS;
-use crate::jex::instructions::comparison::COMPARISON_INSTRUCTIONS;
-use crate::jex::instructions::literal::LITERAL_INSTRUCTIONS;
-use crate::jex::instructions::variable::VARIABLE_INSTRUCTIONS;
-use crate::jex::instructions::side_effects::SIDE_EFFECTS_INSTRUCTIONS;
-use crate::jex::instructions::jumps::JUMP_INSTRUCTIONS;
-use crate::jex::instructions::logic::LOGIC_INSTRUCTIONS;
+use crate::jex::instructions::variable::{variable_instructions};
+use crate::jex::values::JexValue;
 
-mod literal;
-mod variable;
-mod side_effects;
-mod jumps;
-mod logic;
-mod comparison;
 mod arithmetic;
+mod comparison;
+mod jumps;
+mod literal;
+mod logic;
+mod side_effects;
+mod variable;
 
-pub const JEX_INSTRUCTIONS: Vec<JexInstruction> = {
-    let mut result: Vec<JexInstruction> = vec![];
-    result.append(&mut LITERAL_INSTRUCTIONS);
-    result.append(&mut VARIABLE_INSTRUCTIONS);
-    result.append(&mut SIDE_EFFECTS_INSTRUCTIONS);
-    result.append(&mut JUMP_INSTRUCTIONS);
-    result.append(&mut LOGIC_INSTRUCTIONS);
-    result.append(&mut COMPARISON_INSTRUCTIONS);
-    result.append(&mut ARITHMETIC_INSTRUCTIONS);
-    result
-};
+pub fn jex_instructions() -> Vec<JexInstruction> {
+    let mut instructions: Vec<JexInstruction> = vec![];
+    arithmetic_instructions(&mut instructions);
+    comparison_instructions(&mut instructions);
+    jump_instructions(&mut instructions);
+    literal_instructions(&mut instructions);
+    logic_instructions(&mut instructions);
+    side_effects_instructions(&mut instructions);
+    variable_instructions(&mut instructions);
+    instructions
+}
 
 pub mod types {
-    use crate::machine::instruction_table::{Instruction, InstructionTable};
     use crate::jex::bytecode_constants::JexConstant;
     use crate::jex::values::JexValue;
+    use crate::machine::instruction_table::{Instruction, InstructionTable};
     use crate::machine::machine::Machine;
 
     pub type JexInstruction = Instruction<JexConstant, JexValue>;
     pub type JexInstructionTable = InstructionTable<JexConstant, JexValue>;
-
-    fn a() {
-
-        let a = ARITHMETIC_
-    }
 }
-

@@ -1,44 +1,48 @@
-pub trait RuntimeError {
-    fn get_type(&self) -> &str;
-    fn get_message(&self) -> &String;
+use std::error::Error;
+use std::fmt;
+use std::fmt::Formatter;
 
-    fn to_output_string(&self) -> String {
-        format!("{}: {}", self.get_type(), self.get_message())
+#[derive(Debug, Clone)]
+pub struct MachineError(pub String);
+
+impl fmt::Display for MachineError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "MachineError: {}", self.0)
     }
 }
 
-pub struct CodeReadingError(String);
+impl Error for MachineError {}
 
-impl RuntimeError for CodeReadingError {
-    fn get_type(&self) -> &str {
-        "CodeReadingError"
-    }
-    fn get_message(&self) -> &String {
-        let CodeReadingError(message) = self;
-        message
-    }
-}
-
-pub struct TypeError(String);
-
-impl RuntimeError for TypeError {
-    fn get_type(&self) -> &str {
-        "TypeError"
-    }
-    fn get_message(&self) -> &String {
-        let TypeError(message) = self;
-        message
-    }
-}
-
-pub struct StackError(String);
-
-impl RuntimeError for StackError {
-    fn get_type(&self) -> &str {
-        "StackError"
-    }
-    fn get_message(&self) -> &String {
-        let StackError(message) = self;
-        message
-    }
-}
+//
+// #[derive(Debug, Clone)]
+// pub struct CodeReadingError(pub String);
+//
+// impl fmt::Display for CodeReadingError {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+//         write!(f, "CodeReadingError: {}", self.0)
+//     }
+// }
+//
+// impl Error for CodeReadingError {}
+//
+// #[derive(Debug, Clone)]
+// pub struct TypeError(pub String);
+//
+// impl fmt::Display for TypeError {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+//         write!(f, "TypeError: {}", self.0)
+//     }
+// }
+//
+// impl Error for TypeError {}
+//
+// #[derive(Debug, Clone)]
+// pub struct StackError(pub String);
+//
+// impl fmt::Display for StackError {
+//     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+//         write!(f, "StackError: {}", self.0)
+//     }
+// }
+//
+// impl Error for StackError {}

@@ -1,5 +1,5 @@
-use crate::machine::errors::CodeReadingError;
 use crate::machine::instruction_pointer::InstructionPointer;
+use crate::machine::errors::MachineError;
 
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,
@@ -15,7 +15,7 @@ impl<Constant> Code<Constant> {
         &self,
         chunk_id: usize,
         constant_id: usize,
-    ) -> Result<&Constant, CodeReadingError> {
+    ) -> Result<&Constant, MachineError> {
         let chunk = self.get_chunk(chunk_id)?;
         if constant_id >= chunk.constants.len() {
             let message = format!(
@@ -24,7 +24,7 @@ impl<Constant> Code<Constant> {
                 chunk_id,
                 chunk.constants.len()
             );
-            Err(CodeReadingError(message))
+            Err(MachineError(message))
         } else {
             Ok(&chunk.constants[constant_id])
         }
@@ -33,7 +33,7 @@ impl<Constant> Code<Constant> {
     pub fn read(
         &self,
         instruction_pointer: &mut InstructionPointer,
-    ) -> Result<Option<u8>, CodeReadingError> {
+    ) -> Result<Option<u8>, MachineError> {
         let chunk = self.get_chunk(instruction_pointer.chunk_id)?;
         Ok(instruction_pointer.read_and_advance(chunk))
     }
@@ -42,11 +42,11 @@ impl<Constant> Code<Constant> {
         &self,
         instruction_pointer: &mut InstructionPointer,
         for_what: &str,
-    ) -> Result<u8, CodeReadingError> {
-        if let Some(byte) = self.read(instruction_pointer) {
+    ) -> Result<u8, MachineError> {
+        if let Some(byte) = self.read(instruction_pointer)? {
             Ok(byte)
         } else {
-            Err(CodeReadingError(format!(
+            Err(MachineError(format!(
                 "Unexpected end of bytes while reading {}",
                 for_what
             )))
@@ -58,7 +58,7 @@ impl<Constant> Code<Constant> {
         n: u8,
         instruction_pointer: &mut InstructionPointer,
         for_what: &str,
-    ) -> Result<Vec<u8>, CodeReadingError> {
+    ) -> Result<Vec<u8>, MachineError> {
         let mut result: Vec<u8> = Vec::new();
         for _ in 0..n {
             let byte = self.read_for(instruction_pointer, &for_what)?;
@@ -67,14 +67,14 @@ impl<Constant> Code<Constant> {
         Ok(result)
     }
 
-    fn get_chunk(&self, chunk_id: usize) -> Result<&Chunk<Constant>, CodeReadingError> {
+    pub fn get_chunk(&self, chunk_id: usize) -> Result<&Chunk<Constant>, MachineError> {
         if chunk_id >= self.chunks.len() {
             let message = format!(
                 "Cannot get chunk with id={} because there are only {} chunks",
                 chunk_id,
-                self.chunk.len()
+                self.chunks.len()
             );
-            Err(CodeReadingError(message))
+            Err(MachineError(message))
         } else {
             Ok(&self.chunks[chunk_id])
         }

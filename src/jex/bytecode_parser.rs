@@ -1,14 +1,13 @@
-use crate::jex::bytecode_constants::{JexConstant, JexConstantType};
-use crate::jex::bytecode_reader::{BytecodeReader, BytecodeReadingError};
-use crate::jex::errors::BytecodeReadingError;
+use crate::jex::bytecode_constants::JexConstant;
+use crate::jex::bytecode_reader::BytecodeReader;
 use crate::machine::code::{Chunk, Code};
-use crate::machine::errors::CodeReadingError;
+use crate::machine::errors::MachineError;
 
 pub struct BytecodeParser;
 
 struct ChunkParser {
     chunk_id: usize,
-    constants: Vec<JexContant>,
+    constants: Vec<JexConstant>,
 }
 
 impl BytecodeParser {
@@ -18,7 +17,7 @@ impl BytecodeParser {
     pub fn parse(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<Code<JexConstant>, BytecodeReadingError> {
+    ) -> Result<Code<JexConstant>, MachineError> {
         let mut chunks: Vec<Chunk<JexConstant>> = vec![];
         let mut chunk_id = 0;
         while !reader.is_finished() {
@@ -41,9 +40,9 @@ impl ChunkParser {
     pub fn parse(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<Chunk<JexConstant>, BytecodeReadingError> {
+    ) -> Result<Chunk<JexConstant>, MachineError> {
         self.parse_constants(reader);
-        let n_instruction_bytes = reader.read_u32("n_instruction_bytes in chunk")?;
+        let n_instruction_bytes = reader.read_u16("n_instruction_bytes in chunk")?;
         let code = reader.read_bytes(usize::from(n_instruction_bytes), "chunk code")?;
 
         Ok(Chunk {
@@ -51,7 +50,7 @@ impl ChunkParser {
             code,
         })
     }
-    fn parse_constants(&mut self, reader: &mut BytecodeReader) -> Result<(), BytecodeReadingError> {
+    fn parse_constants(&mut self, reader: &mut BytecodeReader) -> Result<(), MachineError> {
         let n_constants = reader.read_byte("chunk n_constants")?;
         for _ in 0..n_constants {
             let constant = self.read_constant(reader)?;
@@ -62,7 +61,7 @@ impl ChunkParser {
     fn read_constant(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<JexConstant, BytecodeReadingError> {
+    ) -> Result<JexConstant, MachineError> {
         let constant_type = reader.read_byte("constant type")?;
         match constant_type {
             0 => self.read_int_constant(reader),
@@ -74,27 +73,27 @@ impl ChunkParser {
                     i,
                     reader.position()
                 );
-                Err(BytecodeReadingError(message))
+                Err(MachineError(message))
             }
         }
     }
     fn read_int_constant(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<JexConstant, BytecodeReadingError> {
+    ) -> Result<JexConstant, MachineError> {
         let integer = reader.read_i32("int constant content")?;
         Ok(JexConstant::Int(integer))
     }
     fn read_string_constant(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<JexConstant, BytecodeReadingError> {
-        let str_size = reader.read_u32("string constant length")?;
+    ) -> Result<JexConstant, MachineError> {
+        let str_size = reader.read_u16("string constant length")?;
         let bytes = reader.read_bytes(usize::from(str_size), "string constant content")?;
         let string = String::from_utf8(bytes);
         match string {
             Ok(string) => Ok(JexConstant::String(string)),
-            Err(..) => Err(BytecodeReadingError(
+            Err(..) => Err(MachineError(
                 "Could not decode utf8 string".to_string(),
             )),
         }
@@ -102,7 +101,7 @@ impl ChunkParser {
     fn read_function_constant(
         &mut self,
         reader: &mut BytecodeReader,
-    ) -> Result<JexConstant, BytecodeReadingError> {
+    ) -> Result<JexConstant, MachineError> {
         let chunk_id = usize::from(reader.read_byte("function constant chunk_id")?);
         Ok(JexConstant::Function { chunk_id })
     }

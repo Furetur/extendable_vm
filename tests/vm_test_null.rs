@@ -27,7 +27,7 @@ fn null_should_not_be_equal_to_bool() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::Null),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Equal)
+        TestInstruction::new(JexOpCode::Equal),
     ]);
 
     assert!(!result.unwrap().as_bool().unwrap());
@@ -38,7 +38,7 @@ fn null_should_be_equal_to_null() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::Null),
         TestInstruction::new(JexOpCode::Null),
-        TestInstruction::new(JexOpCode::Equal)
+        TestInstruction::new(JexOpCode::Equal),
     ]);
 
     assert!(result.unwrap().as_bool().unwrap())

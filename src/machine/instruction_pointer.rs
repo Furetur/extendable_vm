@@ -3,12 +3,15 @@ use crate::machine::code::Chunk;
 #[derive(Clone)]
 pub struct InstructionPointer {
     pub chunk_id: usize,
-    instruction_pointer: usize
+    instruction_pointer: usize,
 }
 
 impl InstructionPointer {
     pub fn new(chunk_id: usize) -> InstructionPointer {
-        InstructionPointer { instruction_pointer: 0, chunk_id }
+        InstructionPointer {
+            instruction_pointer: 0,
+            chunk_id,
+        }
     }
 
     pub fn read_and_advance<Value>(&mut self, chunk: &Chunk<Value>) -> Option<u8> {

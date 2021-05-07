@@ -1,19 +1,17 @@
-use crate::machine::instruction_table::Instruction;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::errors::MachineError;
-use crate::jex::values::JexValue;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::types::JexMachine;
+use crate::jex::values::JexValue;
+use crate::machine::errors::MachineError;
+use crate::machine::instruction_pointer::InstructionPointer;
+use crate::machine::instruction_table::Instruction;
 
 pub fn logic_instructions(instructions: &mut Vec<JexInstruction>) {
-    let mut logic_instructions = vec![
-        Instruction {
-            op_code: 11,
-            name: "NOT".to_string(),
-            byte_arity: 0,
-            instruction_fn: not_instruction,
-        }
-    ];
+    let mut logic_instructions = vec![Instruction {
+        op_code: 11,
+        name: "NOT".to_string(),
+        byte_arity: 0,
+        instruction_fn: not_instruction,
+    }];
     instructions.append(&mut logic_instructions);
 }
 

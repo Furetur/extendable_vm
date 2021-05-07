@@ -1,8 +1,8 @@
 use jex_vm::jex::bytecode_constants::JexConstant;
 use jex_vm::jex::instructions::op_codes::JexOpCode;
+use jex_vm::jex::values::JexFunction;
 use run::code::{TestChunk, TestInstruction};
 use run::run_jex::{run_chunk, run_instructions};
-use jex_vm::jex::values::JexFunction;
 
 mod run;
 
@@ -45,7 +45,6 @@ fn should_skip_one_instruction_by_jumping() {
     });
     assert_eq!(0, result.unwrap().as_int().unwrap())
 }
-
 
 #[test]
 #[should_panic]
@@ -113,16 +112,19 @@ fn should_jump_backward() {
     let result = run_chunk(TestChunk {
         constants: vec![JexConstant::Int(0), JexConstant::Int(1)],
         instructions: vec![
-            TestInstruction { // jump over false and exit
+            TestInstruction {
+                // jump over false and exit
                 op_code: JexOpCode::JumpForward,
                 args: vec![3],
             },
             TestInstruction::new(JexOpCode::False), // false
-            TestInstruction { // exit
+            TestInstruction {
+                // exit
                 op_code: JexOpCode::JumpForward,
                 args: vec![100],
             },
-            TestInstruction { // pollutes stack. if jump backward fails then 0 will be on the top
+            TestInstruction {
+                // pollutes stack. if jump backward fails then 0 will be on the top
                 op_code: JexOpCode::Constant,
                 args: vec![0],
             },

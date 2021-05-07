@@ -21,7 +21,7 @@ fn it_should_get_local_variables_from_stack() {
             TestInstruction {
                 op_code: JexOpCode::GetLocal,
                 args: vec![1], // because 0 is <script>
-            }
+            },
         ],
     });
 
@@ -31,13 +31,18 @@ fn it_should_get_local_variables_from_stack() {
 #[test]
 fn it_should_set_local_variables_new_values_from_stack() {
     let result = run_chunk(TestChunk {
-        constants: vec![JexConstant::Int(1), JexConstant::Int(2), JexConstant::from_str("abc")],
+        constants: vec![
+            JexConstant::Int(1),
+            JexConstant::Int(2),
+            JexConstant::from_str("abc"),
+        ],
         instructions: vec![
             TestInstruction {
                 op_code: JexOpCode::Constant,
                 args: vec![0],
             },
-            TestInstruction { // bury the L1
+            TestInstruction {
+                // bury the L1
                 op_code: JexOpCode::Constant,
                 args: vec![1],
             },
@@ -45,7 +50,8 @@ fn it_should_set_local_variables_new_values_from_stack() {
                 op_code: JexOpCode::Constant,
                 args: vec![2],
             },
-            TestInstruction { // sets L1 to "abc"
+            TestInstruction {
+                // sets L1 to "abc"
                 op_code: JexOpCode::SetLocal,
                 args: vec![1], // because 0 is <script>
             },
@@ -62,7 +68,6 @@ fn it_should_set_local_variables_new_values_from_stack() {
 
     assert_eq!("abc", result.unwrap().as_string().unwrap())
 }
-
 
 // Temporary
 

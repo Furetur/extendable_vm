@@ -1,6 +1,6 @@
-use run::run_jex::run_instructions;
-use run::code::{TestInstruction, TestChunk};
 use jex_vm::jex::instructions::op_codes::JexOpCode;
+use run::code::{TestChunk, TestInstruction};
+use run::run_jex::run_instructions;
 
 mod run;
 
@@ -9,7 +9,7 @@ fn true_and_true_should_be_equal() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::True),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Equal)
+        TestInstruction::new(JexOpCode::Equal),
     ]);
 
     assert!(result.unwrap().as_bool().unwrap());
@@ -20,7 +20,7 @@ fn false_and_false_should_be_equal() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::False),
-        TestInstruction::new(JexOpCode::Equal)
+        TestInstruction::new(JexOpCode::Equal),
     ]);
 
     assert!(result.unwrap().as_bool().unwrap());
@@ -31,7 +31,7 @@ fn true_and_false_should_be_equal() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Equal)
+        TestInstruction::new(JexOpCode::Equal),
     ]);
 
     assert!(!result.unwrap().as_bool().unwrap());
@@ -41,7 +41,7 @@ fn true_and_false_should_be_equal() {
 fn not_true_should_be_false() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Not)
+        TestInstruction::new(JexOpCode::Not),
     ]);
 
     assert!(!result.unwrap().as_bool().unwrap());
@@ -51,7 +51,7 @@ fn not_true_should_be_false() {
 fn not_false_should_be_true() {
     let result = run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
-        TestInstruction::new(JexOpCode::Not)
+        TestInstruction::new(JexOpCode::Not),
     ]);
 
     assert!(result.unwrap().as_bool().unwrap());
@@ -63,7 +63,7 @@ fn it_should_panic_if_bools_are_added() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Add)
+        TestInstruction::new(JexOpCode::Add),
     ]);
 }
 
@@ -73,7 +73,7 @@ fn it_should_panic_if_bools_are_subtracted() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Subtract)
+        TestInstruction::new(JexOpCode::Subtract),
     ]);
 }
 
@@ -83,7 +83,7 @@ fn it_should_panic_if_bools_are_multiplied() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Multiply)
+        TestInstruction::new(JexOpCode::Multiply),
     ]);
 }
 
@@ -93,7 +93,7 @@ fn it_should_panic_if_bools_are_divided() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Divide)
+        TestInstruction::new(JexOpCode::Divide),
     ]);
 }
 
@@ -103,7 +103,7 @@ fn it_should_panic_if_bools_are_compared_with_greater() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Greater)
+        TestInstruction::new(JexOpCode::Greater),
     ]);
 }
 
@@ -113,7 +113,7 @@ fn it_should_panic_if_bools_are_compared_with_less() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
         TestInstruction::new(JexOpCode::True),
-        TestInstruction::new(JexOpCode::Less)
+        TestInstruction::new(JexOpCode::Less),
     ]);
 }
 
@@ -122,6 +122,6 @@ fn it_should_panic_if_bools_are_compared_with_less() {
 fn it_should_panic_if_bool_is_negated() {
     run_instructions(vec![
         TestInstruction::new(JexOpCode::False),
-        TestInstruction::new(JexOpCode::Negate)
+        TestInstruction::new(JexOpCode::Negate),
     ]);
 }

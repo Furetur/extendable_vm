@@ -1,6 +1,6 @@
+use crate::machine::errors::MachineError;
 use crate::machine::instruction_pointer::InstructionPointer;
 use std::fmt::Debug;
-use crate::machine::errors::MachineError;
 
 pub struct Stack<Value: Debug> {
     stack: Vec<Value>,
@@ -32,7 +32,9 @@ impl<Value: Debug> Stack<Value> {
     }
 
     pub fn current_ip(&mut self) -> Option<&mut InstructionPointer> {
-        self.frames.last_mut().map(|frame| &mut frame.instruction_pointer)
+        self.frames
+            .last_mut()
+            .map(|frame| &mut frame.instruction_pointer)
     }
 
     pub fn push_call_frame(&mut self, chunk_id: usize, arity: usize) -> Result<(), MachineError> {
@@ -42,7 +44,11 @@ impl<Value: Debug> Stack<Value> {
             self.frames.push(frame);
             Ok(())
         } else {
-            let message = format!("Cannot PUSH frame with arity {} when stack length is {}", arity, self.stack.len());
+            let message = format!(
+                "Cannot PUSH frame with arity {} when stack length is {}",
+                arity,
+                self.stack.len()
+            );
             Err(MachineError(message))
         }
     }
@@ -57,7 +63,9 @@ impl<Value: Debug> Stack<Value> {
             }
             Ok(())
         } else {
-            Err(MachineError("Cannot discard call frame because there are no call frames".to_string()))
+            Err(MachineError(
+                "Cannot discard call frame because there are no call frames".to_string(),
+            ))
         }
     }
 

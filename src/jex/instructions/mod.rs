@@ -1,12 +1,12 @@
 use crate::jex::bytecode_constants::JexConstant;
-use crate::jex::instructions::arithmetic::{arithmetic_instructions};
-use crate::jex::instructions::comparison::{comparison_instructions};
-use crate::jex::instructions::jumps::{jump_instructions};
-use crate::jex::instructions::literal::{literal_instructions};
-use crate::jex::instructions::logic::{logic_instructions};
-use crate::jex::instructions::side_effects::{side_effects_instructions};
+use crate::jex::instructions::arithmetic::arithmetic_instructions;
+use crate::jex::instructions::comparison::comparison_instructions;
+use crate::jex::instructions::jumps::jump_instructions;
+use crate::jex::instructions::literal::literal_instructions;
+use crate::jex::instructions::logic::logic_instructions;
+use crate::jex::instructions::side_effects::side_effects_instructions;
 use crate::jex::instructions::types::JexInstruction;
-use crate::jex::instructions::variable::{variable_instructions};
+use crate::jex::instructions::variable::variable_instructions;
 use crate::jex::values::JexValue;
 
 mod arithmetic;
@@ -14,9 +14,9 @@ mod comparison;
 mod jumps;
 mod literal;
 mod logic;
+pub mod op_codes;
 mod side_effects;
 mod variable;
-pub mod op_codes;
 
 pub fn jex_instructions() -> Vec<JexInstruction> {
     let mut instructions: Vec<JexInstruction> = vec![];

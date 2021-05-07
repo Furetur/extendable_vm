@@ -13,12 +13,12 @@ pub mod code;
 pub mod run_jex {
     use crate::run::code::{TestChunk, TestInstruction};
     use jex_vm::jex::bytecode_constants::JexConstant;
-    use jex_vm::machine::code::{Chunk, Code};
-    use jex_vm::jex::values::{JexValue, JexFunction};
-    use jex_vm::jex::instructions::types::JexInstructionTable;
     use jex_vm::jex::instructions::jex_instructions;
-    use jex_vm::machine::instruction_table::InstructionTable;
+    use jex_vm::jex::instructions::types::JexInstructionTable;
     use jex_vm::jex::types::JexMachine;
+    use jex_vm::jex::values::{JexFunction, JexValue};
+    use jex_vm::machine::code::{Chunk, Code};
+    use jex_vm::machine::instruction_table::InstructionTable;
     use jex_vm::machine::machine::Machine;
 
     pub fn run_chunks(chunks: Vec<TestChunk>) -> Option<JexValue> {
@@ -46,7 +46,7 @@ pub mod run_jex {
     pub fn run_instructions(instructions: Vec<TestInstruction>) -> Option<JexValue> {
         let chunk = TestChunk {
             constants: vec![],
-            instructions
+            instructions,
         };
         run_chunk(chunk)
     }

@@ -236,5 +236,4 @@ fn it_should_panic_if_ints_are_logically_negated() {
             TestInstruction::new(JexOpCode::Not),
         ],
     });
-
 }

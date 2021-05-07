@@ -1,10 +1,10 @@
-use jex_vm::jex::instructions::op_codes::JexOpCode;
 use jex_vm::jex::bytecode_constants::JexConstant;
+use jex_vm::jex::instructions::op_codes::JexOpCode;
 use jex_vm::machine::code::Chunk;
 
 pub struct TestChunk {
     pub constants: Vec<JexConstant>,
-    pub instructions: Vec<TestInstruction>
+    pub instructions: Vec<TestInstruction>,
 }
 
 impl TestChunk {
@@ -15,21 +15,21 @@ impl TestChunk {
         }
         Chunk {
             constants: self.constants.clone(),
-            code
+            code,
         }
     }
 }
 
 pub struct TestInstruction {
     pub op_code: JexOpCode,
-    pub args: Vec<u8>
+    pub args: Vec<u8>,
 }
 
 impl TestInstruction {
     pub fn new(op_code: JexOpCode) -> TestInstruction {
         TestInstruction {
             op_code,
-            args: vec![]
+            args: vec![],
         }
     }
     pub fn compile(&self, code: &mut Vec<u8>) {

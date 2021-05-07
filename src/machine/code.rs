@@ -1,5 +1,5 @@
-use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::errors::MachineError;
+use crate::machine::instruction_pointer::InstructionPointer;
 
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,

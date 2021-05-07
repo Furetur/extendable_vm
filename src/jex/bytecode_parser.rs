@@ -58,10 +58,7 @@ impl ChunkParser {
         }
         Ok(())
     }
-    fn read_constant(
-        &mut self,
-        reader: &mut BytecodeReader,
-    ) -> Result<JexConstant, MachineError> {
+    fn read_constant(&mut self, reader: &mut BytecodeReader) -> Result<JexConstant, MachineError> {
         let constant_type = reader.read_byte("constant type")?;
         match constant_type {
             0 => self.read_int_constant(reader),
@@ -93,9 +90,7 @@ impl ChunkParser {
         let string = String::from_utf8(bytes);
         match string {
             Ok(string) => Ok(JexConstant::String(string)),
-            Err(..) => Err(MachineError(
-                "Could not decode utf8 string".to_string(),
-            )),
+            Err(..) => Err(MachineError("Could not decode utf8 string".to_string())),
         }
     }
     fn read_function_constant(

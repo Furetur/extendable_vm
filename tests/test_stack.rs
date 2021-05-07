@@ -41,7 +41,8 @@ fn get_local_0_should_return_the_first_element_in_call_frame() {
 }
 
 #[test]
-fn get_local_0_should_return_the_first_element_in_call_frame_even_when_there_are_many_elements_before_frame() {
+fn get_local_0_should_return_the_first_element_in_call_frame_even_when_there_are_many_elements_before_frame(
+) {
     let mut stack: Stack<i32> = Stack::empty();
     for _ in 0..100 {
         stack.push(-1);

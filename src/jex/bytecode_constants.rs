@@ -24,7 +24,7 @@ impl JexConstant {
             JexConstant::Function { chunk_id } => {
                 let func = JexFunction::from_code(machine, *chunk_id)?;
                 JexValue::Function(func)
-            },
+            }
         };
         Ok(value)
     }

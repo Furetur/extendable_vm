@@ -1,8 +1,8 @@
 use crate::jex::types::JexMachine;
 use crate::machine::errors::MachineError;
-use std::rc::Rc;
-use std::convert::TryFrom;
 use crate::machine::machine::Machine;
+use std::convert::TryFrom;
+use std::rc::Rc;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexValue {
@@ -101,10 +101,7 @@ impl JexObject {
 }
 
 impl JexFunction {
-    pub fn from_code(
-        machine: &JexMachine,
-        chunk_id: usize,
-    ) -> Result<JexFunction, MachineError> {
+    pub fn from_code(machine: &JexMachine, chunk_id: usize) -> Result<JexFunction, MachineError> {
         let chunk = machine.code.get_chunk(chunk_id)?;
         let name = chunk.constants[0].as_string()?;
         let read_arity = chunk.constants[1].as_int()?;

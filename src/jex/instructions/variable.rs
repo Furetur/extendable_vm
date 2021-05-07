@@ -28,7 +28,7 @@ pub fn variable_instructions(instructions: &mut Vec<JexInstruction>) {
             op_code: 7,
             name: "GET_GLOBAL".to_string(),
             byte_arity: 1,
-            instruction_fn: pop_instruction,
+            instruction_fn: get_global_instruction,
         },
         Instruction {
             op_code: 8,
@@ -75,7 +75,7 @@ fn set_local_instruction(
         .code
         .read_for(&mut arguments_ip, "SET_LOCAL argument")?;
     let value = machine.stack.pop()?;
-    machine.stack.set_local(usize::from(relative_slot), value);
+    machine.stack.set_local(usize::from(relative_slot), value)?;
     Ok(())
 }
 

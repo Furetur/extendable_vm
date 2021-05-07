@@ -16,6 +16,7 @@ mod literal;
 mod logic;
 mod side_effects;
 mod variable;
+pub mod op_codes;
 
 pub fn jex_instructions() -> Vec<JexInstruction> {
     let mut instructions: Vec<JexInstruction> = vec![];

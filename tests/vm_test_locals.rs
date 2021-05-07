@@ -1,94 +1,107 @@
-// use jex_vm::code::chunk::{Chunk, ChunkConstant};
-// use jex_vm::jex::instructions::Instruction;
-// use jex_vm::runtime::vm::VM;
-//
-// #[test]
-// fn it_should_get_local_variables_from_stack() {
-//     let chunk = Chunk {
-//         constants: vec![ChunkConstant::INT(100), ChunkConstant::INT(-1)],
-//         code: vec![
-//             // A local variable with value 0 is at slot: 0
-//             Instruction::Constant(0),
-//             Instruction::Constant(1),
-//             Instruction::GetLocal(0),
-//         ],
-//     };
-//     let mut vm = VM::new();
-//     let result = vm.run(&chunk);
-//     assert_eq!(100, result.unwrap().as_int())
-// }
-//
-// #[test]
-// fn it_should_set_local_variables_new_values_from_stack() {
-//     let chunk = Chunk {
-//         constants: vec![
-//             ChunkConstant::INT(100),
-//             ChunkConstant::from_str("new value"),
-//         ],
-//         code: vec![
-//             // A local variable with value 0 is at slot: 0
-//             Instruction::Constant(0),
-//             Instruction::Constant(1),
-//             Instruction::SetLocal(0), // eats the previous value on stack leaving only the variable
-//         ],
-//     };
-//     let mut vm = VM::new();
-//     let result = vm.run(&chunk);
-//     assert_eq!("new value", result.unwrap().as_str())
-// }
-//
-// #[test]
-// fn it_should_set_and_get_local_variables_new_values_from_stack() {
-//     let chunk = Chunk {
-//         constants: vec![
-//             ChunkConstant::INT(100),
-//             ChunkConstant::from_str("new value"),
-//             ChunkConstant::INT(-1),
-//         ],
-//         code: vec![
-//             // A local variable with value 0 is at slot: 0
-//             Instruction::Constant(0),
-//             Instruction::Constant(2), // pollutes the stack with -1
-//             Instruction::Constant(1),
-//             Instruction::SetLocal(0), // eats the previous value on stack leaving -1 at top
-//             Instruction::GetLocal(0), // should get "new value" from the variable
-//         ],
-//     };
-//     let mut vm = VM::new();
-//     let result = vm.run(&chunk);
-//     assert_eq!("new value", result.unwrap().as_str())
-// }
-//
-// // Temporary
-//
-// #[test]
-// #[should_panic]
-// fn it_should_panic_if_trying_to_get_non_existing_local() {
-//     let chunk = Chunk {
-//         constants: vec![ChunkConstant::INT(100)],
-//         code: vec![
-//             Instruction::Constant(0),
-//             Instruction::Constant(0),
-//             Instruction::Constant(1),
-//             Instruction::GetLocal(100),
-//         ],
-//     };
-//     let mut vm = VM::new();
-//     vm.run(&chunk);
-// }
-//
-// #[test]
-// #[should_panic]
-// fn it_should_panic_if_trying_to_set_non_existing_local() {
-//     let chunk = Chunk {
-//         constants: vec![ChunkConstant::INT(100)],
-//         code: vec![
-//             Instruction::Constant(0),
-//             Instruction::Constant(0),
-//             Instruction::Constant(1),
-//             Instruction::SetLocal(100),
-//         ],
-//     };
-//     let mut vm = VM::new();
-//     vm.run(&chunk);
-// }
+use jex_vm::jex::bytecode_constants::JexConstant;
+use jex_vm::jex::instructions::op_codes::JexOpCode;
+use run::code::{TestChunk, TestInstruction};
+use run::run_jex::{run_chunk, run_instructions};
+
+mod run;
+
+#[test]
+fn it_should_get_local_variables_from_stack() {
+    let result = run_chunk(TestChunk {
+        constants: vec![JexConstant::Int(1), JexConstant::Int(2)],
+        instructions: vec![
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![0],
+            },
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![1],
+            },
+            TestInstruction {
+                op_code: JexOpCode::GetLocal,
+                args: vec![1], // because 0 is <script>
+            }
+        ],
+    });
+
+    assert_eq!(1, result.unwrap().as_int().unwrap())
+}
+
+#[test]
+fn it_should_set_local_variables_new_values_from_stack() {
+    let result = run_chunk(TestChunk {
+        constants: vec![JexConstant::Int(1), JexConstant::Int(2), JexConstant::from_str("abc")],
+        instructions: vec![
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![0],
+            },
+            TestInstruction { // bury the L1
+                op_code: JexOpCode::Constant,
+                args: vec![1],
+            },
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![2],
+            },
+            TestInstruction { // sets L1 to "abc"
+                op_code: JexOpCode::SetLocal,
+                args: vec![1], // because 0 is <script>
+            },
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![1],
+            },
+            TestInstruction {
+                op_code: JexOpCode::GetLocal,
+                args: vec![1],
+            },
+        ],
+    });
+
+    assert_eq!("abc", result.unwrap().as_string().unwrap())
+}
+
+
+// Temporary
+
+#[test]
+#[should_panic]
+fn it_should_panic_if_trying_to_get_non_existing_local() {
+    run_chunk(TestChunk {
+        constants: vec![JexConstant::Int(1)],
+        instructions: vec![
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![0],
+            },
+            TestInstruction {
+                op_code: JexOpCode::GetLocal,
+                args: vec![100],
+            },
+        ],
+    });
+}
+
+#[test]
+#[should_panic]
+fn it_should_panic_if_trying_to_set_non_existing_local() {
+    run_chunk(TestChunk {
+        constants: vec![JexConstant::Int(1)],
+        instructions: vec![
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![0],
+            },
+            TestInstruction {
+                op_code: JexOpCode::Constant,
+                args: vec![0],
+            },
+            TestInstruction {
+                op_code: JexOpCode::SetLocal,
+                args: vec![100],
+            },
+        ],
+    });
+}

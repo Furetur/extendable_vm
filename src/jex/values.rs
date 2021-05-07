@@ -2,6 +2,7 @@ use crate::jex::types::JexMachine;
 use crate::machine::errors::MachineError;
 use std::rc::Rc;
 use std::convert::TryFrom;
+use crate::machine::machine::Machine;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexValue {
@@ -66,6 +67,26 @@ impl JexValue {
         } else {
             Err(MachineError(format!(
                 "Expected {} to be a function",
+                self.to_output_string()
+            )))
+        }
+    }
+    pub fn as_object(&self) -> Result<&JexObject, MachineError> {
+        if let JexValue::Object(obj) = self {
+            Ok(&**obj)
+        } else {
+            Err(MachineError(format!(
+                "Expected {} to be an object",
+                self.to_output_string()
+            )))
+        }
+    }
+    pub fn as_string(&self) -> Result<&String, MachineError> {
+        if let JexObject::String(string) = self.as_object()? {
+            Ok(string)
+        } else {
+            Err(MachineError(format!(
+                "Expected {} to be a string",
                 self.to_output_string()
             )))
         }

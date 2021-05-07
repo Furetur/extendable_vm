@@ -1,3 +1,3 @@
 mod string_interner;
-mod machine;
-mod jex;
+pub mod machine;
+pub mod jex;

@@ -28,6 +28,9 @@ impl JexConstant {
         };
         Ok(value)
     }
+    pub fn from_str(str: &str) -> JexConstant {
+        JexConstant::String(str.to_string())
+    }
     pub fn as_string(&self) -> Result<String, MachineError> {
         if let JexConstant::String(string) = self {
             Ok(string.clone())

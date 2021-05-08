@@ -49,9 +49,7 @@ fn jump_forward_instruction(
         .code
         .read_for(&mut arguments_ip, "JUMP_FORWARD operand")?;
     machine
-        .stack
-        .current_ip()
-        .unwrap()
+        .instruction_pointer()?
         .jump_forward(usize::from(offset));
     Ok(())
 }
@@ -63,12 +61,10 @@ fn jump_forward_if_false_instruction(
     let offset = machine
         .code
         .read_for(&mut arguments_ip, "JUMP_FORWARD_IF_FALSE operand")?;
-    let value = machine.stack.peek().unwrap().as_bool()?;
+    let value = machine.peek_operand().unwrap().as_bool()?;
     if !value {
         machine
-            .stack
-            .current_ip()
-            .unwrap()
+            .instruction_pointer()?
             .jump_forward(usize::from(offset));
     }
     Ok(())
@@ -82,9 +78,7 @@ fn jump_backward_instruction(
         .code
         .read_for(&mut arguments_ip, "JUMP_FORWARD operand")?;
     machine
-        .stack
-        .current_ip()
-        .unwrap()
+        .instruction_pointer()?
         .jump_backward(usize::from(offset));
     Ok(())
 }
@@ -95,10 +89,7 @@ fn call_instruction(
 ) -> Result<(), MachineError> {
     let arity = machine.code.read_for(&mut arguments_ip, "CALL operand")?;
     let arity = usize::from(arity);
-    let function = machine
-        .stack
-        .peek_from_top(usize::from(arity))?
-        .as_function()?;
+    let function = machine.get_operand_from_top(arity)?.as_function()?;
     if let JexFunction::Function {
         chunk_id,
         arity: actual_arity,
@@ -106,7 +97,8 @@ fn call_instruction(
     } = function
     {
         if arity == *actual_arity {
-            machine.stack.push_call_frame(*chunk_id, arity);
+            let chunk_start_slot = machine.operand_stack_len() - 1 - arity;
+            machine.push_frame(*chunk_id, chunk_start_slot);
             Ok(())
         } else {
             Err(MachineError(format!(
@@ -128,8 +120,8 @@ fn return_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let return_value = machine.stack.pop()?;
-    machine.stack.discard_call_frame()?;
-    machine.stack.push(return_value);
+    let return_value = machine.pop_operand()?;
+    machine.discard_frame()?;
+    machine.push_operand(return_value);
     Ok(())
 }

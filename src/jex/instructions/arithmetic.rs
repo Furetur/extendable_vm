@@ -46,8 +46,8 @@ fn negate_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let value = machine.stack.pop()?.as_int()?;
-    machine.stack.push(JexValue::Int(-value));
+    let value = machine.pop_operand()?.as_int()?;
+    machine.push_operand(JexValue::Int(-value));
     Ok(())
 }
 
@@ -55,7 +55,7 @@ fn add_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let result = match (left, right) {
         (JexValue::Int(left), JexValue::Int(right)) => Ok(JexValue::Int(left + right)),
         (JexValue::Object(left), JexValue::Object(right)) => {
@@ -73,7 +73,7 @@ fn add_instruction(
             Err(MachineError(message))
         }
     }?;
-    machine.stack.push(result);
+    machine.push_operand(result);
     Ok(())
 }
 
@@ -81,9 +81,9 @@ fn subtract_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.stack.push(JexValue::Int(left - right));
+    machine.push_operand(JexValue::Int(left - right));
     Ok(())
 }
 
@@ -91,9 +91,9 @@ fn multiply_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.stack.push(JexValue::Int(left * right));
+    machine.push_operand(JexValue::Int(left * right));
     Ok(())
 }
 
@@ -101,8 +101,8 @@ fn divide_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.stack.push(JexValue::Int(left / right));
+    machine.push_operand(JexValue::Int(left / right));
     Ok(())
 }

@@ -46,7 +46,7 @@ fn constant_instruction(
     let constant = machine
         .code
         .get_constant(arguments_ip.chunk_id, usize::from(constant_id))?;
-    machine.stack.push(constant.to_value(machine)?);
+    machine.push_operand(constant.to_value(machine)?);
     Ok(())
 }
 
@@ -54,7 +54,7 @@ fn null_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    machine.stack.push(JexValue::Null);
+    machine.push_operand(JexValue::Null);
     Ok(())
 }
 
@@ -62,7 +62,7 @@ fn true_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    machine.stack.push(JexValue::Bool(true));
+    machine.push_operand(JexValue::Bool(true));
     Ok(())
 }
 
@@ -70,6 +70,6 @@ fn false_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    machine.stack.push(JexValue::Bool(false));
+    machine.push_operand(JexValue::Bool(false));
     Ok(())
 }

@@ -19,7 +19,7 @@ fn not_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let value = machine.stack.pop()?.as_bool()?;
-    machine.stack.push(JexValue::Bool(!value));
+    let value = machine.pop_operand()?.as_bool()?;
+    machine.push_operand(JexValue::Bool(!value));
     Ok(())
 }

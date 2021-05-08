@@ -51,7 +51,7 @@ fn pop_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    machine.stack.pop()?;
+    machine.pop_operand()?;
     Ok(())
 }
 
@@ -62,8 +62,10 @@ fn get_local_instruction(
     let relative_slot = machine
         .code
         .read_for(&mut arguments_ip, "GET_LOCAL argument")?;
-    let value = machine.stack.get_local(usize::from(relative_slot))?;
-    machine.stack.push(value.clone());
+    let last_frame_start = machine.peek_frame()?.start_slot;
+    let absolute_slot = last_frame_start + usize::from(relative_slot);
+    let value = machine.get_operand(absolute_slot)?.clone();
+    machine.push_operand(value);
     Ok(())
 }
 
@@ -74,8 +76,9 @@ fn set_local_instruction(
     let relative_slot = machine
         .code
         .read_for(&mut arguments_ip, "SET_LOCAL argument")?;
-    let value = machine.stack.pop()?;
-    machine.stack.set_local(usize::from(relative_slot), value)?;
+    let absolute_slot = machine.peek_frame()?.start_slot + usize::from(relative_slot);
+    let value = machine.pop_operand()?;
+    machine.set_operand(absolute_slot, value)?;
     Ok(())
 }
 
@@ -92,7 +95,7 @@ fn get_global_instruction(
     let identifier_string = identifier.as_string()?;
     let value = machine.globals.get(&identifier_string).cloned();
     if let Some(value) = value {
-        machine.stack.push(value);
+        machine.push_operand(value);
         Ok(())
     } else {
         Err(MachineError(format!(
@@ -113,7 +116,7 @@ fn define_global_instruction(
         .code
         .get_constant(arguments_ip.chunk_id, usize::from(identifier_const_id))?
         .as_string()?;
-    let value = machine.stack.pop()?;
+    let value = machine.pop_operand()?;
     machine.globals.insert(identifier, value);
     Ok(())
 }

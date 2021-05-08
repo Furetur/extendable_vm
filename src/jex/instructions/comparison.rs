@@ -33,9 +33,9 @@ fn equal_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let result = left == right;
-    machine.stack.push(JexValue::Bool(result));
+    machine.push_operand(JexValue::Bool(result));
     Ok(())
 }
 
@@ -43,9 +43,9 @@ fn greater_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.stack.push(JexValue::Bool(left > right));
+    machine.push_operand(JexValue::Bool(left > right));
     Ok(())
 }
 
@@ -53,8 +53,8 @@ fn less_instruction(
     machine: &mut JexMachine,
     mut arguments_ip: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let (left, right) = machine.stack.pop_two_operands()?;
+    let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.stack.push(JexValue::Bool(left < right));
+    machine.push_operand(JexValue::Bool(left < right));
     Ok(())
 }

@@ -29,9 +29,10 @@ impl InstructionPointer {
     }
 
     pub fn jump_backward(&mut self, offset: usize) {
-        self.instruction_pointer -= offset;
-        if self.instruction_pointer < 0 {
+        if self.instruction_pointer < offset {
             panic!("Jumped too far backward: ip={}", self.instruction_pointer);
+        } else {
+            self.instruction_pointer -= offset;
         }
     }
 }

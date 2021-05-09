@@ -17,10 +17,10 @@ pub fn side_effects_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn print_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let value = machine.stack.pop()?;
-    machine.stack.push(JexValue::Null);
+    let value = machine.pop_operand()?;
+    machine.push_operand(JexValue::Null);
     println!("{}", value.to_output_string());
     Ok(())
 }

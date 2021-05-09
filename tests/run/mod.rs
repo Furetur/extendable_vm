@@ -33,10 +33,10 @@ pub mod run_jex {
             InstructionTable::with_instructions(jex_instructions());
 
         let mut machine: JexMachine = Machine::new(&code, &instruction_table);
-        machine.stack.push(JexValue::Function(JexFunction::Script));
-        machine.stack.push_call_frame(0, 0);
+        machine.push_operand(JexValue::Function(JexFunction::Script));
+        machine.push_frame(0, 0);
         machine.run().unwrap();
-        machine.stack.peek().cloned()
+        machine.peek_operand().ok().cloned()
     }
 
     pub fn run_chunk(chunk: TestChunk) -> Option<JexValue> {

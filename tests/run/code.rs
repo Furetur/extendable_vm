@@ -1,6 +1,6 @@
-use jex_vm::jex::bytecode_constants::JexConstant;
-use jex_vm::jex::instructions::op_codes::JexOpCode;
-use jex_vm::machine::code::Chunk;
+use extendable_vm::jex::bytecode_constants::JexConstant;
+use extendable_vm::jex::instructions::op_codes::JexOpCode;
+use extendable_vm::machine::code::Chunk;
 
 pub struct TestChunk {
     pub constants: Vec<JexConstant>,

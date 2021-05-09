@@ -1,4 +1,4 @@
-use jex_vm::jex::instructions::op_codes::JexOpCode;
+use extendable_vm::jex::instructions::op_codes::JexOpCode;
 use run::code::{TestChunk, TestInstruction};
 use run::run_jex::run_instructions;
 

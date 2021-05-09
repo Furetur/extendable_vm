@@ -1,25 +1,25 @@
 use crate::run::code::TestChunk;
-use jex_vm::jex::bytecode_constants::JexConstant;
-use jex_vm::jex::instructions::jex_instructions;
-use jex_vm::jex::instructions::types::JexInstructionTable;
-use jex_vm::jex::types::JexMachine;
-use jex_vm::jex::values::JexValue;
-use jex_vm::machine::code::{Chunk, Code};
-use jex_vm::machine::instruction_table::InstructionTable;
-use jex_vm::machine::machine::Machine;
+use extendable_vm::jex::bytecode_constants::JexConstant;
+use extendable_vm::jex::instructions::jex_instructions;
+use extendable_vm::jex::instructions::types::JexInstructionTable;
+use extendable_vm::jex::types::JexMachine;
+use extendable_vm::jex::values::JexValue;
+use extendable_vm::machine::code::{Chunk, Code};
+use extendable_vm::machine::instruction_table::InstructionTable;
+use extendable_vm::machine::machine::Machine;
 
 pub mod code;
 
 pub mod run_jex {
     use crate::run::code::{TestChunk, TestInstruction};
-    use jex_vm::jex::bytecode_constants::JexConstant;
-    use jex_vm::jex::instructions::jex_instructions;
-    use jex_vm::jex::instructions::types::JexInstructionTable;
-    use jex_vm::jex::types::JexMachine;
-    use jex_vm::jex::values::{JexFunction, JexValue};
-    use jex_vm::machine::code::{Chunk, Code};
-    use jex_vm::machine::instruction_table::InstructionTable;
-    use jex_vm::machine::machine::Machine;
+    use extendable_vm::jex::bytecode_constants::JexConstant;
+    use extendable_vm::jex::instructions::jex_instructions;
+    use extendable_vm::jex::instructions::types::JexInstructionTable;
+    use extendable_vm::jex::types::JexMachine;
+    use extendable_vm::jex::values::{JexFunction, JexValue};
+    use extendable_vm::machine::code::{Chunk, Code};
+    use extendable_vm::machine::instruction_table::InstructionTable;
+    use extendable_vm::machine::machine::Machine;
 
     pub fn run_chunks(chunks: Vec<TestChunk>) -> Option<JexValue> {
         let mut compiled_chunks: Vec<Chunk<JexConstant>> = vec![];

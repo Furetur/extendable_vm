@@ -101,3 +101,140 @@ impl ChunkParser {
         Ok(JexConstant::Function { chunk_id })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::jex::bytecode_constants::JexConstant;
+    use crate::jex::bytecode_parser::BytecodeParser;
+    use crate::jex::bytecode_reader::BytecodeReader;
+    use crate::machine::code::{Chunk, Code};
+    use std::convert::TryFrom;
+
+    fn parse(bytes: Vec<u8>) -> Code<JexConstant> {
+        let mut reader = BytecodeReader::new(bytes);
+        BytecodeParser::new().parse(&mut reader).unwrap()
+    }
+
+    #[test]
+    fn test_should_parse_1_chunk_without_constants_and_code() {
+        let n_instruction: u16 = 0;
+        let bytes: Vec<u8> = vec![
+            0, // 0 constants
+            n_instruction.to_le_bytes()[0],
+            n_instruction.to_le_bytes()[1], // 0 instructions
+        ];
+        let code = parse(bytes);
+        assert_eq!(1, code.chunks.len());
+        let chunk = code.chunks.first().unwrap();
+        assert_eq!(0, chunk.code.len());
+        assert_eq!(0, chunk.constants.len())
+    }
+
+    #[test]
+    fn test_should_parse_2_chunks_without_constants_and_code() {
+        let n_instruction: u16 = 0;
+        let bytes: Vec<u8> = vec![
+            0, // 0 constants
+            n_instruction.to_le_bytes()[0],
+            n_instruction.to_le_bytes()[1], // 0 instructions
+            0,                              // 0 constants
+            n_instruction.to_le_bytes()[0],
+            n_instruction.to_le_bytes()[1], // 0 instructions
+        ];
+        let code = parse(bytes);
+        assert_eq!(2, code.chunks.len());
+        assert!(code.chunks.iter().all(|chunk| chunk.code.len() == 0));
+        assert!(code.chunks.iter().all(|chunk| chunk.constants.len() == 0));
+    }
+
+    #[test]
+    fn test_should_parse_1_chunk_without_constants_and_with_code() {
+        let n_instruction: u16 = 3;
+        let bytes: Vec<u8> = vec![
+            0,                              // 0 constants
+            n_instruction.to_le_bytes()[0], // 3 instructions
+            n_instruction.to_le_bytes()[1],
+            1,
+            2,
+            3, // instructions
+        ];
+        let code = parse(bytes);
+        assert_eq!(1, code.chunks.len());
+        let chunk = code.chunks.first().unwrap();
+        assert_eq!(0, chunk.constants.len());
+        assert_eq!(vec![1, 2, 3], chunk.code.clone());
+    }
+
+    #[test]
+    fn test_should_parse_1_chunk_with_1_int_constant_and_without_code() {
+        let n_instruction: u16 = 0;
+        let int: i32 = 157;
+        let int_bytes = int.to_le_bytes();
+        let bytes: Vec<u8> = vec![
+            1, // 1 constant1
+            0, // int
+            int_bytes[0],
+            int_bytes[1],
+            int_bytes[2],
+            int_bytes[3],
+            n_instruction.to_le_bytes()[0],
+            n_instruction.to_le_bytes()[1], // 0 instructions
+        ];
+        let code = parse(bytes);
+        assert_eq!(1, code.chunks.len());
+        let chunk = code.chunks.first().unwrap();
+        assert_eq!(0, chunk.code.len());
+        assert_eq!(
+            JexConstant::Int(int),
+            chunk.constants.first().unwrap().clone()
+        )
+    }
+    #[test]
+    fn test_should_parse_1_chunk_with_1_string_constant_and_without_code() {
+        let n_instruction: u16 = 0;
+        let string = "string string :)".to_string();
+        let string_bytes = string.clone().into_bytes();
+        let length = u16::try_from(string_bytes.len()).unwrap();
+        let mut bytes: Vec<u8> = vec![
+            1, // 1 constant1
+            1, // int
+            length.to_le_bytes()[0],
+            length.to_le_bytes()[1],
+        ];
+        for string_byte in string_bytes {
+            bytes.push(string_byte)
+        }
+        bytes.push(n_instruction.to_le_bytes()[0]);
+        bytes.push(n_instruction.to_le_bytes()[1]);
+
+        let code = parse(bytes);
+        assert_eq!(1, code.chunks.len());
+        let chunk = code.chunks.first().unwrap();
+        assert_eq!(0, chunk.code.len());
+        assert_eq!(
+            JexConstant::String(string.clone()),
+            chunk.constants.first().unwrap().clone()
+        )
+    }
+    #[test]
+    fn test_should_parse_1_chunk_with_1_fn_constant_and_without_code() {
+        let n_instruction: u16 = 0;
+        let int: i32 = 157;
+        let int_bytes = int.to_le_bytes();
+        let bytes: Vec<u8> = vec![
+            1, // 1 constant1
+            2, // fn
+            0,
+            n_instruction.to_le_bytes()[0],
+            n_instruction.to_le_bytes()[1], // 0 instructions
+        ];
+        let code = parse(bytes);
+        assert_eq!(1, code.chunks.len());
+        let chunk = code.chunks.first().unwrap();
+        assert_eq!(0, chunk.code.len());
+        assert_eq!(
+            JexConstant::Function { chunk_id: 0 },
+            chunk.constants.first().unwrap().clone()
+        )
+    }
+}

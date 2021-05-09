@@ -1,6 +1,7 @@
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::types::JexMachine;
 use crate::jex::values::JexFunction;
+use crate::machine::byte_readable::ByteReadable;
 use crate::machine::errors::MachineError;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
@@ -43,11 +44,11 @@ pub fn jump_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn jump_forward_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let offset = machine
-        .code
-        .read_for(&mut arguments_ip, "JUMP_FORWARD operand")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     machine
         .instruction_pointer()?
         .jump_forward(usize::from(offset));
@@ -56,11 +57,11 @@ fn jump_forward_instruction(
 
 fn jump_forward_if_false_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let offset = machine
-        .code
-        .read_for(&mut arguments_ip, "JUMP_FORWARD_IF_FALSE operand")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let value = machine.peek_operand().unwrap().as_bool()?;
     if !value {
         machine
@@ -72,11 +73,11 @@ fn jump_forward_if_false_instruction(
 
 fn jump_backward_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let offset = machine
-        .code
-        .read_for(&mut arguments_ip, "JUMP_FORWARD operand")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     machine
         .instruction_pointer()?
         .jump_backward(usize::from(offset));
@@ -85,9 +86,11 @@ fn jump_backward_instruction(
 
 fn call_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
-    let arity = machine.code.read_for(&mut arguments_ip, "CALL operand")?;
+    let arity = machine
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let arity = usize::from(arity);
     let function = machine.get_operand_from_top(arity)?.as_function()?;
     if let JexFunction::Function {
@@ -118,7 +121,7 @@ fn call_instruction(
 
 fn return_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let return_value = machine.pop_operand()?;
     machine.discard_frame()?;

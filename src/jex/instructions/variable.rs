@@ -1,5 +1,6 @@
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::types::JexMachine;
+use crate::machine::byte_readable::ByteReadable;
 use crate::machine::errors::MachineError;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
@@ -49,7 +50,7 @@ pub fn variable_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn pop_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     machine.pop_operand()?;
     Ok(())
@@ -57,11 +58,11 @@ fn pop_instruction(
 
 fn get_local_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let relative_slot = machine
-        .code
-        .read_for(&mut arguments_ip, "GET_LOCAL argument")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let last_frame_start = machine.peek_frame()?.start_slot;
     let absolute_slot = last_frame_start + usize::from(relative_slot);
     let value = machine.get_operand(absolute_slot)?.clone();
@@ -71,11 +72,11 @@ fn get_local_instruction(
 
 fn set_local_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let relative_slot = machine
-        .code
-        .read_for(&mut arguments_ip, "SET_LOCAL argument")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let absolute_slot = machine.peek_frame()?.start_slot + usize::from(relative_slot);
     let value = machine.pop_operand()?;
     machine.set_operand(absolute_slot, value)?;
@@ -84,14 +85,14 @@ fn set_local_instruction(
 
 fn get_global_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let identifier_const_id = machine
-        .code
-        .read_for(&mut arguments_ip, "GET_GLOBAL byte operand")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let identifier = machine
         .code
-        .get_constant(arguments_ip.chunk_id, usize::from(identifier_const_id))?;
+        .get_constant(args.chunk_id, usize::from(identifier_const_id))?;
     let identifier_string = identifier.as_string()?;
     let value = machine.globals.get(&identifier_string).cloned();
     if let Some(value) = value {
@@ -107,14 +108,14 @@ fn get_global_instruction(
 
 fn define_global_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let identifier_const_id = machine
-        .code
-        .read_for(&mut arguments_ip, "GET_GLOBAL byte operand")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let identifier = machine
         .code
-        .get_constant(arguments_ip.chunk_id, usize::from(identifier_const_id))?
+        .get_constant(args.chunk_id, usize::from(identifier_const_id))?
         .as_string()?;
     let value = machine.pop_operand()?;
     machine.globals.insert(identifier, value);
@@ -123,7 +124,7 @@ fn define_global_instruction(
 
 fn set_global_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
-    define_global_instruction(machine, arguments_ip)
+    define_global_instruction(machine, args)
 }

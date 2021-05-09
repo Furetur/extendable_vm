@@ -31,7 +31,7 @@ pub fn comparison_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn equal_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let result = left == right;
@@ -41,7 +41,7 @@ fn equal_instruction(
 
 fn greater_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
@@ -51,7 +51,7 @@ fn greater_instruction(
 
 fn less_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);

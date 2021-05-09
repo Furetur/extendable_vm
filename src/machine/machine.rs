@@ -1,3 +1,4 @@
+use crate::machine::byte_readable::ByteReadable;
 use crate::machine::call_frame::CallFrame;
 use crate::machine::code::Code;
 use crate::machine::errors::MachineError;
@@ -30,7 +31,7 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
     }
 
     pub fn run(&mut self) -> Result<(), MachineError> {
-        while let Some(op_code) = self.next_byte()? {
+        while let Some(op_code) = self.next_byte() {
             let instruction = self.find_instruction(op_code)?;
             let arguments_ip = self.instruction_pointer()?.clone();
             self.instruction_pointer()?
@@ -107,9 +108,9 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
         Ok(last_frame)
     }
 
-    fn next_byte(&mut self) -> Result<Option<u8>, MachineError> {
+    fn next_byte(&mut self) -> Option<u8> {
         let code = self.code;
-        let ip = self.instruction_pointer()?;
+        let ip = self.instruction_pointer().ok()?;
         code.read(ip)
     }
 
@@ -130,5 +131,11 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
             let message = format!("Unknown instruction with op_code={}", op_code);
             Err(MachineError(message))
         }
+    }
+}
+
+impl<'a, Constant, Value: Debug> ByteReadable<InstructionPointer> for Machine<'a, Constant, Value> {
+    fn read(&self, ptr: &mut InstructionPointer) -> Option<u8> {
+        self.code.read(ptr)
     }
 }

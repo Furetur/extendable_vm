@@ -1,6 +1,7 @@
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::types::JexMachine;
 use crate::jex::values::JexValue;
+use crate::machine::byte_readable::ByteReadable;
 use crate::machine::errors::MachineError;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
@@ -38,21 +39,21 @@ pub fn literal_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn constant_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let constant_id = machine
-        .code
-        .read_for(&mut arguments_ip, "CONSTANT argument")?;
+        .read(&mut args)
+        .ok_or(MachineError("read failed".to_string()))?;
     let constant = machine
         .code
-        .get_constant(arguments_ip.chunk_id, usize::from(constant_id))?;
+        .get_constant(args.chunk_id, usize::from(constant_id))?;
     machine.push_operand(constant.to_value(machine)?);
     Ok(())
 }
 
 fn null_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     machine.push_operand(JexValue::Null);
     Ok(())
@@ -60,7 +61,7 @@ fn null_instruction(
 
 fn true_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     machine.push_operand(JexValue::Bool(true));
     Ok(())
@@ -68,7 +69,7 @@ fn true_instruction(
 
 fn false_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     machine.push_operand(JexValue::Bool(false));
     Ok(())

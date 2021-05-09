@@ -44,7 +44,7 @@ pub fn arithmetic_instructions(instructions: &mut Vec<JexInstruction>) {
 
 fn negate_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let value = machine.pop_operand()?.as_int()?;
     machine.push_operand(JexValue::Int(-value));
@@ -53,7 +53,7 @@ fn negate_instruction(
 
 fn add_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let result = match (left, right) {
@@ -79,7 +79,7 @@ fn add_instruction(
 
 fn subtract_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
@@ -89,7 +89,7 @@ fn subtract_instruction(
 
 fn multiply_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
@@ -99,7 +99,7 @@ fn multiply_instruction(
 
 fn divide_instruction(
     machine: &mut JexMachine,
-    mut arguments_ip: InstructionPointer,
+    mut _args: InstructionPointer,
 ) -> Result<(), MachineError> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);

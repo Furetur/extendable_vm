@@ -102,7 +102,10 @@ impl JexObject {
 
 impl JexFunction {
     pub fn from_code(machine: &JexMachine, chunk_id: usize) -> Result<JexFunction, MachineError> {
-        let chunk = machine.code.get_chunk(chunk_id)?;
+        let chunk = machine
+            .code
+            .get_chunk(chunk_id)
+            .ok_or(MachineError("chunk not found".to_string()))?;
         let name = chunk.constants[0].as_string()?;
         let read_arity = chunk.constants[1].as_int()?;
         let arity = usize::try_from(read_arity);

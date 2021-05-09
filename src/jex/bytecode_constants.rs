@@ -3,7 +3,7 @@ use crate::jex::types::JexMachine;
 use crate::jex::values::{JexFunction, JexValue};
 use crate::machine::errors::MachineError;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum JexConstant {
     Int(i32),
     String(String),

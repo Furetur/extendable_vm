@@ -8,7 +8,10 @@ pub struct CodeParser<'a, Constant> {
 }
 
 impl<'a, Constant> CodeParser<'a, Constant> {
-    fn parse(&self, bytes: &RawBytes) -> Code<Constant> {
+    pub fn new(parsers: &'a ConstantParserTable<'a, Constant>) -> CodeParser<'a, Constant> {
+        CodeParser { parsers }
+    }
+    pub fn parse(&self, bytes: &RawBytes) -> Code<Constant> {
         let mut chunks: Vec<Chunk<Constant>> = vec![];
         let mut ptr = RawBytesPointer::new();
         while bytes.has_next(&mut ptr) {

@@ -13,8 +13,16 @@ pub struct ConstantParserTable<'a, Constant> {
 }
 
 impl<'a, Constant> ConstantParserTable<'a, Constant> {
-    pub fn register_parser(&mut self, parser: &'static ConstantParser<Constant>) {
-        self.parsers.insert(parser.constant_type, parser);
+    pub fn with_parsers(
+        parsers: &'a [ConstantParser<Constant>],
+    ) -> ConstantParserTable<'a, Constant> {
+        let mut parsers_result: HashMap<u8, &'a ConstantParser<Constant>> = HashMap::new();
+        for parser in parsers {
+            parsers_result.insert(parser.constant_type, parser);
+        }
+        ConstantParserTable {
+            parsers: parsers_result,
+        }
     }
     pub fn get_parser(&self, constant_type: u8) -> &ConstantParser<Constant> {
         self.parsers.get(&constant_type).unwrap()

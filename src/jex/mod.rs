@@ -8,6 +8,7 @@ use crate::machine::machine::Machine;
 pub mod bytecode_constants;
 pub mod bytecode_parser;
 pub mod bytecode_reader;
+pub mod constant_parsers;
 pub mod instructions;
 pub mod values;
 

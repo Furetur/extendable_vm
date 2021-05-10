@@ -5,5 +5,5 @@ pub mod errors;
 pub mod instruction_pointer;
 pub mod instruction_table;
 pub mod machine;
-mod parsing;
+pub mod parsing;
 mod stack;

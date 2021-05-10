@@ -3,7 +3,7 @@ use crate::machine::code::Chunk;
 #[derive(Clone)]
 pub struct InstructionPointer {
     pub chunk_id: usize,
-    instruction_pointer: usize,
+    pub instruction_pointer: usize,
 }
 
 impl InstructionPointer {

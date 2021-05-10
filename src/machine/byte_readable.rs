@@ -1,7 +1,8 @@
 pub trait ByteReadable<Ptr> {
     fn read(&self, ptr: &mut Ptr) -> Option<u8>;
+    fn has_next(&self, ptr: &Ptr) -> bool;
 
-    fn read_n(&self, ptr: &mut Ptr, n: u8) -> Option<Vec<u8>> {
+    fn read_n(&self, ptr: &mut Ptr, n: usize) -> Option<Vec<u8>> {
         let mut result: Vec<u8> = Vec::new();
         for _ in 0..n {
             let byte = self.read(ptr)?;

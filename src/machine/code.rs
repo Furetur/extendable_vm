@@ -43,4 +43,9 @@ impl<Constant> ByteReadable<InstructionPointer> for Code<Constant> {
         let chunk = self.get_chunk(ptr.chunk_id)?;
         ptr.read_and_advance(chunk)
     }
+
+    fn has_next(&self, ptr: &InstructionPointer) -> bool {
+        let chunk = self.get_chunk(ptr.chunk_id).unwrap();
+        ptr.instruction_pointer < chunk.code.len()
+    }
 }

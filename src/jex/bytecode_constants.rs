@@ -1,4 +1,3 @@
-use crate::jex::bytecode_reader::BytecodeReader;
 use crate::jex::types::JexMachine;
 use crate::jex::values::{JexFunction, JexValue};
 use crate::machine::errors::MachineError;

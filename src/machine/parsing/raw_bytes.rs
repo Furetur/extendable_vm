@@ -21,6 +21,9 @@ impl RawBytes {
         let data = fs::read(path)?;
         Ok(RawBytes { data })
     }
+    pub fn from_bytes(bytes: Vec<u8>) -> RawBytes {
+        RawBytes { data: bytes }
+    }
 }
 
 impl ByteReadable<RawBytesPointer> for RawBytes {

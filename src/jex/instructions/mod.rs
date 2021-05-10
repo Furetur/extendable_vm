@@ -1,4 +1,3 @@
-use crate::jex::bytecode_constants::JexConstant;
 use crate::jex::instructions::arithmetic::arithmetic_instructions;
 use crate::jex::instructions::comparison::comparison_instructions;
 use crate::jex::instructions::jumps::jump_instructions;
@@ -7,7 +6,6 @@ use crate::jex::instructions::logic::logic_instructions;
 use crate::jex::instructions::side_effects::side_effects_instructions;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::instructions::variable::variable_instructions;
-use crate::jex::values::JexValue;
 
 mod arithmetic;
 mod comparison;

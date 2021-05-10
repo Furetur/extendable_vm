@@ -138,4 +138,8 @@ impl<'a, Constant, Value: Debug> ByteReadable<InstructionPointer> for Machine<'a
     fn read(&self, ptr: &mut InstructionPointer) -> Option<u8> {
         self.code.read(ptr)
     }
+
+    fn has_next(&self, ptr: &InstructionPointer) -> bool {
+        self.code.has_next(ptr)
+    }
 }

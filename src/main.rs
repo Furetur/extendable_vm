@@ -24,5 +24,9 @@ fn main() {
         InstructionTable::with_instructions(jex_instructions());
     // run machine
     let mut machine: JexMachine = Machine::new(&code, &instruction_table);
-    machine.run();
+    machine.push_frame(0, "<script>".to_string(), 0);
+    let finished_gracefully = machine.start();
+    if !finished_gracefully {
+        println!("There was an exception!");
+    }
 }

@@ -89,12 +89,12 @@ fn call_instruction(
     if let JexFunction::Function {
         chunk_id,
         arity: actual_arity,
-        ..
+        name,
     } = function
     {
         if arity == *actual_arity {
             let chunk_start_slot = machine.operand_stack_len() - 1 - arity;
-            machine.push_frame(*chunk_id, chunk_start_slot);
+            machine.push_frame(*chunk_id, name.clone(), chunk_start_slot);
             Ok(())
         } else {
             Err(Exception::from(TypeException(format!(

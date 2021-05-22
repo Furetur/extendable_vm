@@ -1,3 +1,6 @@
+use std::iter::Rev;
+use std::slice::Iter;
+
 pub struct Stack<T> {
     data: Vec<T>,
 }
@@ -46,5 +49,9 @@ impl<T> Stack<T> {
 
     pub fn get(&self, index: usize) -> Option<&T> {
         self.data.get(index)
+    }
+
+    pub fn rev(&self) -> Rev<Iter<T>> {
+        self.data.iter().rev()
     }
 }

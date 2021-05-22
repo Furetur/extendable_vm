@@ -24,15 +24,23 @@ impl<'a, Constant> CodeParser<'a, Constant> {
     }
     fn parse_chunk(&self, bytes: &RawBytes, ptr: &mut RawBytesPointer) -> Chunk<Constant> {
         let mut result_constants: Vec<Constant> = vec![];
-        let n_constants = bytes.read(ptr).unwrap();
+        let n_constants = bytes
+            .read(ptr)
+            .unwrap_or_else(|| panic!("Unexpected n_constants"));
         for _ in 0..n_constants {
-            let constant_type = bytes.read(ptr).unwrap();
+            let constant_type = bytes
+                .read(ptr)
+                .unwrap_or_else(|| panic!("Expected constant_type"));
             let constant_parser = self.parsers.get_parser(constant_type);
             let constant = (constant_parser.parser_fn)(bytes, ptr);
             result_constants.push(constant);
         }
-        let n_code_bytes = bytes.read_u16(ptr).unwrap();
-        let code = bytes.read_n(ptr, usize::from(n_code_bytes)).unwrap();
+        let n_code_bytes = bytes
+            .read_u16(ptr)
+            .unwrap_or_else(|| panic!("Expected n_code_bytes"));
+        let code = bytes
+            .read_n(ptr, usize::from(n_code_bytes))
+            .unwrap_or_else(|| panic!("Expected code"));
         Chunk {
             constants: result_constants,
             code,

@@ -33,7 +33,17 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
         }
     }
 
-    pub fn run(&mut self) -> Result<(), Exception> {
+    pub fn start(&mut self) -> bool {
+        let result = self.run();
+        if let Err(exception) = result {
+            self.raise_exception(exception);
+            false
+        } else {
+            true
+        }
+    }
+
+    fn run(&mut self) -> Result<(), Exception> {
         while let Some(op_code) = self.next_byte() {
             let instruction = self.find_instruction(op_code)?;
             let arguments_ip = self.instruction_pointer()?.clone();
@@ -84,8 +94,8 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
         self.frames.peek().ok_or(EmptyCallStack)
     }
 
-    pub fn push_frame(&mut self, chunk_id: usize, start_slot: usize) {
-        let frame = CallFrame::new(chunk_id, start_slot);
+    pub fn push_frame(&mut self, chunk_id: usize, name: String, start_slot: usize) {
+        let frame = CallFrame::new(chunk_id, name, start_slot);
         self.frames.push(frame);
     }
 
@@ -120,6 +130,13 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
             Ok(instruction)
         } else {
             Err(UnknownOpCode(op_code))
+        }
+    }
+
+    fn raise_exception(&self, exception: Exception) {
+        println!("{}", exception);
+        for frame in self.frames.rev() {
+            println!("\tat {}", frame);
         }
     }
 }

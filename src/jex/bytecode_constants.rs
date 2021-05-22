@@ -1,7 +1,10 @@
 use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::types::JexMachine;
 use crate::jex::values::{JexFunction, JexValue};
+use crate::machine::code::{Chunk, Code};
 use crate::machine::exceptions::types::Exception;
+use std::fmt;
+use std::fmt::{Debug, Formatter};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum JexConstant {
@@ -50,5 +53,20 @@ impl JexConstant {
                 self
             )))
         }
+    }
+}
+
+impl Debug for Chunk<JexConstant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Chunk")
+            .field("constants", &self.constants)
+            .field("code", &self.code)
+            .finish()
+    }
+}
+
+impl Debug for Code<JexConstant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_list().entries(&self.chunks).finish()
     }
 }

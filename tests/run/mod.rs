@@ -35,7 +35,10 @@ pub mod run_jex {
         let mut machine: JexMachine = Machine::new(&code, &instruction_table);
         machine.push_operand(JexValue::Function(JexFunction::Script));
         machine.push_frame(0, "script".to_string(), 0);
-        machine.start();
+        let finished_gracefully = machine.start();
+        if !finished_gracefully {
+            panic!();
+        }
         machine.peek_operand().ok().cloned()
     }
 

@@ -1,7 +1,7 @@
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::types::JexMachine;
 use crate::jex::values::JexValue;
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
 
@@ -32,7 +32,7 @@ pub fn comparison_instructions(instructions: &mut Vec<JexInstruction>) {
 fn equal_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let result = left == right;
     machine.push_operand(JexValue::Bool(result));
@@ -42,7 +42,7 @@ fn equal_instruction(
 fn greater_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
     machine.push_operand(JexValue::Bool(left > right));
@@ -52,7 +52,7 @@ fn greater_instruction(
 fn less_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
     machine.push_operand(JexValue::Bool(left < right));

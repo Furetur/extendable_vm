@@ -1,7 +1,8 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::types::JexMachine;
 use crate::jex::values::{JexObject, JexValue};
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
 use std::rc::Rc;
@@ -45,7 +46,7 @@ pub fn arithmetic_instructions(instructions: &mut Vec<JexInstruction>) {
 fn negate_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let value = machine.pop_operand()?.as_int()?;
     machine.push_operand(JexValue::Int(-value));
     Ok(())
@@ -54,7 +55,7 @@ fn negate_instruction(
 fn add_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let result = match (left, right) {
         (JexValue::Int(left), JexValue::Int(right)) => Ok(JexValue::Int(left + right)),
@@ -70,7 +71,7 @@ fn add_instruction(
                 left.to_output_string(),
                 right.to_output_string()
             );
-            Err(MachineError(message))
+            Err(TypeException(message))
         }
     }?;
     machine.push_operand(result);
@@ -80,17 +81,16 @@ fn add_instruction(
 fn subtract_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
-    let (left, right) = (left.as_int()?, right.as_int()?);
-    machine.push_operand(JexValue::Int(left - right));
+    machine.push_operand(JexValue::Int(left.as_int()? - right.as_int()?));
     Ok(())
 }
 
 fn multiply_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
     machine.push_operand(JexValue::Int(left * right));
@@ -100,7 +100,7 @@ fn multiply_instruction(
 fn divide_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let (left, right) = machine.pop_two_operands()?;
     let (left, right) = (left.as_int()?, right.as_int()?);
     machine.push_operand(JexValue::Int(left / right));

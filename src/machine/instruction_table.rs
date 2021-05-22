@@ -1,5 +1,5 @@
 use crate::jex::values::JexFunction;
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::machine::Machine;
 use std::collections::HashMap;
@@ -19,7 +19,7 @@ pub struct Instruction<Constant, Value: Debug> {
 pub type InstructionFn<Constant, Value: Debug> = fn(
     machine: &mut Machine<Constant, Value>,
     args_ip: InstructionPointer,
-) -> Result<(), MachineError>;
+) -> Result<(), Exception>;
 
 impl<Constant, Value: Debug> InstructionTable<Constant, Value> {
     pub(crate) fn new() -> InstructionTable<Constant, Value> {

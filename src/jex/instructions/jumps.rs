@@ -1,8 +1,9 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::runtime_exceptions::{ExpectedInstructionArgument, TypeException};
 use crate::jex::types::JexMachine;
 use crate::jex::values::JexFunction;
 use crate::machine::byte_readable::ByteReadable;
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
 
@@ -45,10 +46,8 @@ pub fn jump_instructions(instructions: &mut Vec<JexInstruction>) {
 fn jump_forward_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let offset = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let offset = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     machine
         .instruction_pointer()?
         .jump_forward(usize::from(offset));
@@ -58,11 +57,9 @@ fn jump_forward_instruction(
 fn jump_forward_if_false_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let offset = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
-    let value = machine.peek_operand().unwrap().as_bool()?;
+) -> Result<(), Exception> {
+    let offset = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
+    let value = machine.peek_operand()?.as_bool()?;
     if !value {
         machine
             .instruction_pointer()?
@@ -74,10 +71,8 @@ fn jump_forward_if_false_instruction(
 fn jump_backward_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let offset = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let offset = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     machine
         .instruction_pointer()?
         .jump_backward(usize::from(offset));
@@ -87,10 +82,8 @@ fn jump_backward_instruction(
 fn call_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let arity = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let arity = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let arity = usize::from(arity);
     let function = machine.get_operand_from_top(arity)?.as_function()?;
     if let JexFunction::Function {
@@ -104,25 +97,25 @@ fn call_instruction(
             machine.push_frame(*chunk_id, chunk_start_slot);
             Ok(())
         } else {
-            Err(MachineError(format!(
+            Err(Exception::from(TypeException(format!(
                 "Function {} has {} parameters but received {}",
                 function.to_output_string(),
                 actual_arity,
                 arity
-            )))
+            ))))
         }
     } else {
-        Err(MachineError(format!(
+        Err(Exception::from(TypeException(format!(
             "Cannot call {}",
             function.to_output_string()
-        )))
+        ))))
     }
 }
 
 fn return_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     let return_value = machine.pop_operand()?;
     machine.discard_frame()?;
     machine.push_operand(return_value);

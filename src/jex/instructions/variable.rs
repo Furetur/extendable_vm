@@ -1,7 +1,8 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::runtime_exceptions::{ExpectedInstructionArgument, TypeException};
 use crate::jex::types::JexMachine;
 use crate::machine::byte_readable::ByteReadable;
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;
 
@@ -51,7 +52,7 @@ pub fn variable_instructions(instructions: &mut Vec<JexInstruction>) {
 fn pop_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     machine.pop_operand()?;
     Ok(())
 }
@@ -59,10 +60,8 @@ fn pop_instruction(
 fn get_local_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let relative_slot = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let relative_slot = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let last_frame_start = machine.peek_frame()?.start_slot;
     let absolute_slot = last_frame_start + usize::from(relative_slot);
     let value = machine.get_operand(absolute_slot)?.clone();
@@ -73,10 +72,8 @@ fn get_local_instruction(
 fn set_local_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let relative_slot = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let relative_slot = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let absolute_slot = machine.peek_frame()?.start_slot + usize::from(relative_slot);
     let value = machine.pop_operand()?;
     machine.set_operand(absolute_slot, value)?;
@@ -86,10 +83,8 @@ fn set_local_instruction(
 fn get_global_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let identifier_const_id = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let identifier_const_id = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let identifier = machine
         .code
         .get_constant(args.chunk_id, usize::from(identifier_const_id))?;
@@ -99,20 +94,18 @@ fn get_global_instruction(
         machine.push_operand(value);
         Ok(())
     } else {
-        Err(MachineError(format!(
+        Err(Exception::from(TypeException(format!(
             "Global with identifier {} not found",
             identifier_string
-        )))
+        ))))
     }
 }
 
 fn define_global_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
-    let identifier_const_id = machine
-        .read(&mut args)
-        .ok_or(MachineError("read failed".to_string()))?;
+) -> Result<(), Exception> {
+    let identifier_const_id = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let identifier = machine
         .code
         .get_constant(args.chunk_id, usize::from(identifier_const_id))?
@@ -125,6 +118,6 @@ fn define_global_instruction(
 fn set_global_instruction(
     machine: &mut JexMachine,
     mut args: InstructionPointer,
-) -> Result<(), MachineError> {
+) -> Result<(), Exception> {
     define_global_instruction(machine, args)
 }

@@ -1,6 +1,8 @@
 pub mod bytecode_constants;
 pub mod constant_parsers;
 pub mod instructions;
+mod runtime_exceptions;
+mod syntax_exceptions;
 pub mod values;
 
 pub mod types {

@@ -83,7 +83,7 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
     }
 
     pub fn set_operand(&mut self, slot: usize, value: Value) -> Result<(), SlotOutOfBounds> {
-        self.operands.set(slot, value).map_err(|e| SlotOutOfBounds)
+        self.operands.set(slot, value).map_err(|_e| SlotOutOfBounds)
     }
 
     pub fn operand_stack_len(&self) -> usize {

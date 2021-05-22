@@ -2,7 +2,7 @@ use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::syntax_exceptions::{InvalidFunctionChunk, NotFoundChunkForFunction};
 use crate::jex::types::JexMachine;
 use crate::machine::exceptions::types::Exception;
-use crate::machine::machine::Machine;
+
 use std::convert::TryFrom;
 use std::rc::Rc;
 

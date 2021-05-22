@@ -117,7 +117,7 @@ fn define_global_instruction(
 
 fn set_global_instruction(
     machine: &mut JexMachine,
-    mut args: InstructionPointer,
+    args: InstructionPointer,
 ) -> Result<(), Exception> {
     define_global_instruction(machine, args)
 }

@@ -1,5 +1,5 @@
 use crate::machine::byte_readable::ByteReadable;
-use crate::machine::exceptions::runtime_exceptions::{ChunkNotFound, ConstantNotFound};
+use crate::machine::exceptions::runtime_exceptions::{ConstantNotFound};
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 

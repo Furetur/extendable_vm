@@ -17,7 +17,7 @@ impl From<TypeException> for Exception {
 pub struct ExpectedInstructionArgument;
 
 impl From<ExpectedInstructionArgument> for Exception {
-    fn from(exception: ExpectedInstructionArgument) -> Self {
+    fn from(_exception: ExpectedInstructionArgument) -> Self {
         Exception {
             exception_type: ExceptionType::Runtime,
             name: "ExpectedInstructionArgument".to_string(),

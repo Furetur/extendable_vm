@@ -55,8 +55,8 @@ mod tests {
     use crate::machine::parsing::code_parser::CodeParser;
     use crate::machine::parsing::constant_parser::{ConstantParser, ConstantParserTable};
     use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
-    use std::fmt;
-    use std::fmt::{Debug, Formatter};
+    
+    
 
     const DUMMY_CONSTANT: ConstantParser<u8> = ConstantParser {
         constant_type: 0,

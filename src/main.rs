@@ -1,5 +1,5 @@
 use extendable_vm::jex::constant_parsers::{
-    jex_constant_parsers, JexConstantParser, JEX_CONSTANT_PARSERS,
+    JEX_CONSTANT_PARSERS,
 };
 use extendable_vm::jex::instructions::jex_instructions;
 use extendable_vm::jex::instructions::types::JexInstructionTable;
@@ -20,7 +20,7 @@ fn main() {
     // parse file
     let code = parser.parse(&bytes);
     // build machine
-    let mut instruction_table: JexInstructionTable =
+    let instruction_table: JexInstructionTable =
         InstructionTable::with_instructions(jex_instructions());
     // run machine
     let mut machine: JexMachine = Machine::new(&code, &instruction_table);

@@ -1,6 +1,6 @@
 use extendable_vm::jex::bytecode_constants::JexConstant;
 use extendable_vm::jex::instructions::op_codes::JexOpCode;
-use extendable_vm::jex::values::{JexFunction, JexValue};
+
 use run::code::{TestChunk, TestInstruction};
 use run::run_jex::{run_chunk, run_chunks, run_instructions};
 

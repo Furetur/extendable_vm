@@ -1,5 +1,6 @@
 use crate::machine::byte_readable::ByteReadable;
-use crate::machine::errors::MachineError;
+use crate::machine::exceptions::runtime_exceptions::{ConstantNotFound};
+use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 
 pub struct Chunk<Constant> {
@@ -16,21 +17,10 @@ impl<Constant> Code<Constant> {
         &self,
         chunk_id: usize,
         constant_id: usize,
-    ) -> Result<&Constant, MachineError> {
-        let chunk = self
-            .get_chunk(chunk_id)
-            .ok_or(MachineError("Chunk not found".to_string()))?;
-        if constant_id >= chunk.constants.len() {
-            let message = format!(
-                "Tried to read constant(id={}) from chunk(id={}), but there were only {} constants",
-                constant_id,
-                chunk_id,
-                chunk.constants.len()
-            );
-            Err(MachineError(message))
-        } else {
-            Ok(&chunk.constants[constant_id])
-        }
+    ) -> Result<&Constant, Exception> {
+        self.get_chunk(chunk_id)
+            .and_then(|chunk| chunk.constants.get(constant_id))
+            .ok_or(Exception::from(ConstantNotFound(chunk_id, constant_id)))
     }
 
     pub fn get_chunk(&self, chunk_id: usize) -> Option<&Chunk<Constant>> {

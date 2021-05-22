@@ -1,5 +1,5 @@
 use extendable_vm::jex::instructions::op_codes::JexOpCode;
-use run::code::{TestChunk, TestInstruction};
+use run::code::{TestInstruction};
 use run::run_jex::run_instructions;
 
 mod run;

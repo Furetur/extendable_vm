@@ -1,12 +1,12 @@
-use crate::run::code::TestChunk;
-use extendable_vm::jex::bytecode_constants::JexConstant;
-use extendable_vm::jex::instructions::jex_instructions;
-use extendable_vm::jex::instructions::types::JexInstructionTable;
-use extendable_vm::jex::types::JexMachine;
-use extendable_vm::jex::values::JexValue;
-use extendable_vm::machine::code::{Chunk, Code};
-use extendable_vm::machine::instruction_table::InstructionTable;
-use extendable_vm::machine::machine::Machine;
+
+
+
+
+
+
+
+
+
 
 pub mod code;
 
@@ -29,13 +29,16 @@ pub mod run_jex {
         let code = Code {
             chunks: compiled_chunks,
         };
-        let mut instruction_table: JexInstructionTable =
+        let instruction_table: JexInstructionTable =
             InstructionTable::with_instructions(jex_instructions());
 
         let mut machine: JexMachine = Machine::new(&code, &instruction_table);
         machine.push_operand(JexValue::Function(JexFunction::Script));
-        machine.push_frame(0, 0);
-        machine.run().unwrap();
+        machine.push_frame(0, "script".to_string(), 0);
+        let finished_gracefully = machine.start();
+        if !finished_gracefully {
+            panic!();
+        }
         machine.peek_operand().ok().cloned()
     }
 

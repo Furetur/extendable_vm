@@ -32,7 +32,7 @@ pub mod types {
     use crate::jex::bytecode_constants::JexConstant;
     use crate::jex::values::JexValue;
     use crate::machine::instruction_table::{Instruction, InstructionTable};
-    use crate::machine::machine::Machine;
+    
 
     pub type JexInstruction = Instruction<JexConstant, JexValue>;
     pub type JexInstructionTable = InstructionTable<JexConstant, JexValue>;

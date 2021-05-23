@@ -1,6 +1,4 @@
-use extendable_vm::jex::constant_parsers::{
-    JEX_CONSTANT_PARSERS,
-};
+use extendable_vm::jex::constant_parsers::JEX_CONSTANT_PARSERS;
 use extendable_vm::jex::instructions::jex_instructions;
 use extendable_vm::jex::instructions::types::JexInstructionTable;
 use extendable_vm::jex::types::JexMachine;
@@ -18,7 +16,8 @@ fn main() {
     let const_parser_table = ConstantParserTable::with_parsers(&JEX_CONSTANT_PARSERS);
     let parser = CodeParser::new(&const_parser_table);
     // parse file
-    let code = parser.parse(&bytes);
+    let code = parser.parse(&bytes).unwrap_or_else(|e| panic!("{}", e));
+    println!("{:?}", code);
     // build machine
     let instruction_table: JexInstructionTable =
         InstructionTable::with_instructions(jex_instructions());

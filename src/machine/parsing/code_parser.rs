@@ -1,6 +1,10 @@
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::code::{Chunk, Code};
+use crate::machine::exceptions::types::Exception;
 use crate::machine::parsing::constant_parser::ConstantParserTable;
+use crate::machine::parsing::parsing_exceptions::{
+    ChunkParsingError, CodeEndedAt, EmptyCode, IllegalConstant, UnknownConstantType,
+};
 use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 
 pub struct CodeParser<'a, Constant> {
@@ -11,40 +15,54 @@ impl<'a, Constant> CodeParser<'a, Constant> {
     pub fn new(parsers: &'a ConstantParserTable<'a, Constant>) -> CodeParser<'a, Constant> {
         CodeParser { parsers }
     }
-    pub fn parse(&self, bytes: &RawBytes) -> Code<Constant> {
+    pub fn parse(&self, bytes: &RawBytes) -> Result<Code<Constant>, Exception> {
         let mut chunks: Vec<Chunk<Constant>> = vec![];
         let mut ptr = RawBytesPointer::new();
+        let mut chunk_id: usize = 0;
         while bytes.has_next(&mut ptr) {
-            chunks.push(self.parse_chunk(bytes, &mut ptr));
+            let chunk = self
+                .parse_chunk(bytes, &mut ptr)
+                .map_err(|err| ChunkParsingError(chunk_id, err))?;
+            chunks.push(chunk);
+            chunk_id += 1;
         }
         if chunks.len() == 0 {
-            panic!("Not found any bytecode chunks");
+            Err(Exception::from(EmptyCode))
+        } else {
+            Ok(Code { chunks })
         }
-        Code { chunks }
     }
-    fn parse_chunk(&self, bytes: &RawBytes, ptr: &mut RawBytesPointer) -> Chunk<Constant> {
+    fn parse_chunk(
+        &self,
+        bytes: &RawBytes,
+        ptr: &mut RawBytesPointer,
+    ) -> Result<Chunk<Constant>, Exception> {
         let mut result_constants: Vec<Constant> = vec![];
         let n_constants = bytes
             .read(ptr)
-            .unwrap_or_else(|| panic!("Unexpected n_constants"));
+            .ok_or(CodeEndedAt("n_constants".to_string()))?;
         for _ in 0..n_constants {
             let constant_type = bytes
                 .read(ptr)
-                .unwrap_or_else(|| panic!("Expected constant_type"));
-            let constant_parser = self.parsers.get_parser(constant_type);
-            let constant = (constant_parser.parser_fn)(bytes, ptr);
+                .ok_or(CodeEndedAt("constant_type".to_string()))?;
+            let constant_parser = self
+                .parsers
+                .get_parser(constant_type)
+                .ok_or(UnknownConstantType(constant_type))?;
+            let constant = (constant_parser.parser_fn)(bytes, ptr)
+                .map_err(|e| IllegalConstant(constant_parser.constant_type, e))?;
             result_constants.push(constant);
         }
         let n_code_bytes = bytes
             .read_u16(ptr)
-            .unwrap_or_else(|| panic!("Expected n_code_bytes"));
+            .ok_or(CodeEndedAt("n_code_bytes".to_string()))?;
         let code = bytes
             .read_n(ptr, usize::from(n_code_bytes))
-            .unwrap_or_else(|| panic!("Expected code"));
-        Chunk {
+            .ok_or(CodeEndedAt("code".to_string()))?;
+        Ok(Chunk {
             constants: result_constants,
             code,
-        }
+        })
     }
 }
 
@@ -52,25 +70,27 @@ impl<'a, Constant> CodeParser<'a, Constant> {
 mod tests {
     use crate::machine::byte_readable::ByteReadable;
     use crate::machine::code::{Chunk, Code};
+    use crate::machine::exceptions::types::Exception;
     use crate::machine::parsing::code_parser::CodeParser;
     use crate::machine::parsing::constant_parser::{ConstantParser, ConstantParserTable};
     use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
-    
-    
 
     const DUMMY_CONSTANT: ConstantParser<u8> = ConstantParser {
         constant_type: 0,
         parser_fn: dummy_constant_parser,
     };
 
-    fn dummy_constant_parser(bytes: &RawBytes, pointer: &mut RawBytesPointer) -> u8 {
-        bytes.read(pointer).unwrap()
+    fn dummy_constant_parser(
+        bytes: &RawBytes,
+        pointer: &mut RawBytesPointer,
+    ) -> Result<u8, Exception> {
+        Ok(bytes.read(pointer).unwrap())
     }
 
     fn parse(bytes: Vec<u8>) -> Code<u8> {
         let table = ConstantParserTable::with_parsers(&[DUMMY_CONSTANT]);
         let parser = CodeParser::new(&table);
-        parser.parse(&RawBytes::from_bytes(bytes))
+        parser.parse(&RawBytes::from_bytes(bytes)).unwrap()
     }
 
     impl PartialEq for Code<u8> {

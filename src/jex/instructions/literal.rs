@@ -9,7 +9,7 @@ use crate::machine::instruction::Instruction;
 use crate::machine::instruction::InstructionFn::Raw;
 use crate::machine::instruction_pointer::InstructionPointer;
 
-pub static CONSTANT_INSTRUCTION: JexInstruction = Instruction {
+pub const CONSTANT_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Constant as u8,
     name: "CONSTANT",
     instruction_fn: Raw {

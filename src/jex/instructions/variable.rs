@@ -8,7 +8,7 @@ use crate::machine::instruction::Instruction;
 use crate::machine::instruction::InstructionFn::Raw;
 use crate::machine::instruction_pointer::InstructionPointer;
 
-pub static POP_INSTRUCTION: JexInstruction = Instruction {
+pub const POP_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Pop as u8,
     name: "POP",
     instruction_fn: Raw {
@@ -17,7 +17,7 @@ pub static POP_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static GET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
+pub const GET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::GetLocal as u8,
     name: "GET_LOCAL",
     instruction_fn: Raw {
@@ -26,7 +26,7 @@ pub static GET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static SET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
+pub const SET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::SetLocal as u8,
     name: "SET_LOCAL",
     instruction_fn: Raw {
@@ -35,7 +35,7 @@ pub static SET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static GET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+pub const GET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::GetGlobal as u8,
     name: "GET_GLOBAL",
     instruction_fn: Raw {
@@ -44,7 +44,7 @@ pub static GET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static DEFINE_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+pub const DEFINE_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::DefineGlobal as u8,
     name: "DEFINE_GLOBAL",
     instruction_fn: Raw {
@@ -53,7 +53,7 @@ pub static DEFINE_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static SET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+pub const SET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::SetGlobal as u8,
     name: "SET_GLOBAL",
     instruction_fn: Raw {

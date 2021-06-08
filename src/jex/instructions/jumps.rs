@@ -10,7 +10,7 @@ use crate::machine::instruction::Instruction;
 use crate::machine::instruction::InstructionFn::Raw;
 use crate::machine::instruction_pointer::InstructionPointer;
 
-pub static JUMP_FORWARD_INSTRUCTION: JexInstruction = Instruction {
+pub const JUMP_FORWARD_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::JumpForward as u8,
     name: "JUMP_FORWARD",
     instruction_fn: Raw {
@@ -18,7 +18,8 @@ pub static JUMP_FORWARD_INSTRUCTION: JexInstruction = Instruction {
         instruction_fn: jump_forward_instruction,
     },
 };
-pub static JUMP_FORWARD_IF_FALSE_INSTRUCTION: JexInstruction = Instruction {
+
+pub const JUMP_FORWARD_IF_FALSE_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::JumpForwardIfFalse as u8,
     name: "JUMP_FORWARD_IF_FALSE",
     instruction_fn: Raw {
@@ -27,7 +28,7 @@ pub static JUMP_FORWARD_IF_FALSE_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static JUMP_BACKWARD: JexInstruction = Instruction {
+pub const JUMP_BACKWARD: JexInstruction = Instruction {
     op_code: JexOpCode::JumpBackward as u8,
     name: "JUMP_BACKWARD",
     instruction_fn: Raw {
@@ -35,7 +36,8 @@ pub static JUMP_BACKWARD: JexInstruction = Instruction {
         instruction_fn: jump_backward_instruction,
     },
 };
-pub static CALL_INSTRUCTION: JexInstruction = Instruction {
+
+pub const CALL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Call as u8,
     name: "CALL",
     instruction_fn: Raw {
@@ -44,7 +46,7 @@ pub static CALL_INSTRUCTION: JexInstruction = Instruction {
     },
 };
 
-pub static RETURN_INSTRUCTION: JexInstruction = Instruction {
+pub const RETURN_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Return as u8,
     name: "RETURN",
     instruction_fn: Raw {

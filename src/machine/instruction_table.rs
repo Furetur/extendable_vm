@@ -18,12 +18,11 @@ impl<'a, Constant, Value> InstructionTable<'a, Constant, Value> {
     }
 
     pub fn with_instructions(
-        mut instructions: Vec<&'a Instruction<Constant, Value>>,
+        instructions: &'a [&'a Instruction<Constant, Value>],
     ) -> InstructionTable<'a, Constant, Value> {
         let mut table: InstructionTable<Constant, Value> = InstructionTable::new();
-        while instructions.len() > 0 {
-            let instruction = instructions.pop().unwrap();
-            table.register_instruction(instruction);
+        for instruction in instructions {
+            table.register_instruction(&**instruction)
         }
         table
     }

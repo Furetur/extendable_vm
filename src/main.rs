@@ -19,13 +19,8 @@ fn main() {
     let code = parser.parse(&bytes).unwrap_or_else(|e| panic!("{}", e));
     println!("{:?}", code);
     // build machine
-    let instruction_table: JexInstructionTable = InstructionTable::with_instructions(
-        JEX_INSTRUCTIONS
-            .to_vec()
-            .iter()
-            .map(|i| i.clone())
-            .collect(),
-    );
+    let instruction_table: JexInstructionTable =
+        InstructionTable::with_instructions(&JEX_INSTRUCTIONS);
     // run machine
     let mut machine: JexMachine = Machine::new(&code, &instruction_table);
     machine.push_frame(0, "<script>".to_string(), 0);

@@ -23,7 +23,7 @@ impl From<ExpectedInstructionArgument> for Exception {
         Exception {
             exception_type: ExceptionType::Runtime,
             name: "ExpectedInstructionArgument".to_string(),
-            message: "".to_string(),
+            message: "Expected an instruction argument but chunk code ended.".to_string(),
         }
     }
 }

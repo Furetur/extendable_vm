@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use std::fmt::Debug;
+
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::call_frame::CallFrame;
 use crate::machine::code::Code;
@@ -5,21 +8,20 @@ use crate::machine::exceptions::runtime_exceptions::{
     EmptyCallStack, EmptyOperandStack, SlotOutOfBounds, UnknownOpCode,
 };
 use crate::machine::exceptions::types::Exception;
+use crate::machine::instruction::Instruction;
 use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::instruction_table::{Instruction, InstructionTable};
+use crate::machine::instruction_table::InstructionTable;
 use crate::machine::stack::Stack;
-use std::collections::HashMap;
-use std::fmt::Debug;
 
-pub struct Machine<'a, Constant, Value: Debug> {
+pub struct Machine<'a, Constant, Value> {
     pub code: &'a Code<Constant>,
-    instruction_table: &'a InstructionTable<Constant, Value>,
+    instruction_table: &'a InstructionTable<'a, Constant, Value>,
     operands: Stack<Value>,
     frames: Stack<CallFrame>,
     pub globals: HashMap<String, Value>,
 }
 
-impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
+impl<'a, Constant, Value> Machine<'a, Constant, Value> {
     pub fn new(
         code: &'a Code<Constant>,
         instruction_table: &'a InstructionTable<Constant, Value>,
@@ -48,8 +50,8 @@ impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
             let instruction = self.find_instruction(op_code)?;
             let arguments_ip = self.instruction_pointer()?.clone();
             self.instruction_pointer()?
-                .jump_forward(instruction.byte_arity);
-            (instruction.instruction_fn)(self, arguments_ip)?;
+                .jump_forward(instruction.instruction_fn.byte_arity());
+            instruction.instruction_fn.run(self, arguments_ip)?;
         }
         Ok(())
     }

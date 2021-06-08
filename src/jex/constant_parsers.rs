@@ -7,21 +7,6 @@ use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 
 pub type JexConstantParser = ConstantParser<JexConstant>;
 
-pub fn jex_constant_parsers(parsers: &mut Vec<JexConstantParser>) {
-    parsers.push(ConstantParser {
-        constant_type: JexConstantType::Int as u8,
-        parser_fn: parse_int_constant,
-    });
-    parsers.push(ConstantParser {
-        constant_type: JexConstantType::String as u8,
-        parser_fn: parse_string_constant,
-    });
-    parsers.push(ConstantParser {
-        constant_type: JexConstantType::Function as u8,
-        parser_fn: parse_function_constant,
-    })
-}
-
 pub const JEX_CONSTANT_PARSERS: [JexConstantParser; 3] = [
     ConstantParser {
         constant_type: JexConstantType::Int as u8,

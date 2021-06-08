@@ -3,8 +3,8 @@ pub mod code;
 pub mod run_jex {
     use crate::run::code::{TestChunk, TestInstruction};
     use extendable_vm::jex::bytecode_constants::JexConstant;
-    use extendable_vm::jex::instructions::jex_instructions;
     use extendable_vm::jex::instructions::types::JexInstructionTable;
+    use extendable_vm::jex::instructions::JEX_INSTRUCTIONS;
     use extendable_vm::jex::jex_values::values::{JexFunction, JexValue};
     use extendable_vm::jex::types::JexMachine;
     use extendable_vm::machine::code::{Chunk, Code};
@@ -20,7 +20,7 @@ pub mod run_jex {
             chunks: compiled_chunks,
         };
         let instruction_table: JexInstructionTable =
-            InstructionTable::with_instructions(jex_instructions());
+            InstructionTable::with_instructions(JEX_INSTRUCTIONS.to_vec());
 
         let mut machine: JexMachine = Machine::new(&code, &instruction_table);
         machine.push_operand(JexValue::Function(JexFunction::Script));

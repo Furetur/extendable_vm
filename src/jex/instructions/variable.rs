@@ -1,53 +1,66 @@
+use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::runtime_exceptions::{ExpectedInstructionArgument, TypeException};
 use crate::jex::types::JexMachine;
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::exceptions::types::Exception;
+use crate::machine::instruction::Instruction;
+use crate::machine::instruction::InstructionFn::Raw;
 use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::instruction_table::Instruction;
 
-pub fn variable_instructions(instructions: &mut Vec<JexInstruction>) {
-    let mut variable_instructions = vec![
-        Instruction {
-            op_code: 4,
-            name: "POP".to_string(),
-            byte_arity: 0,
-            instruction_fn: pop_instruction,
-        },
-        Instruction {
-            op_code: 5,
-            name: "GET_LOCAL".to_string(),
-            byte_arity: 1,
-            instruction_fn: get_local_instruction,
-        },
-        Instruction {
-            op_code: 6,
-            name: "SET_LOCAL".to_string(),
-            byte_arity: 1,
-            instruction_fn: set_local_instruction,
-        },
-        Instruction {
-            op_code: 7,
-            name: "GET_GLOBAL".to_string(),
-            byte_arity: 1,
-            instruction_fn: get_global_instruction,
-        },
-        Instruction {
-            op_code: 8,
-            name: "DEFINE_GLOBAL".to_string(),
-            byte_arity: 1,
-            instruction_fn: define_global_instruction,
-        },
-        Instruction {
-            op_code: 9,
-            name: "SET_GLOBAL".to_string(),
-            byte_arity: 1,
-            instruction_fn: set_global_instruction,
-        },
-    ];
+pub static POP_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::Pop as u8,
+    name: "POP",
+    instruction_fn: Raw {
+        byte_arity: 0,
+        instruction_fn: pop_instruction,
+    },
+};
 
-    instructions.append(&mut variable_instructions);
-}
+pub static GET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::GetLocal as u8,
+    name: "GET_LOCAL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: get_local_instruction,
+    },
+};
+
+pub static SET_LOCAL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::SetLocal as u8,
+    name: "SET_LOCAL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: set_local_instruction,
+    },
+};
+
+pub static GET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::GetGlobal as u8,
+    name: "GET_GLOBAL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: get_global_instruction,
+    },
+};
+
+pub static DEFINE_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::DefineGlobal as u8,
+    name: "DEFINE_GLOBAL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: define_global_instruction,
+    },
+};
+
+pub static SET_GLOBAL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::SetGlobal as u8,
+    name: "SET_GLOBAL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: set_global_instruction,
+    },
+};
 
 fn pop_instruction(
     machine: &mut JexMachine,

@@ -2,6 +2,7 @@ pub mod bytecode_constants;
 pub mod constant_parsers;
 pub mod instructions;
 pub mod jex_values;
+mod operators;
 mod runtime_exceptions;
 mod syntax_exceptions;
 

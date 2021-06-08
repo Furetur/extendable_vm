@@ -30,9 +30,8 @@ pub fn jex_instructions() -> Vec<JexInstruction> {
 
 pub mod types {
     use crate::jex::bytecode_constants::JexConstant;
-    use crate::jex::values::JexValue;
+    use crate::jex::jex_values::values::JexValue;
     use crate::machine::instruction_table::{Instruction, InstructionTable};
-    
 
     pub type JexInstruction = Instruction<JexConstant, JexValue>;
     pub type JexInstructionTable = InstructionTable<JexConstant, JexValue>;

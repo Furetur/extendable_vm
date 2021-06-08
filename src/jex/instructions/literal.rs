@@ -1,7 +1,7 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::jex_values::values::{JexNull, JexValue};
 use crate::jex::runtime_exceptions::ExpectedInstructionArgument;
 use crate::jex::types::JexMachine;
-use crate::jex::values::JexValue;
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
@@ -54,7 +54,7 @@ fn null_instruction(
     machine: &mut JexMachine,
     mut _args: InstructionPointer,
 ) -> Result<(), Exception> {
-    machine.push_operand(JexValue::Null);
+    machine.push_operand(JexValue::null());
     Ok(())
 }
 

@@ -1,7 +1,8 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::jex_values::to_output_string::ToOutputString;
+use crate::jex::jex_values::values::JexFunction;
 use crate::jex::runtime_exceptions::{ExpectedInstructionArgument, TypeException};
 use crate::jex::types::JexMachine;
-use crate::jex::values::JexFunction;
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;

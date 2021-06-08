@@ -1,4 +1,4 @@
-use crate::jex::values::{JexObject, JexValue};
+use crate::jex::jex_values::values::{JexObject, JexValue};
 use std::collections::HashMap;
 use std::rc::Rc;
 

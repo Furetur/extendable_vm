@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 pub mod code;
 
 pub mod run_jex {
@@ -15,8 +5,8 @@ pub mod run_jex {
     use extendable_vm::jex::bytecode_constants::JexConstant;
     use extendable_vm::jex::instructions::jex_instructions;
     use extendable_vm::jex::instructions::types::JexInstructionTable;
+    use extendable_vm::jex::jex_values::values::{JexFunction, JexValue};
     use extendable_vm::jex::types::JexMachine;
-    use extendable_vm::jex::values::{JexFunction, JexValue};
     use extendable_vm::machine::code::{Chunk, Code};
     use extendable_vm::machine::instruction_table::InstructionTable;
     use extendable_vm::machine::machine::Machine;

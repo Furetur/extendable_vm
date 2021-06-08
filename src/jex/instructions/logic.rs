@@ -1,6 +1,6 @@
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::jex_values::values::JexValue;
 use crate::jex::types::JexMachine;
-use crate::jex::values::JexValue;
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::Instruction;

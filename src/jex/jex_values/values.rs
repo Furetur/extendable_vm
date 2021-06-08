@@ -8,12 +8,15 @@ use std::rc::Rc;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexValue {
-    Null,
+    Null(JexNull),
     Int(i32),
     Bool(bool),
     Object(Rc<JexObject>),
     Function(JexFunction),
 }
+
+#[derive(PartialEq, Eq, Debug, Clone)]
+pub struct JexNull;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexObject {
@@ -31,14 +34,8 @@ pub enum JexFunction {
 }
 
 impl JexValue {
-    pub fn to_output_string(&self) -> String {
-        match self {
-            JexValue::Null => "null".to_string(),
-            JexValue::Int(int) => int.to_string(),
-            JexValue::Bool(bool) => bool.to_string(),
-            JexValue::Object(obj) => (**obj).to_output_string(),
-            JexValue::Function(func) => func.to_output_string(),
-        }
+    pub fn null() -> JexValue {
+        JexValue::Null(JexNull)
     }
     pub fn from_string(string: String) -> JexValue {
         JexValue::Object(Rc::new(JexObject::String(string)))
@@ -77,13 +74,6 @@ impl JexValue {
     }
 }
 
-impl JexObject {
-    pub fn to_output_string(&self) -> String {
-        let JexObject::String(str) = self;
-        str.clone()
-    }
-}
-
 impl JexFunction {
     pub fn from_code(machine: &JexMachine, chunk_id: usize) -> Result<JexFunction, Exception> {
         let chunk = machine
@@ -101,13 +91,6 @@ impl JexFunction {
             })
         } else {
             Err(Exception::from(InvalidFunctionChunk(chunk_id)))
-        }
-    }
-    pub fn to_output_string(&self) -> String {
-        if let JexFunction::Function { name, arity, .. } = self {
-            format!("function {}({} params)", name, arity)
-        } else {
-            "<script>".to_string()
         }
     }
 }

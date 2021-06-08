@@ -1,47 +1,59 @@
+use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
+use crate::jex::jex_values::to_output_string::ToOutputString;
+use crate::jex::jex_values::values::JexFunction;
 use crate::jex::runtime_exceptions::{ExpectedInstructionArgument, TypeException};
 use crate::jex::types::JexMachine;
-use crate::jex::values::JexFunction;
 use crate::machine::byte_readable::ByteReadable;
 use crate::machine::exceptions::types::Exception;
+use crate::machine::instruction::Instruction;
+use crate::machine::instruction::InstructionFn::Raw;
 use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::instruction_table::Instruction;
 
-pub fn jump_instructions(instructions: &mut Vec<JexInstruction>) {
-    let mut jump_instructions = vec![
-        Instruction {
-            op_code: 20,
-            name: "JUMP_FORWARD".to_string(),
-            byte_arity: 1,
-            instruction_fn: jump_forward_instruction,
-        },
-        Instruction {
-            op_code: 21,
-            name: "JUMP_FORWARD_IF_FALSE".to_string(),
-            byte_arity: 1,
-            instruction_fn: jump_forward_if_false_instruction,
-        },
-        Instruction {
-            op_code: 22,
-            name: "JUMP_BACKWARD".to_string(),
-            byte_arity: 1,
-            instruction_fn: jump_backward_instruction,
-        },
-        Instruction {
-            op_code: 23,
-            name: "CALL".to_string(),
-            byte_arity: 1,
-            instruction_fn: call_instruction,
-        },
-        Instruction {
-            op_code: 24,
-            name: "RETURN".to_string(),
-            byte_arity: 0,
-            instruction_fn: return_instruction,
-        },
-    ];
-    instructions.append(&mut jump_instructions);
-}
+pub const JUMP_FORWARD_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::JumpForward as u8,
+    name: "JUMP_FORWARD",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: jump_forward_instruction,
+    },
+};
+
+pub const JUMP_FORWARD_IF_FALSE_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::JumpForwardIfFalse as u8,
+    name: "JUMP_FORWARD_IF_FALSE",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: jump_forward_if_false_instruction,
+    },
+};
+
+pub const JUMP_BACKWARD: JexInstruction = Instruction {
+    op_code: JexOpCode::JumpBackward as u8,
+    name: "JUMP_BACKWARD",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: jump_backward_instruction,
+    },
+};
+
+pub const CALL_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::Call as u8,
+    name: "CALL",
+    instruction_fn: Raw {
+        byte_arity: 1,
+        instruction_fn: call_instruction,
+    },
+};
+
+pub const RETURN_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::Return as u8,
+    name: "RETURN",
+    instruction_fn: Raw {
+        byte_arity: 0,
+        instruction_fn: return_instruction,
+    },
+};
 
 fn jump_forward_instruction(
     machine: &mut JexMachine,
@@ -59,7 +71,9 @@ fn jump_forward_if_false_instruction(
     mut args: InstructionPointer,
 ) -> Result<(), Exception> {
     let offset = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
-    let value = machine.peek_operand()?.as_bool()?;
+    let value = machine.peek_operand()?.as_bool().ok_or(TypeException(
+        "Jump forward if false condition was not bool".to_string(),
+    ))?;
     if !value {
         machine
             .instruction_pointer()?
@@ -85,7 +99,10 @@ fn call_instruction(
 ) -> Result<(), Exception> {
     let arity = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
     let arity = usize::from(arity);
-    let function = machine.get_operand_from_top(arity)?.as_function()?;
+    let function = machine
+        .get_operand_from_top(arity)?
+        .as_function()
+        .ok_or(TypeException("Value was not callable".to_string()))?;
     if let JexFunction::Function {
         chunk_id,
         arity: actual_arity,

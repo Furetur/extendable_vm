@@ -8,12 +8,15 @@ use std::rc::Rc;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexValue {
-    Null,
+    Null(JexNull),
     Int(i32),
     Bool(bool),
     Object(Rc<JexObject>),
     Function(JexFunction),
 }
+
+#[derive(PartialEq, Eq, Debug, Clone)]
+pub struct JexNull;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub enum JexObject {
@@ -31,56 +34,43 @@ pub enum JexFunction {
 }
 
 impl JexValue {
-    pub fn to_output_string(&self) -> String {
-        match self {
-            JexValue::Null => "null".to_string(),
-            JexValue::Int(int) => int.to_string(),
-            JexValue::Bool(bool) => bool.to_string(),
-            JexValue::Object(obj) => (**obj).to_output_string(),
-            JexValue::Function(func) => func.to_output_string(),
-        }
+    pub fn null() -> JexValue {
+        JexValue::Null(JexNull)
     }
     pub fn from_string(string: String) -> JexValue {
         JexValue::Object(Rc::new(JexObject::String(string)))
     }
-    pub fn as_int(&self) -> Result<i32, TypeException> {
+    pub fn as_int(&self) -> Option<i32> {
         if let JexValue::Int(i) = self {
-            Ok(i.clone())
+            Some(i.clone())
         } else {
-            Err(TypeException("Int".to_string()))
+            None
         }
     }
-    pub fn as_bool(&self) -> Result<bool, TypeException> {
+    pub fn as_bool(&self) -> Option<bool> {
         if let JexValue::Bool(bool) = self {
-            Ok(bool.clone())
+            Some(bool.clone())
         } else {
-            Err(TypeException("Boolean".to_string()))
+            None
         }
     }
-    pub fn as_function(&self) -> Result<&JexFunction, TypeException> {
+    pub fn as_function(&self) -> Option<&JexFunction> {
         if let JexValue::Function(func) = self {
-            Ok(func)
+            Some(func)
         } else {
-            Err(TypeException("Function".to_string()))
+            None
         }
     }
-    pub fn as_object(&self) -> Result<&JexObject, TypeException> {
+    pub fn as_object(&self) -> Option<&JexObject> {
         if let JexValue::Object(obj) = self {
-            Ok(&**obj)
+            Some(&**obj)
         } else {
-            Err(TypeException("Object".to_string()))
+            None
         }
     }
-    pub fn as_string(&self) -> Result<&String, TypeException> {
+    pub fn as_string(&self) -> Option<&String> {
         let JexObject::String(string) = self.as_object()?;
-        Ok(string)
-    }
-}
-
-impl JexObject {
-    pub fn to_output_string(&self) -> String {
-        let JexObject::String(str) = self;
-        str.clone()
+        Some(string)
     }
 }
 
@@ -101,13 +91,6 @@ impl JexFunction {
             })
         } else {
             Err(Exception::from(InvalidFunctionChunk(chunk_id)))
-        }
-    }
-    pub fn to_output_string(&self) -> String {
-        if let JexFunction::Function { name, arity, .. } = self {
-            format!("function {}({} params)", name, arity)
-        } else {
-            "<script>".to_string()
         }
     }
 }

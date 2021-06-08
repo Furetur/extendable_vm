@@ -3,8 +3,8 @@ pub mod syntax_exceptions;
 
 pub mod types {
     use std::error::Error;
+    use std::fmt;
     use std::fmt::{Debug, Display, Formatter};
-    use std::{fmt};
 
     #[derive(Debug)]
     pub enum ExceptionType {

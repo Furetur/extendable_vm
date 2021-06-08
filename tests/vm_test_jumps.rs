@@ -1,8 +1,8 @@
 use extendable_vm::jex::bytecode_constants::JexConstant;
 use extendable_vm::jex::instructions::op_codes::JexOpCode;
-use extendable_vm::jex::values::JexFunction;
+use extendable_vm::jex::jex_values::values::JexFunction;
 use run::code::{TestChunk, TestInstruction};
-use run::run_jex::{run_chunk};
+use run::run_jex::run_chunk;
 
 mod run;
 

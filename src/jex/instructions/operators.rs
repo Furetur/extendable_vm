@@ -3,7 +3,7 @@ use crate::jex::instructions::types::JexInstruction;
 use crate::jex::jex_values::to_output_string::ToOutputString;
 use crate::jex::jex_values::values::{JexNull, JexObject, JexValue};
 use crate::jex::operators::{
-    divide, equal, greater, less, minus, multiply, negate, not, plus, print,
+    divide, equal, greater, less, minus, multiply, negate, not, plus, print, to_string,
 };
 use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::types::JexMachine;
@@ -65,6 +65,12 @@ pub const NOT_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Not as u8,
     name: "NOT",
     instruction_fn: UnaryOp(not),
+};
+
+pub const TO_STRING_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::ToString as u8,
+    name: "TO_STRING",
+    instruction_fn: UnaryOp(to_string),
 };
 
 pub const PRINT_INSTRUCTION: JexInstruction = Instruction {

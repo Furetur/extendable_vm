@@ -68,6 +68,10 @@ pub fn not(value: JexValue) -> Result<JexValue, Exception> {
     }
 }
 
+pub fn to_string(value: JexValue) -> Result<JexValue, Exception> {
+    Ok(JexValue::from_string(value.to_output_string()))
+}
+
 pub fn equal(left: JexValue, right: JexValue) -> Result<JexValue, Exception> {
     Ok(JexValue::Bool(left == right))
 }
@@ -99,8 +103,11 @@ pub fn print(value: JexValue) -> Result<JexValue, Exception> {
 
 #[cfg(test)]
 mod tests {
-    use crate::jex::jex_values::values::JexValue;
-    use crate::jex::operators::{divide, equal, greater, less, minus, multiply, negate, not, plus};
+    use crate::jex::jex_values::values::{JexObject, JexValue};
+    use crate::jex::operators::{
+        divide, equal, greater, less, minus, multiply, negate, not, plus, to_string,
+    };
+    use std::rc::Rc;
 
     #[test]
     fn plus_should_add_two_ints() {
@@ -151,6 +158,22 @@ mod tests {
     #[test]
     fn not_should_negate_bool() {
         assert_eq!(JexValue::Bool(true), not(JexValue::Bool(false)).unwrap());
+    }
+
+    #[test]
+    fn to_string_should_convert_bool_to_string() {
+        assert_eq!(
+            JexValue::from_string(String::from("false")),
+            to_string(JexValue::Bool(false)).unwrap()
+        );
+    }
+
+    #[test]
+    fn to_string_should_convert_int_to_string() {
+        assert_eq!(
+            JexValue::from_string(String::from("69")),
+            to_string(JexValue::Int(69)).unwrap()
+        );
     }
 
     #[test]

@@ -69,7 +69,7 @@ pub fn not(value: JexValue) -> Result<JexValue, Exception> {
 }
 
 pub fn to_string(value: JexValue) -> Result<JexValue, Exception> {
-    Ok(JexValue::Object(Rc::new(JexObject::String(JexValue::to_output_string(&value)))))
+    Ok(JexValue::from_string(value.to_output_string()))
 }
 
 pub fn equal(left: JexValue, right: JexValue) -> Result<JexValue, Exception> {
@@ -103,8 +103,10 @@ pub fn print(value: JexValue) -> Result<JexValue, Exception> {
 
 #[cfg(test)]
 mod tests {
-    use crate::jex::jex_values::values::{JexValue, JexObject};
-    use crate::jex::operators::{divide, equal, greater, less, minus, multiply, negate, not, plus, to_string};
+    use crate::jex::jex_values::values::{JexObject, JexValue};
+    use crate::jex::operators::{
+        divide, equal, greater, less, minus, multiply, negate, not, plus, to_string,
+    };
     use std::rc::Rc;
 
     #[test]
@@ -160,12 +162,18 @@ mod tests {
 
     #[test]
     fn to_string_should_convert_bool_to_string() {
-        assert_eq!(JexValue::Object(Rc::new(JexObject::String(String::from("false")))), to_string(JexValue::Bool(false)).unwrap());
+        assert_eq!(
+            JexValue::from_string(String::from("false")),
+            to_string(JexValue::Bool(false)).unwrap()
+        );
     }
 
     #[test]
     fn to_string_should_convert_int_to_string() {
-        assert_eq!(JexValue::Object(Rc::new(JexObject::String(String::from("69")))), to_string(JexValue::Int(69)).unwrap());
+        assert_eq!(
+            JexValue::from_string(String::from("69")),
+            to_string(JexValue::Int(69)).unwrap()
+        );
     }
 
     #[test]

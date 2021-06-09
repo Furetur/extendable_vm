@@ -2,7 +2,9 @@ use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::jex_values::to_output_string::ToOutputString;
 use crate::jex::jex_values::values::{JexNull, JexObject, JexValue};
-use crate::jex::operators::{divide, equal, greater, less, minus, multiply, negate, not, plus, print, to_string};
+use crate::jex::operators::{
+    divide, equal, greater, less, minus, multiply, negate, not, plus, print, to_string,
+};
 use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::types::JexMachine;
 use crate::machine::exceptions::types::Exception;

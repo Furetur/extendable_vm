@@ -1,3 +1,4 @@
+use extendable_vm::jex::build_jex_machine;
 use extendable_vm::jex::constant_parsers::JEX_CONSTANT_PARSERS;
 use extendable_vm::jex::instructions::types::JexInstructionTable;
 use extendable_vm::jex::instructions::JEX_INSTRUCTIONS;
@@ -19,11 +20,8 @@ fn main() {
     let code = parser.parse(&bytes).unwrap_or_else(|e| panic!("{}", e));
     println!("{:?}", code);
     // build machine
-    let instruction_table: JexInstructionTable =
-        InstructionTable::with_instructions(&JEX_INSTRUCTIONS);
-    // run machine
-    let mut machine: JexMachine = Machine::new(&code, &instruction_table);
-    machine.push_frame(0, "<script>".to_string(), 0);
+    let mut machine = build_jex_machine(&code);
+    // start
     let finished_gracefully = machine.start();
     if !finished_gracefully {
         println!("There was an exception!");

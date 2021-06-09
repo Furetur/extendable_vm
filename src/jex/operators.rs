@@ -69,7 +69,6 @@ pub fn not(value: JexValue) -> Result<JexValue, Exception> {
 }
 
 pub fn to_string(value: JexValue) -> Result<JexValue, Exception> {
-    // Ok(JexValue::from_string(JexValue::to_output_string(&value)))
     Ok(JexValue::Object(Rc::new(JexObject::String(JexValue::to_output_string(&value)))))
 }
 

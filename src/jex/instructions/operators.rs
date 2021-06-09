@@ -66,7 +66,7 @@ pub const NOT_INSTRUCTION: JexInstruction = Instruction {
 };
 
 pub const TO_STRING_INSTRUCTION: JexInstruction = Instruction {
-    op_code: JexOpCode::Not as u8,
+    op_code: JexOpCode::ToString as u8,
     name: "TO_STRING",
     instruction_fn: UnaryOp(to_string),
 };

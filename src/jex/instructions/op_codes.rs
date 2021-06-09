@@ -25,4 +25,5 @@ pub enum JexOpCode {
     JumpBackward = 22,
     Call = 23,
     Return = 24,
+    ToString = 25,
 }

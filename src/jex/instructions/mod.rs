@@ -6,7 +6,7 @@ use crate::jex::instructions::literal::CONSTANT_INSTRUCTION;
 use crate::jex::instructions::operators::{
     ADD_INSTRUCTION, DIVIDE_INSTRUCTION, EQUAL_INSTRUCTION, FALSE_INSTRUCTION, GREATER_INSTRUCTION,
     LESS_INSTRUCTION, MULTIPLY_INSTRUCTION, NEGATE_INSTRUCTION, NOT_INSTRUCTION, NULL_INSTRUCTION,
-    PRINT_INSTRUCTION, SUBTRACT_INSTRUCTION, TRUE_INSTRUCTION,
+    PRINT_INSTRUCTION, SUBTRACT_INSTRUCTION, TO_STRING_INSTRUCTION, TRUE_INSTRUCTION,
 };
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::instructions::variable::{
@@ -20,7 +20,7 @@ pub mod op_codes;
 mod operators;
 mod variable;
 
-pub const JEX_INSTRUCTIONS: [&JexInstruction; 25] = [
+pub const JEX_INSTRUCTIONS: [&JexInstruction; 26] = [
     &NEGATE_INSTRUCTION,
     &ADD_INSTRUCTION,
     &SUBTRACT_INSTRUCTION,
@@ -30,6 +30,7 @@ pub const JEX_INSTRUCTIONS: [&JexInstruction; 25] = [
     &GREATER_INSTRUCTION,
     &LESS_INSTRUCTION,
     &NOT_INSTRUCTION,
+    &TO_STRING_INSTRUCTION,
     &PRINT_INSTRUCTION,
     &NULL_INSTRUCTION,
     &TRUE_INSTRUCTION,

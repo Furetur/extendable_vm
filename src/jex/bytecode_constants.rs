@@ -5,6 +5,7 @@ use crate::machine::code::{Chunk, Code};
 use crate::machine::exceptions::types::Exception;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
+use std::str::FromStr;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum JexConstant {

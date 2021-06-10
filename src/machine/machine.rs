@@ -15,7 +15,7 @@ use crate::machine::stack::Stack;
 
 pub struct Machine<'a, Constant, Value> {
     pub code: &'a Code<Constant>,
-    instruction_table: &'a InstructionTable<'a, Constant, Value>,
+    instruction_table: InstructionTable<'a, Constant, Value>,
     operands: Stack<Value>,
     frames: Stack<CallFrame>,
     pub globals: HashMap<String, Value>,
@@ -24,7 +24,7 @@ pub struct Machine<'a, Constant, Value> {
 impl<'a, Constant, Value> Machine<'a, Constant, Value> {
     pub fn new(
         code: &'a Code<Constant>,
-        instruction_table: &'a InstructionTable<Constant, Value>,
+        instruction_table: InstructionTable<'a, Constant, Value>,
     ) -> Machine<'a, Constant, Value> {
         Machine {
             code,

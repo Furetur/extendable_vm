@@ -20,7 +20,7 @@ impl<Constant> Code<Constant> {
     ) -> Result<&Constant, Exception> {
         self.get_chunk(chunk_id)
             .and_then(|chunk| chunk.constants.get(constant_id))
-            .ok_or(Exception::from(ConstantNotFound(chunk_id, constant_id)))
+            .ok_or_else(|| Exception::from(ConstantNotFound(chunk_id, constant_id)))
     }
 
     pub fn get_chunk(&self, chunk_id: usize) -> Option<&Chunk<Constant>> {

@@ -19,3 +19,7 @@ jobs:
         with:
           command: test
           args: --release --all-features
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check

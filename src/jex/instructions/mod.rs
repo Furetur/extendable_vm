@@ -20,7 +20,7 @@ pub mod op_codes;
 mod operators;
 mod variable;
 
-pub const JEX_INSTRUCTIONS: [&'static JexInstruction; 26] = [
+pub const JEX_INSTRUCTIONS: [&JexInstruction; 26] = [
     &NEGATE_INSTRUCTION,
     &ADD_INSTRUCTION,
     &SUBTRACT_INSTRUCTION,

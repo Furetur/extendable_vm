@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::machine::Machine;
@@ -30,7 +28,7 @@ pub type RawInstructionFn<Constant, Value> = fn(
 impl<Constant, Value> InstructionFn<Constant, Value> {
     pub fn byte_arity(&self) -> usize {
         if let InstructionFn::Raw { byte_arity, .. } = self {
-            byte_arity.clone()
+            *byte_arity
         } else {
             0
         }
@@ -38,7 +36,7 @@ impl<Constant, Value> InstructionFn<Constant, Value> {
     pub fn run(
         &self,
         machine: &mut Machine<Constant, Value>,
-        mut args_ip: InstructionPointer,
+        args_ip: InstructionPointer,
     ) -> Result<(), Exception> {
         match self {
             InstructionFn::Raw { instruction_fn, .. } => {

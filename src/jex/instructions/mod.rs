@@ -21,7 +21,6 @@ mod operators;
 mod variable;
 
 pub const JEX_INSTRUCTIONS: [&JexInstruction; 25] = [
-
     &NEGATE_INSTRUCTION,
     &ADD_INSTRUCTION,
     &SUBTRACT_INSTRUCTION,

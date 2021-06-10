@@ -28,8 +28,8 @@ fn parse_int_constant(
 ) -> Result<JexConstant, Exception> {
     bytes
         .read_i32(pointer)
-        .map(|int| JexConstant::Int(int))
-        .ok_or(Exception::from(CodeEndedAt("i32".to_string())))
+        .map(JexConstant::Int)
+        .ok_or_else(|| Exception::from(CodeEndedAt("i32".to_string())))
 }
 
 fn parse_string_constant(
@@ -38,12 +38,12 @@ fn parse_string_constant(
 ) -> Result<JexConstant, Exception> {
     let str_len = bytes
         .read_u16(pointer)
-        .map(|u| usize::from(u))
-        .ok_or(CodeEndedAt("u16".to_string()))?;
+        .map(usize::from)
+        .ok_or_else(|| CodeEndedAt("u16".to_string()))?;
     let str_data = bytes
         .read_n(pointer, str_len)
-        .ok_or(CodeEndedAt("string data".to_string()))?;
-    let str = String::from_utf8(str_data).map_err(|err| StringConstantParsingError)?;
+        .ok_or_else(|| CodeEndedAt("string data".to_string()))?;
+    let str = String::from_utf8(str_data).map_err(|_err| StringConstantParsingError)?;
     Ok(JexConstant::String(str))
 }
 
@@ -53,15 +53,15 @@ fn parse_function_constant(
 ) -> Result<JexConstant, Exception> {
     let chunk_id = bytes
         .read(pointer)
-        .map(|u| usize::from(u))
-        .ok_or(CodeEndedAt("chunk_id".to_string()))?;
+        .map(usize::from)
+        .ok_or_else(|| CodeEndedAt("chunk_id".to_string()))?;
     Ok(JexConstant::Function { chunk_id })
 }
 
 pub struct StringConstantParsingError;
 
 impl From<StringConstantParsingError> for Exception {
-    fn from(exception: StringConstantParsingError) -> Self {
+    fn from(_: StringConstantParsingError) -> Self {
         Exception {
             exception_type: ExceptionType::Static,
             name: "StringConstantParsingError".to_string(),

@@ -49,7 +49,7 @@ impl From<UnaryOperatorNotDefined> for Exception {
             name: "UnaryOperatorNotDefined".to_string(),
             message: format!(
                 "Unary operator {} is not defined for type {}",
-                e.operator_name, e.operator_name
+                e.operator_name, e.operand_type
             ),
         }
     }

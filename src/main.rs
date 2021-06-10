@@ -1,10 +1,5 @@
 use extendable_vm::jex::build_jex_machine;
 use extendable_vm::jex::constant_parsers::JEX_CONSTANT_PARSERS;
-use extendable_vm::jex::instructions::types::JexInstructionTable;
-use extendable_vm::jex::instructions::JEX_INSTRUCTIONS;
-use extendable_vm::jex::types::JexMachine;
-use extendable_vm::machine::instruction_table::InstructionTable;
-use extendable_vm::machine::machine::Machine;
 use extendable_vm::machine::parsing::code_parser::CodeParser;
 use extendable_vm::machine::parsing::constant_parser::ConstantParserTable;
 use extendable_vm::machine::parsing::raw_bytes::RawBytes;

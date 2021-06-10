@@ -1,4 +1,3 @@
-use crate::jex::runtime_exceptions::TypeException;
 use crate::jex::syntax_exceptions::{InvalidFunctionChunk, NotFoundChunkForFunction};
 use crate::jex::types::JexMachine;
 use crate::machine::exceptions::types::Exception;
@@ -42,14 +41,14 @@ impl JexValue {
     }
     pub fn as_int(&self) -> Option<i32> {
         if let JexValue::Int(i) = self {
-            Some(i.clone())
+            Some(*i)
         } else {
             None
         }
     }
     pub fn as_bool(&self) -> Option<bool> {
         if let JexValue::Bool(bool) = self {
-            Some(bool.clone())
+            Some(*bool)
         } else {
             None
         }

@@ -71,9 +71,10 @@ fn jump_forward_if_false_instruction(
     mut args: InstructionPointer,
 ) -> Result<(), Exception> {
     let offset = machine.read(&mut args).ok_or(ExpectedInstructionArgument)?;
-    let value = machine.peek_operand()?.as_bool().ok_or(TypeException(
-        "Jump forward if false condition was not bool".to_string(),
-    ))?;
+    let value = machine
+        .peek_operand()?
+        .as_bool()
+        .ok_or_else(|| TypeException("Jump forward if false condition was not bool".to_string()))?;
     if !value {
         machine
             .instruction_pointer()?
@@ -102,7 +103,7 @@ fn call_instruction(
     let function = machine
         .get_operand_from_top(arity)?
         .as_function()
-        .ok_or(TypeException("Value was not callable".to_string()))?;
+        .ok_or_else(|| TypeException("Value was not callable".to_string()))?;
     if let JexFunction::Function {
         chunk_id,
         arity: actual_arity,

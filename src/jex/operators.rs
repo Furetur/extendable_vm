@@ -1,7 +1,6 @@
-use crate::jex::jex_values::get_type::GetType;
 use crate::jex::jex_values::to_output_string::ToOutputString;
 use crate::jex::jex_values::values::{JexNull, JexObject, JexValue};
-use crate::jex::runtime_exceptions::{OperatorNotDefined, TypeException, UnaryOperatorNotDefined};
+use crate::jex::runtime_exceptions::{OperatorNotDefined, UnaryOperatorNotDefined};
 use crate::machine::exceptions::types::Exception;
 use std::rc::Rc;
 

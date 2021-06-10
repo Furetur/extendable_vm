@@ -1,17 +1,11 @@
 use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
-use crate::jex::jex_values::to_output_string::ToOutputString;
-use crate::jex::jex_values::values::{JexNull, JexObject, JexValue};
+use crate::jex::jex_values::values::JexValue;
 use crate::jex::operators::{
     divide, equal, greater, less, minus, multiply, negate, not, plus, print,
 };
-use crate::jex::runtime_exceptions::TypeException;
-use crate::jex::types::JexMachine;
-use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction::Instruction;
 use crate::machine::instruction::InstructionFn::{BinaryOp, Const, UnaryOp};
-use crate::machine::instruction_pointer::InstructionPointer;
-use std::rc::Rc;
 
 pub const NEGATE_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Negate as u8,
@@ -76,7 +70,7 @@ pub const PRINT_INSTRUCTION: JexInstruction = Instruction {
 pub const NULL_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Null as u8,
     name: "NULL",
-    instruction_fn: Const(|| JexValue::null()),
+    instruction_fn: Const(JexValue::null),
 };
 
 pub const TRUE_INSTRUCTION: JexInstruction = Instruction {

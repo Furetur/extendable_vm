@@ -19,14 +19,14 @@ impl<'a, Constant> CodeParser<'a, Constant> {
         let mut chunks: Vec<Chunk<Constant>> = vec![];
         let mut ptr = RawBytesPointer::new();
         let mut chunk_id: usize = 0;
-        while bytes.has_next(&mut ptr) {
+        while bytes.has_next(&ptr) {
             let chunk = self
                 .parse_chunk(bytes, &mut ptr)
                 .map_err(|err| ChunkParsingError(chunk_id, err))?;
             chunks.push(chunk);
             chunk_id += 1;
         }
-        if chunks.len() == 0 {
+        if chunks.is_empty() {
             Err(Exception::from(EmptyCode))
         } else {
             Ok(Code { chunks })
@@ -40,11 +40,11 @@ impl<'a, Constant> CodeParser<'a, Constant> {
         let mut result_constants: Vec<Constant> = vec![];
         let n_constants = bytes
             .read(ptr)
-            .ok_or(CodeEndedAt("n_constants".to_string()))?;
+            .ok_or_else(|| CodeEndedAt("n_constants".to_string()))?;
         for _ in 0..n_constants {
             let constant_type = bytes
                 .read(ptr)
-                .ok_or(CodeEndedAt("constant_type".to_string()))?;
+                .ok_or_else(|| CodeEndedAt("constant_type".to_string()))?;
             let constant_parser = self
                 .parsers
                 .get_parser(constant_type)
@@ -55,10 +55,10 @@ impl<'a, Constant> CodeParser<'a, Constant> {
         }
         let n_code_bytes = bytes
             .read_u16(ptr)
-            .ok_or(CodeEndedAt("n_code_bytes".to_string()))?;
+            .ok_or_else(|| CodeEndedAt("n_code_bytes".to_string()))?;
         let code = bytes
             .read_n(ptr, usize::from(n_code_bytes))
-            .ok_or(CodeEndedAt("code".to_string()))?;
+            .ok_or_else(|| CodeEndedAt("code".to_string()))?;
         Ok(Chunk {
             constants: result_constants,
             code,

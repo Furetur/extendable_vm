@@ -1,10 +1,6 @@
 use std::collections::HashMap;
-use std::fmt::Debug;
 
-use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction::Instruction;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::machine::Machine;
 
 pub struct InstructionTable<'a, Constant, Value> {
     instructions: HashMap<u8, &'a Instruction<Constant, Value>>,

@@ -110,7 +110,7 @@ pub fn read_line(machine: &mut JexMachine, mut _args: InstructionPointer) -> Res
     if error.is_err() {
         Err(Exception::from(IOException))
     } else {
-        let value = JexValue::from_string(line);
+        let value = JexValue::from_string(line.trim_end().to_string());
         machine.push_operand(value);
         Ok(())
     }

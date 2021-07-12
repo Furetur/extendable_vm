@@ -91,7 +91,7 @@ impl From<OperatorNotDefined> for Exception {
 pub struct IOException;
 
 impl From<IOException> for Exception {
-    fn from(e: OperatorNotDefined) -> Self {
+    fn from(e: IOException) -> Self {
         Exception {
             exception_type: ExceptionType::Runtime,
             name: "IOException".to_string(),

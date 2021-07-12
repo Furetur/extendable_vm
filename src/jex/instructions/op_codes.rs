@@ -26,4 +26,5 @@ pub enum JexOpCode {
     Call = 23,
     Return = 24,
     ToString = 25,
+    ReadLine = 26,
 }

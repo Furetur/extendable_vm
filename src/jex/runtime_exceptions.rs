@@ -87,3 +87,16 @@ impl From<OperatorNotDefined> for Exception {
         }
     }
 }
+
+pub struct IOException;
+
+impl From<IOException> for Exception {
+    fn from(e: OperatorNotDefined) -> Self {
+        Exception {
+            exception_type: ExceptionType::Runtime,
+            name: "IOException".to_string(),
+            message: "This type of errors is not implemented so no error message is available"
+                .to_string(),
+        }
+    }
+}

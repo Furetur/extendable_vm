@@ -1,7 +1,10 @@
 use crate::jex::jex_values::to_output_string::ToOutputString;
 use crate::jex::jex_values::values::{JexNull, JexObject, JexValue};
 use crate::jex::runtime_exceptions::{OperatorNotDefined, UnaryOperatorNotDefined};
+use crate::jex::types::JexMachine;
 use crate::machine::exceptions::types::Exception;
+use crate::machine::instruction_pointer::InstructionPointer;
+use scanrs::scanln;
 use std::rc::Rc;
 
 pub fn plus(left: JexValue, right: JexValue) -> Result<JexValue, Exception> {
@@ -98,6 +101,14 @@ pub fn less(left: JexValue, right: JexValue) -> Result<JexValue, Exception> {
 pub fn print(value: JexValue) -> Result<JexValue, Exception> {
     println!("{}", value.to_output_string());
     Ok(JexValue::Null(JexNull))
+}
+
+// TODO: should be a nullary operator
+pub fn read_line(machine: &mut JexMachine, mut _args: InstructionPointer) -> Result<(), Exception> {
+    let line = scanln();
+    let value = JexValue::from_string(line.to_string());
+    machine.push_operand(value);
+    Ok(())
 }
 
 #[cfg(test)]

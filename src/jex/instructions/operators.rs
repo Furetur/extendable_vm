@@ -2,10 +2,10 @@ use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::jex_values::values::JexValue;
 use crate::jex::operators::{
-    divide, equal, greater, less, minus, multiply, negate, not, plus, print, to_string,
+    divide, equal, greater, less, minus, multiply, negate, not, plus, print, read_line, to_string,
 };
 use crate::machine::instruction::Instruction;
-use crate::machine::instruction::InstructionFn::{BinaryOp, Const, UnaryOp};
+use crate::machine::instruction::InstructionFn::{BinaryOp, Const, Raw, UnaryOp};
 
 pub const NEGATE_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Negate as u8,
@@ -71,6 +71,15 @@ pub const PRINT_INSTRUCTION: JexInstruction = Instruction {
     op_code: JexOpCode::Print as u8,
     name: "PRINT",
     instruction_fn: UnaryOp(print),
+};
+
+pub const READ_LINE_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::ReadLine as u8,
+    name: "READ_LINE",
+    instruction_fn: Raw {
+        byte_arity: 0,
+        instruction_fn: read_line,
+    },
 };
 
 pub const NULL_INSTRUCTION: JexInstruction = Instruction {

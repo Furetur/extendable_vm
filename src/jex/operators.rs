@@ -111,11 +111,24 @@ pub fn read_line(machine: &mut JexMachine, mut _args: InstructionPointer) -> Res
     Ok(())
 }
 
+pub fn parse_int(value: JexValue) -> Result<JexValue, Exception> {
+    if let Some(str) = value.as_string() {
+        Ok(str
+            .parse::<i32>()
+            .map_or_else(|e| JexValue::null(), |int| JexValue::Int(int)))
+    } else {
+        Err(Exception::from(UnaryOperatorNotDefined::new(
+            "PARSE_INT",
+            &value,
+        )))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::jex::jex_values::values::{JexObject, JexValue};
     use crate::jex::operators::{
-        divide, equal, greater, less, minus, multiply, negate, not, plus, to_string,
+        divide, equal, greater, less, minus, multiply, negate, not, parse_int, plus, to_string,
     };
 
     // PLUS
@@ -410,5 +423,42 @@ mod tests {
     #[test]
     fn less_should_not_compare_bools() {
         assert!(less(JexValue::Bool(true), JexValue::Bool(false)).is_err());
+    }
+
+    // PARSE INT
+
+    #[test]
+    fn parse_int_should_parse_1() {
+        let string = JexValue::from_string("1".to_string());
+        let actual = parse_int(string).unwrap();
+        assert_eq!(actual, JexValue::Int(1));
+    }
+
+    #[test]
+    fn parse_int_should_parse_negative_100() {
+        let string = JexValue::from_string("-100".to_string());
+        let actual = parse_int(string).unwrap();
+        assert_eq!(actual, JexValue::Int(-100));
+    }
+
+    #[test]
+    fn parse_int_should_parse_negative_99999() {
+        let string = JexValue::from_string("-99999".to_string());
+        let actual = parse_int(string).unwrap();
+        assert_eq!(actual, JexValue::Int(-99999));
+    }
+
+    #[test]
+    fn parse_int_should_return_null_if_given_abc() {
+        let string = JexValue::from_string("abc".to_string());
+        let actual = parse_int(string).unwrap();
+        assert_eq!(actual, JexValue::null());
+    }
+
+    #[test]
+    fn parse_int_should_return_null_if_given_100a() {
+        let string = JexValue::from_string("100a".to_string());
+        let actual = parse_int(string).unwrap();
+        assert_eq!(actual, JexValue::null());
     }
 }

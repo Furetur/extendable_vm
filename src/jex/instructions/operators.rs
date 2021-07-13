@@ -2,7 +2,8 @@ use crate::jex::instructions::op_codes::JexOpCode;
 use crate::jex::instructions::types::JexInstruction;
 use crate::jex::jex_values::values::JexValue;
 use crate::jex::operators::{
-    divide, equal, greater, less, minus, multiply, negate, not, plus, print, read_line, to_string,
+    divide, equal, greater, less, minus, multiply, negate, not, parse_int, plus, print, read_line,
+    to_string,
 };
 use crate::machine::instruction::Instruction;
 use crate::machine::instruction::InstructionFn::{BinaryOp, Const, Raw, UnaryOp};
@@ -80,6 +81,12 @@ pub const READ_LINE_INSTRUCTION: JexInstruction = Instruction {
         byte_arity: 0,
         instruction_fn: read_line,
     },
+};
+
+pub const PARSE_INT_INSTRUCTION: JexInstruction = Instruction {
+    op_code: JexOpCode::ParseInt as u8,
+    name: "PARSE_INT",
+    instruction_fn: UnaryOp(parse_int),
 };
 
 pub const NULL_INSTRUCTION: JexInstruction = Instruction {

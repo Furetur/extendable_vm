@@ -33,6 +33,14 @@ After you have the binary executable `extendable_vm` you can run it:
 ./extendable_vm path/to/bytecode
 ```
 
+### Windows
+
+After you have the binary executable `extendable_vm.exe` you can run it:
+
+```shell
+./extendable_vm.exe path/to/bytecode
+```
+
 ## Instructions
 
 `u8` represents an unsigned 8-bit integer

@@ -30,7 +30,7 @@ Or you can [build from source](#building-from-source).
 After you have the binary executable `extendable_vm` you can run it:
 
 ```shell
-extendable_vm path/to/bytecode
+./extendable_vm path/to/bytecode
 ```
 
 ## Instructions

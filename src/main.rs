@@ -6,7 +6,6 @@ use extendable_vm::machine::parsing::code_parser::CodeParser;
 use extendable_vm::machine::parsing::constant_parser::ConstantParserTable;
 use extendable_vm::machine::parsing::raw_bytes::RawBytes;
 
-#[macro_use]
 extern crate log;
 extern crate pretty_env_logger;
 

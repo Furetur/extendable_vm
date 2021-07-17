@@ -21,7 +21,7 @@ pub enum InstructionFn<Constant, Value: Debug> {
     BinaryOp(fn(left: Value, right: Value) -> Result<Value, Exception>),
 }
 
-pub type RawInstructionFn<Constant, Value: Debug> = fn(
+pub type RawInstructionFn<Constant, Value> = fn(
     machine: &mut Machine<Constant, Value>,
     args_ip: InstructionPointer,
 ) -> Result<(), Exception>;

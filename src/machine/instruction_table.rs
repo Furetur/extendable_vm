@@ -1,12 +1,13 @@
 use std::collections::HashMap;
 
 use crate::machine::instruction::Instruction;
+use std::fmt::Debug;
 
-pub struct InstructionTable<'a, Constant, Value> {
+pub struct InstructionTable<'a, Constant, Value: Debug> {
     instructions: HashMap<u8, &'a Instruction<Constant, Value>>,
 }
 
-impl<'a, Constant, Value> InstructionTable<'a, Constant, Value> {
+impl<'a, Constant, Value: Debug> InstructionTable<'a, Constant, Value> {
     pub(crate) fn new() -> InstructionTable<'a, Constant, Value> {
         InstructionTable {
             instructions: HashMap::new(),

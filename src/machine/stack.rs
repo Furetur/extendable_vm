@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Formatter};
 use std::iter::Rev;
 use std::slice::Iter;
 
@@ -53,5 +54,11 @@ impl<T> Stack<T> {
 
     pub fn rev(&self) -> Rev<Iter<T>> {
         self.data.iter().rev()
+    }
+}
+
+impl<T: Debug> Debug for Stack<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.data)
     }
 }

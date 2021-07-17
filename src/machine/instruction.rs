@@ -1,16 +1,17 @@
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::machine::Machine;
+use std::fmt::Debug;
 
 #[derive(Clone)]
-pub struct Instruction<Constant, Value> {
+pub struct Instruction<Constant, Value: Debug> {
     pub op_code: u8,
     pub name: &'static str,
     pub instruction_fn: InstructionFn<Constant, Value>,
 }
 
 #[derive(Clone)]
-pub enum InstructionFn<Constant, Value> {
+pub enum InstructionFn<Constant, Value: Debug> {
     Raw {
         byte_arity: usize,
         instruction_fn: RawInstructionFn<Constant, Value>,
@@ -20,12 +21,12 @@ pub enum InstructionFn<Constant, Value> {
     BinaryOp(fn(left: Value, right: Value) -> Result<Value, Exception>),
 }
 
-pub type RawInstructionFn<Constant, Value> = fn(
+pub type RawInstructionFn<Constant, Value: Debug> = fn(
     machine: &mut Machine<Constant, Value>,
     args_ip: InstructionPointer,
 ) -> Result<(), Exception>;
 
-impl<Constant, Value> InstructionFn<Constant, Value> {
+impl<Constant, Value: Debug> InstructionFn<Constant, Value> {
     pub fn byte_arity(&self) -> usize {
         if let InstructionFn::Raw { byte_arity, .. } = self {
             *byte_arity

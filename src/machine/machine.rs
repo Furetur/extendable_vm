@@ -12,8 +12,9 @@ use crate::machine::instruction::Instruction;
 use crate::machine::instruction_pointer::InstructionPointer;
 use crate::machine::instruction_table::InstructionTable;
 use crate::machine::stack::Stack;
+use log::debug;
 
-pub struct Machine<'a, Constant, Value> {
+pub struct Machine<'a, Constant, Value: Debug> {
     pub code: &'a Code<Constant>,
     instruction_table: InstructionTable<'a, Constant, Value>,
     operands: Stack<Value>,
@@ -21,7 +22,7 @@ pub struct Machine<'a, Constant, Value> {
     pub globals: HashMap<String, Value>,
 }
 
-impl<'a, Constant, Value> Machine<'a, Constant, Value> {
+impl<'a, Constant, Value: Debug> Machine<'a, Constant, Value> {
     pub fn new(
         code: &'a Code<Constant>,
         instruction_table: InstructionTable<'a, Constant, Value>,
@@ -51,7 +52,10 @@ impl<'a, Constant, Value> Machine<'a, Constant, Value> {
             let arguments_ip = self.instruction_pointer()?.clone();
             self.instruction_pointer()?
                 .jump_forward(instruction.instruction_fn.byte_arity());
+            debug!("Running instruction {}.", instruction.name);
+            debug!("\tStack before: {:?}", self.operands);
             instruction.instruction_fn.run(self, arguments_ip)?;
+            debug!("\tStack after: {:?}", self.operands);
         }
         Ok(())
     }

@@ -6,6 +6,9 @@ use extendable_vm::machine::parsing::code_parser::CodeParser;
 use extendable_vm::machine::parsing::constant_parser::ConstantParserTable;
 use extendable_vm::machine::parsing::raw_bytes::RawBytes;
 
+extern crate log;
+extern crate pretty_env_logger;
+
 #[derive(Clap)]
 #[clap(author = "Furetur <furetur@gmail.com>")]
 #[clap(setting = AppSettings::ColoredHelp)]
@@ -17,6 +20,8 @@ struct CliOptions {
 }
 
 fn main() {
+    pretty_env_logger::init();
+
     let options: CliOptions = CliOptions::parse();
     // read file
     let bytes = RawBytes::from_file(&options.input_file).expect("File cannot be opened");

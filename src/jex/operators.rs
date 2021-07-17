@@ -115,7 +115,7 @@ pub fn parse_int(value: JexValue) -> Result<JexValue, Exception> {
     if let Some(str) = value.as_string() {
         Ok(str
             .parse::<i32>()
-            .map_or_else(|e| JexValue::null(), |int| JexValue::Int(int)))
+            .map_or_else(|_e| JexValue::null(), |int| JexValue::Int(int)))
     } else {
         Err(Exception::from(UnaryOperatorNotDefined::new(
             "PARSE_INT",

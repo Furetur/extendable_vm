@@ -2,10 +2,12 @@ use crate::jex::syntax_exceptions::{InvalidFunctionChunk, NotFoundChunkForFuncti
 use crate::jex::types::JexMachine;
 use crate::machine::exceptions::types::Exception;
 
+use crate::jex::jex_values::to_output_string::ToOutputString;
 use std::convert::TryFrom;
+use std::fmt::{Debug, Formatter};
 use std::rc::Rc;
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum JexValue {
     Null(JexNull),
     Int(i32),
@@ -17,7 +19,7 @@ pub enum JexValue {
 #[derive(PartialEq, Eq, Debug, Clone)]
 pub struct JexNull;
 
-#[derive(PartialEq, Eq, Debug, Clone)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum JexObject {
     String(String),
 }
@@ -90,6 +92,26 @@ impl JexFunction {
             })
         } else {
             Err(Exception::from(InvalidFunctionChunk(chunk_id)))
+        }
+    }
+}
+
+impl Debug for JexValue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            JexValue::Int(int) => write!(f, "{}", int),
+            JexValue::Bool(bool) => write!(f, "{}", bool),
+            JexValue::Null(_) => write!(f, "null"),
+            JexValue::Function(func) => write!(f, "{}", func.to_output_string()),
+            JexValue::Object(obj) => write!(f, "{:?}", &**obj),
+        }
+    }
+}
+
+impl Debug for JexObject {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            JexObject::String(s) => write!(f, "\"{}\"", s),
         }
     }
 }

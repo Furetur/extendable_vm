@@ -1,3 +1,4 @@
+use std::fmt::{Debug, Formatter};
 use std::iter::Rev;
 use std::slice::Iter;
 
@@ -28,7 +29,7 @@ impl<T> Stack<T> {
 
     pub fn set(&mut self, index: usize, value: T) -> Result<(), ()> {
         if index < self.len() {
-            self.data.insert(index, value);
+            self.data[index] = value;
             Ok(())
         } else {
             Err(())
@@ -53,5 +54,64 @@ impl<T> Stack<T> {
 
     pub fn rev(&self) -> Rev<Iter<T>> {
         self.data.iter().rev()
+    }
+}
+
+impl<T: Debug> Debug for Stack<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.data)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::machine::stack::Stack;
+
+    #[test]
+    fn stack_initially_should_have_0_size() {
+        let stack: Stack<i32> = Stack::empty();
+        assert_eq!(stack.len(), 0);
+    }
+
+    #[test]
+    fn empty_stack_should_have_size_1_after_1_element_added() {
+        let mut stack: Stack<i32> = Stack::empty();
+        stack.push(1);
+        assert_eq!(stack.len(), 1);
+    }
+
+    #[test]
+    fn empty_stack_should_have_size_100_after_100_elements_added() {
+        let mut stack: Stack<i32> = Stack::empty();
+        for i in 0..100 {
+            stack.push(i);
+        }
+        assert_eq!(stack.len(), 100);
+    }
+
+    #[test]
+    fn empty_stack_should_return_none_on_pop() {
+        let mut stack: Stack<i32> = Stack::empty();
+        assert!(stack.pop().is_none());
+    }
+
+    #[test]
+    fn stack_of_size_10_should_not_change_size_after_element_is_set() {
+        let mut stack: Stack<i32> = Stack::empty();
+        for i in 0..10 {
+            stack.push(i);
+        }
+        stack.set(5, 100);
+        assert_eq!(stack.len(), 10);
+    }
+
+    #[test]
+    fn stack_of_size_100_should_become_99_after_element_is_popped() {
+        let mut stack: Stack<i32> = Stack::empty();
+        for i in 0..100 {
+            stack.push(i);
+        }
+        stack.pop();
+        assert_eq!(stack.len(), 99);
     }
 }

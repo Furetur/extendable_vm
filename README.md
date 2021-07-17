@@ -41,6 +41,15 @@ After you have the binary executable `extendable_vm.exe` you can run it:
 ./extendable_vm.exe path/to/bytecode
 ```
 
+### Run with logging
+
+To run with logging you have to set the environment variable `RUST_LOG=extendable_vm`.
+For example,
+
+```shell
+RUST_LOG=extendable_vm ./extendable_vm path/to/bytecode
+```
+
 ## Instructions
 
 `u8` represents an unsigned 8-bit integer

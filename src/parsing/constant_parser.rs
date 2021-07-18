@@ -1,6 +1,6 @@
-use crate::exceptions::types::Exception;
 use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 use std::collections::HashMap;
+use crate::exception::Exception;
 
 pub struct ConstantParser<Constant> {
     pub constant_type: u8,
@@ -15,7 +15,7 @@ pub struct ConstantParserTable<'a, Constant> {
 }
 
 impl<'a, Constant> ConstantParserTable<'a, Constant> {
-    pub fn with_parsers(
+    pub fn parsers(
         parsers: &'a [ConstantParser<Constant>],
     ) -> ConstantParserTable<'a, Constant> {
         let mut parsers_result: HashMap<u8, &'a ConstantParser<Constant>> = HashMap::new();

@@ -1,7 +1,6 @@
-use crate::exceptions::types::Exception;
-use crate::runtime::instruction_pointer::InstructionPointer;
-use crate::runtime::machine::Machine;
 use std::fmt::Debug;
+use crate::exception::Exception;
+use crate::{Machine, InstructionPointer};
 
 #[derive(Clone)]
 pub struct Instruction<Constant, Value: Debug> {

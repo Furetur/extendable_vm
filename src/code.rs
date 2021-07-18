@@ -1,9 +1,9 @@
 use crate::byte_readable::ByteReadable;
-use crate::exceptions::runtime_exceptions::ConstantNotFound;
-use crate::exceptions::types::Exception;
-use crate::runtime::instruction_pointer::InstructionPointer;
+use crate::runtime::exceptions::ConstantNotFound;
+use crate::InstructionPointer;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
+use crate::exception::Exception;
 
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,

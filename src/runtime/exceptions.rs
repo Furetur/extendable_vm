@@ -1,4 +1,4 @@
-use crate::exceptions::types::{Exception, ExceptionType};
+use crate::exception::{Exception, ExceptionType};
 
 #[derive(Debug)]
 pub struct UnexpectedEndOfCode {

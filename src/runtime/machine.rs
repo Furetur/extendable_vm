@@ -4,15 +4,15 @@ use std::fmt::Debug;
 use crate::byte_readable::ByteReadable;
 use crate::runtime::call_frame::CallFrame;
 use crate::code::Code;
-use crate::exceptions::runtime_exceptions::{
+use crate::runtime::exceptions::{
     EmptyCallStack, EmptyOperandStack, SlotOutOfBounds, UnknownOpCode,
 };
-use crate::exceptions::types::Exception;
 use crate::instruction::Instruction;
 use crate::runtime::instruction_pointer::InstructionPointer;
 use crate::instruction_table::InstructionTable;
 use crate::runtime::stack::Stack;
 use log::debug;
+use crate::exception::Exception;
 
 pub struct Machine<'a, Constant, Value: Debug> {
     pub code: &'a Code<Constant>,

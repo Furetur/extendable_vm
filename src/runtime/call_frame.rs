@@ -10,7 +10,7 @@ pub struct CallFrame {
 }
 
 impl CallFrame {
-    pub(crate) fn new(chunk_id: usize, name: String, start_slot: usize) -> CallFrame {
+    pub fn new(chunk_id: usize, name: String, start_slot: usize) -> CallFrame {
         CallFrame {
             chunk_id,
             name,

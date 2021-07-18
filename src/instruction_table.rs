@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::machine::instruction::Instruction;
+use crate::instruction::Instruction;
 use std::fmt::Debug;
 
 pub struct InstructionTable<'a, Constant, Value: Debug> {
@@ -14,7 +14,7 @@ impl<'a, Constant, Value: Debug> InstructionTable<'a, Constant, Value> {
         }
     }
 
-    pub fn with_instructions(
+    pub fn instructions(
         instructions: &'a [&'a Instruction<Constant, Value>],
     ) -> InstructionTable<'a, Constant, Value> {
         let mut table: InstructionTable<Constant, Value> = InstructionTable::new();
@@ -43,10 +43,10 @@ impl<'a, Constant, Value: Debug> InstructionTable<'a, Constant, Value> {
 
 #[cfg(test)]
 mod tests {
-    use crate::machine::exceptions::types::Exception;
-    use crate::machine::instruction::Instruction;
-    use crate::machine::instruction::InstructionFn::BinaryOp;
-    use crate::machine::instruction_table::InstructionTable;
+    use crate::exceptions::types::Exception;
+    use crate::instruction::Instruction;
+    use crate::instruction::InstructionFn::BinaryOp;
+    use crate::instruction_table::InstructionTable;
     use std::ptr;
 
     type Constant = i32;
@@ -80,13 +80,13 @@ mod tests {
 
     #[test]
     fn registered_instruction_should_be_gettable() {
-        let table = InstructionTable::with_instructions(&[&ADD]);
+        let table = InstructionTable::instructions(&[&ADD]);
         assert!(ptr::eq(&ADD, table.get_instruction(0).unwrap()))
     }
 
     #[test]
     #[should_panic]
     fn registering_instructions_with_duplicate_opcodes_panics() {
-        let table = InstructionTable::with_instructions(&[&ADD, &MUL]);
+        InstructionTable::instructions(&[&ADD, &MUL]);
     }
 }

@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use crate::machine::byte_readable::ByteReadable;
-use crate::machine::call_frame::CallFrame;
-use crate::machine::code::Code;
-use crate::machine::exceptions::runtime_exceptions::{
+use crate::byte_readable::ByteReadable;
+use crate::runtime::call_frame::CallFrame;
+use crate::code::Code;
+use crate::exceptions::runtime_exceptions::{
     EmptyCallStack, EmptyOperandStack, SlotOutOfBounds, UnknownOpCode,
 };
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction::Instruction;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::instruction_table::InstructionTable;
-use crate::machine::stack::Stack;
+use crate::exceptions::types::Exception;
+use crate::instruction::Instruction;
+use crate::runtime::instruction_pointer::InstructionPointer;
+use crate::instruction_table::InstructionTable;
+use crate::runtime::stack::Stack;
 use log::debug;
 
 pub struct Machine<'a, Constant, Value: Debug> {

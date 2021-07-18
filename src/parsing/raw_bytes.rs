@@ -1,4 +1,4 @@
-use crate::machine::byte_readable::ByteReadable;
+use crate::byte_readable::ByteReadable;
 use std::fs;
 use std::io::Error;
 

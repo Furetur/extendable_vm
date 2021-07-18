@@ -1,7 +1,7 @@
-use crate::machine::byte_readable::ByteReadable;
-use crate::machine::exceptions::runtime_exceptions::ConstantNotFound;
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction_pointer::InstructionPointer;
+use crate::byte_readable::ByteReadable;
+use crate::exceptions::runtime_exceptions::ConstantNotFound;
+use crate::exceptions::types::Exception;
+use crate::runtime::instruction_pointer::InstructionPointer;
 use std::fmt::{Debug, Formatter};
 use std::fmt;
 

@@ -1,6 +1,6 @@
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::machine::Machine;
+use crate::exceptions::types::Exception;
+use crate::runtime::instruction_pointer::InstructionPointer;
+use crate::runtime::machine::Machine;
 use std::fmt::Debug;
 
 #[derive(Clone)]

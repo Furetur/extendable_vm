@@ -13,7 +13,7 @@ This is a stack VM that supports
 
 ## Why extendable?
 
-**Generic VM** This project provides a [generic stack VM](src/machine) that can be used to implement a concrete VM by
+**Generic VM** This project provides a [generic stack VM](src/runtime) that can be used to implement a concrete VM by
 defining concrete data types, bytecode format and instructions.
 
 **Jex VM** The [actual runnable VM](src/jex) just implements the generic VM.

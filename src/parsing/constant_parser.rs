@@ -1,5 +1,5 @@
-use crate::machine::exceptions::types::Exception;
-use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
+use crate::exceptions::types::Exception;
+use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 use std::collections::HashMap;
 
 pub struct ConstantParser<Constant> {

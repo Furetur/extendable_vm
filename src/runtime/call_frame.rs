@@ -1,4 +1,4 @@
-use crate::machine::instruction_pointer::InstructionPointer;
+use crate::runtime::instruction_pointer::InstructionPointer;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 

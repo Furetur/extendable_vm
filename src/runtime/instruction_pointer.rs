@@ -1,4 +1,4 @@
-use crate::machine::code::Chunk;
+use crate::code::Chunk;
 
 #[derive(Clone)]
 pub struct InstructionPointer {
@@ -39,9 +39,9 @@ impl InstructionPointer {
 
 // #[cfg(test)]
 // mod tests {
-//     use crate::machine::code::Chunk;
-//     use crate::machine::instruction_pointer::InstructionPointer;
-//     use crate::machine::instruction_table::Instruction;
+//     use crate::runtime::code::Chunk;
+//     use crate::runtime::instruction_pointer::InstructionPointer;
+//     use crate::runtime::instruction_table::Instruction;
 //
 //     #[test]
 //     fn should_iterate_over_all_instructions() {

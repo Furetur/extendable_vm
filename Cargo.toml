@@ -1,9 +1,8 @@
 [package]
 name = "extendable_vm"
 description = "Library that simplifies implementation of stack VMs"
-license = "MIT"
 license-file = "LICENSE"
-version = "0.1.1-releaseAttempt2"
+version = "0.1.1-releaseAttempt3"
 authors = ["furetur <furetur@gmail.com>"]
 edition = "2018"
 

@@ -1,11 +1,11 @@
-use crate::machine::byte_readable::ByteReadable;
-use crate::machine::code::{Chunk, Code};
-use crate::machine::exceptions::types::Exception;
-use crate::machine::parsing::constant_parser::ConstantParserTable;
-use crate::machine::parsing::parsing_exceptions::{
+use crate::byte_readable::ByteReadable;
+use crate::code::{Chunk, Code};
+use crate::exceptions::types::Exception;
+use crate::parsing::constant_parser::ConstantParserTable;
+use crate::parsing::parsing_exceptions::{
     ChunkParsingError, CodeEndedAt, EmptyCode, IllegalConstant, UnknownConstantType,
 };
-use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
+use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 
 pub struct CodeParser<'a, Constant> {
     parsers: &'a ConstantParserTable<'a, Constant>,
@@ -68,12 +68,12 @@ impl<'a, Constant> CodeParser<'a, Constant> {
 
 #[cfg(test)]
 mod tests {
-    use crate::machine::byte_readable::ByteReadable;
-    use crate::machine::code::{Chunk, Code};
-    use crate::machine::exceptions::types::Exception;
-    use crate::machine::parsing::code_parser::CodeParser;
-    use crate::machine::parsing::constant_parser::{ConstantParser, ConstantParserTable};
-    use crate::machine::parsing::raw_bytes::{RawBytes, RawBytesPointer};
+    use crate::byte_readable::ByteReadable;
+    use crate::code::{Chunk, Code};
+    use crate::exceptions::types::Exception;
+    use crate::parsing::code_parser::CodeParser;
+    use crate::parsing::constant_parser::{ConstantParser, ConstantParserTable};
+    use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 
     const DUMMY_CONSTANT: ConstantParser<u8> = ConstantParser {
         constant_type: 0,

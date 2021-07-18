@@ -87,7 +87,7 @@ dependencies = [
 
 [[package]]
 name = "extendable_vm"
-version = "0.1.1-releaseAttempt2"
+version = "0.1.1-releaseAttempt3"
 dependencies = [
  "clap",
  "log",

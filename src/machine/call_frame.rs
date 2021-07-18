@@ -6,7 +6,7 @@ pub struct CallFrame {
     pub chunk_id: usize,
     pub name: String,
     pub instruction_pointer: InstructionPointer,
-    pub(crate) start_slot: usize,
+    pub start_slot: usize,
 }
 
 impl CallFrame {

@@ -43,11 +43,11 @@ impl<'a, Constant, Value: Debug> InstructionTable<'a, Constant, Value> {
 
 #[cfg(test)]
 mod tests {
+    use crate::exception::Exception;
     use crate::instruction::Instruction;
     use crate::instruction::InstructionFn::BinaryOp;
     use crate::instruction_table::InstructionTable;
     use std::ptr;
-    use crate::exception::Exception;
 
     type Constant = i32;
     type Value = i32;

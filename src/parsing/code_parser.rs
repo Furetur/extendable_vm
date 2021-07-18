@@ -1,11 +1,11 @@
 use crate::byte_readable::ByteReadable;
 use crate::code::{Chunk, Code};
+use crate::exception::Exception;
 use crate::parsing::constant_parser::ConstantParserTable;
 use crate::parsing::exceptions::{
     ChunkParsingError, CodeEndedAt, EmptyCode, IllegalConstant, UnknownConstantType,
 };
 use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
-use crate::exception::Exception;
 
 pub struct CodeParser<'a, Constant> {
     parsers: &'a ConstantParserTable<'a, Constant>,
@@ -70,10 +70,10 @@ impl<'a, Constant> CodeParser<'a, Constant> {
 mod tests {
     use crate::byte_readable::ByteReadable;
     use crate::code::{Chunk, Code};
+    use crate::exception::Exception;
     use crate::parsing::code_parser::CodeParser;
     use crate::parsing::constant_parser::{ConstantParser, ConstantParserTable};
     use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
-    use crate::exception::Exception;
 
     const DUMMY_CONSTANT: ConstantParser<u8> = ConstantParser {
         constant_type: 0,

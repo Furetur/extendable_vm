@@ -1,4 +1,4 @@
-use crate::code::Chunk;
+use crate::Chunk;
 
 #[derive(Clone)]
 pub struct InstructionPointer {
@@ -37,62 +37,73 @@ impl InstructionPointer {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use crate::runtime::code::Chunk;
-//     use crate::runtime::instruction_pointer::InstructionPointer;
-//     use crate::runtime::instruction_table::Instruction;
-//
-//     #[test]
-//     fn should_iterate_over_all_instructions() {
-//         let chunk = Chunk {
-//             constants: vec![ChunkConstant::INT(0), ChunkConstant::from_str("str")],
-//             code: vec![
-//                 Instruction::Constant(0),
-//                 Instruction::Constant(1),
-//                 Instruction::Add,
-//             ],
-//         };
-//         let expected_instructions = vec![
-//             &Instruction::Constant(0),
-//             &Instruction::Constant(1),
-//             &Instruction::Add,
-//         ];
-//         let mut reader = InstructionPointer::new();
-//         let mut actual_instructions: Vec<&Instruction> = vec![];
-//         while let Some(instruction) = reader.read_and_advance(&chunk) {
-//             actual_instructions.push(instruction)
-//         }
-//         assert_eq!(expected_instructions, actual_instructions)
-//     }
-//
-//     #[test]
-//     fn should_jump_backward() {
-//         let chunk = Chunk {
-//             constants: vec![ChunkConstant::INT(0), ChunkConstant::from_str("str")],
-//             code: vec![
-//                 Instruction::Constant(0),
-//                 Instruction::Constant(1),
-//                 Instruction::Add,
-//             ],
-//         };
-//         let expected_instructions = vec![
-//             &Instruction::Constant(0),
-//             &Instruction::Constant(1),
-//             &Instruction::Constant(1),
-//             &Instruction::Add,
-//         ];
-//         let mut reader = InstructionPointer::new();
-//         let mut actual_instructions: Vec<&Instruction> = vec![];
-//         let mut first_time = true;
-//         while let Some(instruction) = reader.read_and_advance(&chunk) {
-//             if first_time && instruction == &Instruction::Add {
-//                 reader.jump_backward(2);
-//                 first_time = false;
-//                 continue;
-//             }
-//             actual_instructions.push(instruction);
-//         }
-//         assert_eq!(expected_instructions, actual_instructions)
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use crate::{Chunk, InstructionPointer};
+
+    #[test]
+    fn should_iterate_over_all_instructions() {
+        let mut expected_code: Vec<u8> = vec![];
+        for i in 1..100 {
+            expected_code.push(i);
+        }
+
+        let chunk = Chunk {
+            constants: vec![0],
+            code: expected_code.clone(),
+        };
+
+        let mut pointer = InstructionPointer::new(0);
+        let mut actual_code: Vec<u8> = vec![];
+
+        while let Some(byte) = pointer.read_and_advance(&chunk) {
+            actual_code.push(byte)
+        }
+        assert_eq!(expected_code, actual_code)
+    }
+
+    #[test]
+    fn should_jump_backward() {
+        let code: Vec<u8> = vec![0, 1, 2, 3, 4, 5];
+
+        let chunk = Chunk {
+            constants: vec![0],
+            code,
+        };
+
+        let expected_code: Vec<u8> = vec![0, 1, 2, 3, 4, 5, 2, 3, 4, 5];
+
+        let mut pointer = InstructionPointer::new(0);
+        let mut actual_code: Vec<u8> = vec![];
+
+        while let Some(byte) = pointer.read_and_advance(&chunk) {
+            actual_code.push(byte)
+        }
+        pointer.jump_backward(4);
+        while let Some(byte) = pointer.read_and_advance(&chunk) {
+            actual_code.push(byte)
+        }
+
+        assert_eq!(expected_code, actual_code)
+    }
+
+    #[test]
+    fn should_jump_forward() {
+        let chunk = Chunk {
+            constants: vec![0],
+            code: vec![0, 1, 2, 3, 4, 5],
+        };
+
+        let mut pointer = InstructionPointer::new(0);
+        pointer.jump_forward(5);
+
+        assert_eq!(5, pointer.read_and_advance(&chunk).unwrap());
+    }
+
+    #[test]
+    #[should_panic]
+    fn should_panic_if_jumps_too_far_backward() {
+        let mut pointer = InstructionPointer::new(0);
+        pointer.jump_backward(10);
+    }
+}

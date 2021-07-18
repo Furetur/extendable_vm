@@ -2,6 +2,8 @@ use crate::machine::byte_readable::ByteReadable;
 use crate::machine::exceptions::runtime_exceptions::ConstantNotFound;
 use crate::machine::exceptions::types::Exception;
 use crate::machine::instruction_pointer::InstructionPointer;
+use std::fmt::{Debug, Formatter};
+use std::fmt;
 
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,
@@ -37,5 +39,20 @@ impl<Constant> ByteReadable<InstructionPointer> for Code<Constant> {
     fn has_next(&self, ptr: &InstructionPointer) -> bool {
         let chunk = self.get_chunk(ptr.chunk_id).unwrap();
         ptr.instruction_pointer < chunk.code.len()
+    }
+}
+
+impl <Constant : Debug> Debug for Chunk<Constant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Chunk")
+            .field("constants", &self.constants)
+            .field("code", &self.code)
+            .finish()
+    }
+}
+
+impl <Constant : Debug> Debug for Code<Constant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_list().entries(&self.chunks).finish()
     }
 }

@@ -2,7 +2,7 @@
 name = "extendable_vm"
 description = "Library that simplifies implementation of stack VMs"
 license-file = "LICENSE"
-version = "0.1.1-releaseAttempt3"
+version = "0.1.1-releaseAttempt4"
 authors = ["furetur <furetur@gmail.com>"]
 edition = "2018"
 

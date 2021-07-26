@@ -2,6 +2,12 @@ use std::error::Error;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 
+/// A property that splits exceptions into 2 groups
+///
+/// `Static` exceptions can be detected before code execution.
+/// These include errors in the format of bytecode, encoding errors etc.
+/// The rest of exceptions are `Runtime` which means that invalid code can lead to such exceptions.
+///
 #[derive(Debug)]
 pub enum ExceptionType {
     Static,
@@ -17,6 +23,10 @@ impl Display for ExceptionType {
     }
 }
 
+/// An error that is raised by the VM
+///
+/// Exception contains a type (`exception_type`), a name and a message that are displayed
+/// with the stacktrace to the user.
 #[derive(Debug)]
 pub struct Exception {
     pub exception_type: ExceptionType,

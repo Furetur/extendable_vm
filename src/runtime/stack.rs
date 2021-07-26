@@ -2,6 +2,7 @@ use std::fmt::{Debug, Formatter};
 use std::iter::Rev;
 use std::slice::Iter;
 
+/// An abstraction that represents a stack data structure
 pub struct Stack<T> {
     data: Vec<T>,
 }

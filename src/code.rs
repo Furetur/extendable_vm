@@ -5,11 +5,15 @@ use crate::InstructionPointer;
 use std::fmt;
 use std::fmt::{Debug, Formatter};
 
+/// Executable code with a list of constants.
+///
+/// Chunk contains a list of `constants` and executable `code`.
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,
     pub code: Vec<u8>,
 }
 
+/// A list of chunks
 pub struct Code<Constant> {
     pub chunks: Vec<Chunk<Constant>>,
 }

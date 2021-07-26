@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::instruction::Instruction;
 use std::fmt::Debug;
 
+/// A set of instruction definitions
 pub struct InstructionTable<'a, Constant, Value: Debug> {
     instructions: HashMap<u8, &'a Instruction<Constant, Value>>,
 }

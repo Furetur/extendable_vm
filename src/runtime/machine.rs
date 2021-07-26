@@ -14,6 +14,9 @@ use crate::runtime::instruction_pointer::InstructionPointer;
 use crate::runtime::stack::Stack;
 use log::debug;
 
+/// The entire state of the VM
+///
+/// State contains the `code` that the VM is executing and a hashmap of all global variables.
 pub struct Machine<'a, Constant, Value: Debug> {
     pub code: &'a Code<Constant>,
     instruction_table: InstructionTable<'a, Constant, Value>,

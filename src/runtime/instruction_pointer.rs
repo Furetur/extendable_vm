@@ -1,5 +1,10 @@
 use crate::Chunk;
 
+/// Location in code
+///
+/// `chunk_id` is the id of the chunk where the code is located
+/// and `instruction_pointer` is the index of the next byte which is to be read.
+///
 #[derive(Clone)]
 pub struct InstructionPointer {
     pub chunk_id: usize,

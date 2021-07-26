@@ -2,6 +2,7 @@ use crate::byte_readable::ByteReadable;
 use std::fs;
 use std::io::Error;
 
+/// The current reading location of `RawBytes`
 pub struct RawBytesPointer {
     pub next_byte: usize,
 }
@@ -18,6 +19,7 @@ impl Default for RawBytesPointer {
     }
 }
 
+/// A vector of bytes
 pub struct RawBytes {
     data: Vec<u8>,
 }

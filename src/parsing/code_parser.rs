@@ -7,6 +7,7 @@ use crate::parsing::exceptions::{
 };
 use crate::parsing::raw_bytes::{RawBytes, RawBytesPointer};
 
+/// Parses code from raw bytes using a table of constant parsers.
 pub struct CodeParser<'a, Constant> {
     parsers: &'a ConstantParserTable<'a, Constant>,
 }

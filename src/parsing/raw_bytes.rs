@@ -1,7 +1,8 @@
-use crate::machine::byte_readable::ByteReadable;
+use crate::byte_readable::ByteReadable;
 use std::fs;
 use std::io::Error;
 
+/// The current reading location of `RawBytes`
 pub struct RawBytesPointer {
     pub next_byte: usize,
 }
@@ -12,12 +13,19 @@ impl RawBytesPointer {
     }
 }
 
+impl Default for RawBytesPointer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// A vector of bytes
 pub struct RawBytes {
     data: Vec<u8>,
 }
 
 impl RawBytes {
-    pub fn from_file(path: &String) -> Result<RawBytes, Error> {
+    pub fn from_file(path: &str) -> Result<RawBytes, Error> {
         let data = fs::read(path)?;
         Ok(RawBytes { data })
     }

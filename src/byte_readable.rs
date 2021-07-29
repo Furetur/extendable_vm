@@ -1,3 +1,7 @@
+/// Something that is readable with a pointer
+///
+/// Pointer `Ptr` should contain the current reading position
+/// which should be mutated after each read.
 pub trait ByteReadable<Ptr> {
     fn read(&self, ptr: &mut Ptr) -> Option<u8>;
     fn has_next(&self, ptr: &Ptr) -> bool;

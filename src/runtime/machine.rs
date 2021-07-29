@@ -1,19 +1,22 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use crate::machine::byte_readable::ByteReadable;
-use crate::machine::call_frame::CallFrame;
-use crate::machine::code::Code;
-use crate::machine::exceptions::runtime_exceptions::{
+use crate::byte_readable::ByteReadable;
+use crate::code::Code;
+use crate::exception::Exception;
+use crate::instruction::Instruction;
+use crate::instruction_table::InstructionTable;
+use crate::runtime::call_frame::CallFrame;
+use crate::runtime::exceptions::{
     EmptyCallStack, EmptyOperandStack, SlotOutOfBounds, UnknownOpCode,
 };
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction::Instruction;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::instruction_table::InstructionTable;
-use crate::machine::stack::Stack;
+use crate::runtime::instruction_pointer::InstructionPointer;
+use crate::runtime::stack::Stack;
 use log::debug;
 
+/// The entire state of the VM
+///
+/// State contains the `code` that the VM is executing and a hashmap of all global variables.
 pub struct Machine<'a, Constant, Value: Debug> {
     pub code: &'a Code<Constant>,
     instruction_table: InstructionTable<'a, Constant, Value>,

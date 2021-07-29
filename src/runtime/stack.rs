@@ -2,6 +2,7 @@ use std::fmt::{Debug, Formatter};
 use std::iter::Rev;
 use std::slice::Iter;
 
+/// An abstraction that represents a stack data structure
 pub struct Stack<T> {
     data: Vec<T>,
 }
@@ -65,7 +66,7 @@ impl<T: Debug> Debug for Stack<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::machine::stack::Stack;
+    use crate::runtime::stack::Stack;
 
     #[test]
     fn stack_initially_should_have_0_size() {
@@ -101,7 +102,7 @@ mod tests {
         for i in 0..10 {
             stack.push(i);
         }
-        stack.set(5, 100);
+        stack.set(5, 100).unwrap();
         assert_eq!(stack.len(), 10);
     }
 

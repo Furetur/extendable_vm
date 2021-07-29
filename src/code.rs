@@ -1,13 +1,19 @@
-use crate::machine::byte_readable::ByteReadable;
-use crate::machine::exceptions::runtime_exceptions::ConstantNotFound;
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction_pointer::InstructionPointer;
+use crate::byte_readable::ByteReadable;
+use crate::exception::Exception;
+use crate::runtime::exceptions::ConstantNotFound;
+use crate::InstructionPointer;
+use std::fmt;
+use std::fmt::{Debug, Formatter};
 
+/// Executable code with a list of constants.
+///
+/// Chunk contains a list of `constants` and executable `code`.
 pub struct Chunk<Constant> {
     pub constants: Vec<Constant>,
     pub code: Vec<u8>,
 }
 
+/// A list of chunks
 pub struct Code<Constant> {
     pub chunks: Vec<Chunk<Constant>>,
 }
@@ -37,5 +43,20 @@ impl<Constant> ByteReadable<InstructionPointer> for Code<Constant> {
     fn has_next(&self, ptr: &InstructionPointer) -> bool {
         let chunk = self.get_chunk(ptr.chunk_id).unwrap();
         ptr.instruction_pointer < chunk.code.len()
+    }
+}
+
+impl<Constant: Debug> Debug for Chunk<Constant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Chunk")
+            .field("constants", &self.constants)
+            .field("code", &self.code)
+            .finish()
+    }
+}
+
+impl<Constant: Debug> Debug for Code<Constant> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        f.debug_list().entries(&self.chunks).finish()
     }
 }

@@ -1,8 +1,11 @@
-use crate::machine::exceptions::types::Exception;
-use crate::machine::instruction_pointer::InstructionPointer;
-use crate::machine::machine::Machine;
+use crate::exception::Exception;
+use crate::{InstructionPointer, Machine};
 use std::fmt::Debug;
 
+/// Describes one type of instructions that the VM supports.
+///
+/// The instruction must have a unique id (`op_code`), a `name` for debugging
+/// and an `instruction_fn` which implements the logic of the instruction.
 #[derive(Clone)]
 pub struct Instruction<Constant, Value: Debug> {
     pub op_code: u8,
@@ -10,6 +13,7 @@ pub struct Instruction<Constant, Value: Debug> {
     pub instruction_fn: InstructionFn<Constant, Value>,
 }
 
+/// A function that implements a certain instruction type.
 #[derive(Clone)]
 pub enum InstructionFn<Constant, Value: Debug> {
     Raw {

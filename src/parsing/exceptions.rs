@@ -1,4 +1,4 @@
-use crate::machine::exceptions::types::{Exception, ExceptionType};
+use crate::exception::{Exception, ExceptionType};
 
 pub struct EmptyCode;
 

@@ -1,97 +1,120 @@
 # Extendable VM
 
-Easily extendable stack virtual machine written in Rust.
+> Simplifies writing stack virtual machines in Rust
 
-## About
+Just define your:
+* bytecode format
+* instructions
 
-This is a stack VM that supports
+and then run the VM!
 
-* Booleans, Strings, Ints and functions
-* Basic operations like addition, multiplication, concatenation, etc
-* Conditional jumps, function calls and returns
-* Exceptions that halt the machine and print the stack trace
+This was originally a part of [jex_vm](https://github.com/Furetur/jex_vm),
+a stack VM for my simple programming language [Jex](https://github.com/Furetur/JexCompiler).
 
-## Why extendable?
+## Getting Started
 
-**Generic VM** This project provides a [generic stack VM](src/runtime) that can be used to implement a concrete VM by
-defining concrete data types, bytecode format and instructions.
+### Installing
 
-**Jex VM** The [actual runnable VM](src/jex) just implements the generic VM.
+Just add extendable_vm to `Cargo.toml`:
 
-It makes it easy to independently change the concrete VM.
-
-## How to Run
-
-You can download the latest version from the *Releases page*.
-Or you can [build from source](#building-from-source).
-
-### Linux
-
-After you have the binary executable `extendable_vm` you can run it:
-
-```shell
-./extendable_vm path/to/bytecode
+```toml
+[dependencies]
+extendable_vm = "<latest version>"
 ```
 
-### Windows
-
-After you have the binary executable `extendable_vm.exe` you can run it:
-
-```shell
-./extendable_vm.exe path/to/bytecode
-```
+You can get the latest version from the [Releases page](https://github.com/Furetur/extendable_vm/releases).
 
 ### Run with logging
 
-To run with logging you have to set the environment variable `RUST_LOG=extendable_vm`.
+If you are using extendable_vm in your binary executable and wish to view all VM logs
+then add `extendable_vm` to `RUST_LOG` environment variable: `RUST_LOG=extendable_vm`.
+If your environment variable already defines a list of options (`RUST_LOG=a,b,c`)
+then just append extendable_vm: `RUST_LOG=a,b,c,extendable_vm`
+
 For example,
 
 ```shell
-RUST_LOG=extendable_vm ./extendable_vm path/to/bytecode
+RUST_LOG=extendable_vm ./your_binary_exec path/to/bytecode
 ```
 
-## Instructions
+### Basic Concepts
 
-`u8` represents an unsigned 8-bit integer
+The virtual machine reads _Code_ which consists of several independent parts called _Chunks_, which contain executable code and _constants_ (such as `1`, `2`, or `"Hello World"`). The VM has an operand stack, a call stack and can jump inside one chunk or between chunks.
 
-Name | Opcode (`u8`) | Arguments (name: type) | Stack (old → new) | Description
---- | --- | --- | --- | --- |
-Constant | 0 | *i*: `u8` | [] → [value] | Loads onto stack the *i*-th constant from the constant pool
-Null | 1 | | [] → [null] | Loads `null` onto stack
-True | 2 | | [] -> [true] | Loads `true` onto stack
-False | 3 | | [] -> [false] | Loads `false` onto stack
-Pop | 4 | | [x, y] → [x] | Pops the last value from stack
-Get local | 5 | *offset*: `u8` | [..., x] → [..., x, y] | Gets the `offset`-th operand in the current call frame and loads in onto stack
-Set local | 6 | *offset*: `u8` | [..., x, ..., y] → [..., y, ...] | Pops the value and sets the `offset`-th operand in the current call frame
-Get global | 7 | *identifier_i*: `u8` | [...] → [..., x] | Loads a global value onto stack by its identifier which it fetches from the constant pool by index = *identifier_i*
-Define global | 8 | *identifier_i*: `u8` | [x] → [] | Sets a global value with the given identifier
-Set global | 9 | *identifier_i*: `u8` | [x] → [] | Sets a global value with the given identifier
-Print | 10 | | [x] → [] | Prints a value
-Not | 11 | | [x] → [!x] | Logical NOT 
-Equal | 12 | | [x, y] → [x == y] | Checks if 2 values are equal 
-Greater | 13 | | [x, y] → [x > y] | Checks if first is greater than the second 
-Less | 14 | |  [x, y] → [x < y] | Checks if first is less than the second 
-Negate | 15 | | [x] → [-x] | Negates an integer 
-Add | 16 | | [x, y] → [x + y] | Adds integers or concatenates strings 
-Subtract | 17 | | [x, y] → [x - y] | Subtracts integers 
-Multiply | 18 | | [x, y] → [x * y] |Multiplies integers 
-Divide | 19 | | [x, y] → [x / y] | Divides integers 
-Jump forward | 20 | *offset*: `u8` | | Jumps forward by `offset` bytes 
-Jump forward if false | 21 | *offset*: `u8` | [x] → [] | Jumps forward by `offset` bytes if the value if `false`
-Jump Backward | 22 | *offset*: `u8` | | Jumps backward by `offset` bytes 
-Call | 23 | *arity*: `u8` | | Calls a function with `arity` arguments. For example, `CALL 3` will call `f(a, b, c)` when stack is `[f, a, b, c]`
-Return | 24 | | Pops the last call frame and puts the returned value on top | Returns from the function ToString | 25 | | [x] → [string representation of x] | Converts a value to string
+Executable code is just an array of bytes that encodes a list of instructions that should be run. Each instruction has its unique id -- _opcode_ and a number of arguments that it accepts.
 
-## Bytecode format
+For example, if instruction `A` with _opcode_ = 7 accepts 2 arguments then we can run `7 1 2 7 3 4` which means `run A(1, 2); run A(3, 4)`.
 
-This describes the format of the bytecode that the VM can read from the file.
+To construct your own VM you must define:
 
-### Notation
+* types of _constants_ that are be stored in your bytecode and how they should be parsed. [More about bytecode format](#Bytecode).
+* the set of _instructions_ that your VM can execute and implement them. [More about instructions](#defining-instructions).
 
-`struct`s are used as a way to demonstrate what each byte means. Each struct should be viewed as an array of bytes where
-each value directly follow the previous (without padding and packing).
+### VM state
 
-For example, struct `A` represents an array `[a1, a2, b]` where `a1` and `a2` correspond to `a: u16` and `b` to `b: u8`.
+State of the VM is represented by a `Machine<Constant, Value>` struct. It stores:
+* code that the VM is executing
+* stack of operands
+* call stack
+* global values
+
+`Constant` is the type of the constant values in bytecode.
+
+`Value`s are operands that the VM manipulates.
+
+### Defining instructions
+
+Each instruction has its unique ID -- `op_code`, `name` that is used for debugging.
+And a function `instruction_fn` that implements the logic of the instruction.
+
+```rust
+pub struct Instruction<Constant, Value> {
+    pub op_code: u8,
+    pub name: &'static str,
+    pub instruction_fn: InstructionFn<Constant, Value>,
+}
+```
+
+`InstructionFn` can be interpreted as a simple function that accepts the state of the VM
+and a list of arguments that the instruction receives and mutates the VM state.
+But it also has several features that simplify defining new instructions.
+`Const`, `UnaryOp` and `BinaryOp` simplify the creation on nullary, unary and binary operator instructions respectively.
+
+```rust
+pub enum InstructionFn<Constant, Value> {
+    // Simple function that I described above
+    Raw {
+        byte_arity: usize,
+        instruction_fn: RawInstructionFn<Constant, Value>,
+    },
+    // Instruction that generates a value and pushes it onto the stack
+    Const(fn() -> Value),
+    // Unary operator instruction that pops the value from stack,
+    // produces new value and pushes it onto the stack
+    UnaryOp(fn(value: Value) -> Result<Value, Exception>),
+    // The same as unary operator but pops 2 values
+    BinaryOp(fn(left: Value, right: Value) -> Result<Value, Exception>),
+}
+
+// Simple function that I described above
+// (mut VM State, instruction arguments) -> may return Exception
+pub type RawInstructionFn<Constant, Value> = fn(
+    machine: &mut Machine<Constant, Value>,
+    args_ip: InstructionPointer,
+) -> Result<(), Exception>;
+```
+
+### Bytecode
+
+This section describes how bytecode can be accessed in API and how it is represented in a binary file.
+
+#### Notation for binary files
+
+In the context of binary data `struct`s are used as a way to demonstrate what each byte means. 
+Each struct in this context should be viewed as an array of bytes
+where each value directly follow the previous (without padding and packing).
+
+For example, struct `A` represents bytes `a1 a2 b` where `a1` and `a2` correspond to `a: u16` and `b` to `b: u8`.
 
 ```rust
 struct A {
@@ -100,88 +123,95 @@ struct A {
 }
 ```
 
-### Bytecode
+#### Code
 
-Bytecode is an array of bytecode chunks. First chunks is a global script which will be run first, other chunks can be
-called as function.
-
-Each chunk has `n_constants` constants (constant pool) and `n_code_bytes`
-executable bytes that contain instructions and their arguments.
+Virtual machine reads `Code` (bytecode) and executes it. `Code` consists of several independent executable pieces -- `Chunk`s. For instance, each function should be defined as a separate `Chunk`.
 
 ```rust
-struct Bytecode {
-    chunks: [Chunk]
+// API
+pub struct Code<Constant> {
+    pub chunks: Vec<Chunk<Constant>>,
 }
 
-struct Chunk {
-    n_constants: u8,
-    constants: [Constant],
-    // of `n_constants` size
-    n_code_bytes: u16,
-    code: [u8] // of `n_code_bytes` size
+// in binary file
+struct _Code<Constant> {
+    chunks: [_Chunk<Constant>]
 }
 ```
 
-### Constants
+In a binary file `Code` is represented as an array of bytes where all chunks are concatenated. For example, if `chunk1` is represented by bytes `00 01` and `chunks2` -- `02 03`. Then code `[chunk1, chunk2]` is `00 01 02 03`.
 
-Bytecode constants are literal values that are included in the code. There are 3 types of constants: ints, strings and
-functions.
+#### Chunk
 
-Each constant type has a unique `constant_type` which is used to distinguish it from the other types.
+Each `Chunk` has several `constants` and executable `code` which is just an array of bytes.
 
 ```rust
-struct Constant {
-    constant_type: u8,
+// API
+pub struct Chunk<Constant> {
+    pub constants: Vec<Constant>,
+    pub code: Vec<u8>,
+}
+
+// in binary file
+struct _Chunk<Constant> {
+    // number of constants
+    n_constants: u8,
+    // array of constants of size `n_constants`
+    // each constant is encoded as an array of bytes and is parsed by a constant parser
+    constants: [Constant],
+    // number of bytes in `code`
+    n_code_bytes: u16,
+    // executable code
+    code: [u8]
+}
+```
+
+#### Parsing code
+
+`CodeParser` and `ConstantParser` are useful abstractions that simplify parsing bytecode.
+However, using them is not necessary and you may create a `Code` struct in any way you want.
+
+`CodeParser` assumes that all chunk constants are represented in a binary file by a unique id and an array of bytes.
+Each type of constants should be parsed by a separate `ConstantParser`.
+
+For example, if we have `IntConstant` that holds `i32` we can define a parser:
+
+```rust
+// in binary file
+struct _IntConstant {
+    // unique ID = 0
+    constant_type: 0 as u8, // used only to demonstrate binary data
+    // 4 bytes that represent i32
     data: [u8]
 }
 
-// Constant := IntConstant | StringConstant | FunctionConstant
+const INT_CONSTANT_PARSER: ConstantParser<i32> = ConstantParser {
+    constant_type: 0 as u8,
+    parser_fn: parse_int_constant,
+};
 
-struct IntConstant {
-    constant_type: u8,
-    // always 0
-    value: i32 // little endian
-}
-
-struct StringConstant {
-    constant_type: u8,
-    // always 1
-    length: u16,
-    utf8_data: [u8]
-}
-
-struct FunctionConstant {
-    constant_type: u8,
-    // always 2
-    chunk_id: u8
+// parses `data` and returns i32 or on exception
+fn parse_int_constant(
+    // the entire code
+    bytes: &RawBytes,
+    // points to the current reading position in `bytes`
+    // initially points to the start of `data`
+    pointer: &mut RawBytesPointer, 
+) -> Result<i32, Exception> {
+    // all read operations advance the `pointer`
+    Ok(bytes.read_i32(pointer).unwrap())
 }
 ```
-
-### Calling functions
-
-All chunks except for the first one can be called as a function with a `CALL` instruction.
-
-Callable chunk must have these 2 constants:
-
-* the first constant must be a function name (string)
-* the second constant must be a function arity (int)
-
-To call a chunk you need to load it onto stack with a `Constant` instruction, load some arguments onto stack and call it
-with a `CALL arity` instruction.
 
 ## Building from source
 
 ### Build a development version
-
-The executable will be located under `target/debug`.
 
 ```shell
 cargo build
 ```
 
 ### Build a release version
-
-The executable will be located under `target/release`.
 
 ```shell
 cargo build --release
@@ -193,15 +223,14 @@ cargo build --release
 cargo test
 ```
 
-## Future plans
+## History
 
-I plan to extract this VM into a separate repository, leaving only the generic VM here. You will be able to use the
-generic VM as a crate to build your own virtual machine!
+I wanted to learn about compilers and programming languages
+and ended up reading this great book [Crafting Interpreters](https://craftinginterpreters.com/contents.html)
+and making my programming language [Jex](https://github.com/Furetur/JexCompiler).
 
+This was originally a part of a simple VM for my programming language [jex_vm](https://github.com/Furetur/jex_vm),
+my first Rust project.
 
-
-
-
-
-
-
+The design of this library is inspired by [stack_vm](https://docs.rs/stack-vm/1.0.1/stack_vm/)
+which helped a lot since I did not know anything about Rust before working on this project.
